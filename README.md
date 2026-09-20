@@ -4,9 +4,9 @@ Adds supplier stock to [brandswarehouse.com](https://brandswarehouse.com), price
 it to beat the competition without losing money to the flat per-order fee, and
 keeps stock and cost in step with the supplier afterwards.
 
-Ace is the first supplier wired up. Our own warehouse stock and partner
-consignment stock plug in the same way — a supplier is a config entry, not a
-code change.
+Ace ([acegiftsplus.ca](https://acegiftsplus.ca/)) is the first supplier wired
+up. Our own warehouse stock and partner consignment stock plug in the same way
+— a supplier is a config entry, not a code change.
 
 ## The problem this solves
 
@@ -89,22 +89,60 @@ created as **drafts** — nothing goes on sale without you looking at it.
 | `below-floor-ace-*.csv` | items we cannot price competitively and still make money |
 | `no-image-ace-*.csv` | items that would go live without a photo |
 
-## Finishing the Ace connection
+## Ace
 
-The adapter is built and tested; it needs three facts from the dealer portal,
-all set in `config/suppliers.yaml` under `suppliers.ace`:
+Ace runs its own Shopify store, so its catalog is readable as structured JSON
+at `/products.json` — titles, brands, sizes, images and what is in stock right
+now. No scraping, no browser pretence. That is `kind: shopify_store` in
+`config/suppliers.yaml`, and it is what `plan ace` reads.
 
-1. `base_url` and the `auth.mode` it uses (`bearer`, `header`, `basic`, `session`)
-2. `catalog.path`, how it paginates, and `items_path` — where the array of
-   products sits inside the JSON response
-3. the names under `fields:` — each one takes a list, and the first that is
-   present wins, so a few guesses can be left in place
+### The one thing that feed cannot tell us: our cost
 
-`python -m bw.cli probe ace` prints what came back and flags items with no
-usable cost or no recognisable size, which is how you know the mapping is right.
+`/products.json` publishes Ace's **retail** price. Our dealer cost is not in
+there, and the pipeline will not invent it — with no cost configured every item
+reports as unsellable, which is the right answer rather than a bug. Set
+`suppliers.ace.cost.mode` to one of:
 
-**Until then**, run the whole pipeline on a CSV export from the portal — same
-fee rules, same pricing, same output:
+| mode | when |
+|---|---|
+| `price_list` | **best** — Ace sends a wholesale list; drop it at `data/ace_wholesale.csv` and it joins on SKU |
+| `dealer_discount` | a flat % off their retail. Fine for planning, but check a few against a real invoice |
+| `field` | if a dealer login exposes a cost field in the feed |
+
+Their retail price is not wasted: it becomes the item's MSRP, which caps what
+we ask. **We are never listed above Ace's own shelf price** — a customer could
+just buy it from them. Items whose floor lands above their retail are held back
+and reported, not listed. (`market.hold_above_msrp`, on by default.)
+
+### How deep the discount has to be
+
+The flat $15 sets a hard bar, and it is much higher on cheap goods:
+
+```
+$ python -m bw.cli discount-needed 64.99      # a $65 item on Ace's shelf
+  needs about 65% off retail to work, listing at $63.95
+
+$ python -m bw.cli discount-needed 149.99     # a $150 item
+  needs about 40% off retail to work, listing at $141.95
+```
+
+At a 40% dealer discount, a $65 Ace item costs us $38.99, and $15 of order fee
+puts our floor at $80 — above Ace's own price. **That item is not worth
+listing at all**, and the pipeline says so rather than quietly publishing us as
+the expensive option.
+
+So the discount Ace gives us decides which half of their catalog is worth
+having. Run `probe ace` once the cost mode is set and it will say how many of
+their items clear the bar.
+
+If most of Ace's catalog sits at the cheaper end, the lever is not the markup —
+it is the fee. Either raise the number of items per Ace order (a minimum order
+value, or bundling), or relax `fee_full_below` in `config/pricing.yaml` if
+orders reliably carry more than one item. `order-economics` shows the effect.
+
+### Running it before the cost question is settled
+
+A CSV export drops straight in, with the same fee rules and pricing:
 
 ```bash
 ACE_FILE=~/Downloads/ace-export.csv python -m bw.cli plan ace_file
@@ -137,10 +175,14 @@ Give each consignment partner their own entry to keep stock and payouts apart.
   *within the same brand only*. Anything doubtful goes to the review file
   instead of being guessed at. Barcodes that a feed reuses across products
   (`4010000000000` and friends) are struck out rather than trusted.
-- Competitor prices come from the store's own public `/products.json`, fetched
-  once a day, one page a second, after checking `robots.txt`. This has not been
-  run live from the build sandbox, whose network policy blocks outbound hosts —
-  it will work from a normal machine or a scheduled job.
+- Both the Ace reader and the competitor reader use public `/products.json`,
+  fetched slowly and cached, `robots.txt` checked first. Neither has been run
+  against the live sites: the build sandbox's network policy blocks outbound
+  hosts, including acegiftsplus.ca. They are covered by tests against recorded
+  response fixtures, and will work from a normal machine or a scheduled job.
+- `/products.json` carries no barcodes, so Ace items match on brand + product +
+  size rather than a code. That is what the review file is for — check it on
+  the first run.
 - Keying to the market cuts both ways: when a competitor prices *high*, we take
   the margin rather than being needlessly cheap. Raise `market.undercut` in
   `config/pricing.yaml` to be more aggressive.

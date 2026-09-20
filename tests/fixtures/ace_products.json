@@ -1,0 +1,34 @@
+{"products": [
+  {"id": 111, "title": "Lattafa Asad Eau de Parfum", "handle": "lattafa-asad",
+   "body_html": "<p>Lattafa <strong>Asad</strong> EDP for men.</p>", "vendor": "Lattafa",
+   "product_type": "Fragrance", "tags": ["Men", "EDP"],
+   "variants": [
+     {"id": 9111, "title": "100ml", "sku": "LAT-ASAD-100", "price": "64.99",
+      "compare_at_price": "89.99", "available": true, "grams": 460},
+     {"id": 9112, "title": "30ml", "sku": "LAT-ASAD-30", "price": "29.99",
+      "compare_at_price": null, "available": false, "grams": 180}],
+   "images": [{"id": 1, "src": "https://cdn.shopify.com/s/files/asad.jpg", "position": 1}]},
+
+  {"id": 112, "title": "Carolina Herrera 212 Men EDT", "handle": "ch-212-men",
+   "body_html": "<p>212 by Carolina Herrera.</p>", "vendor": "Carolina Herrera",
+   "product_type": "Fragrance", "tags": ["Men"],
+   "variants": [
+     {"id": 9113, "title": "100ml", "sku": "CH-212-100", "price": "129.99",
+      "available": true, "grams": 460}],
+   "images": [{"id": 2, "src": "https://cdn.shopify.com/s/files/212.jpg", "position": 1}]},
+
+  {"id": 113, "title": "Ceramic Mug Gift Box", "handle": "ceramic-mug-box",
+   "body_html": "A gift box.", "vendor": "Ace Home", "product_type": "Gift Sets",
+   "tags": [],
+   "variants": [
+     {"id": 9114, "title": "Default Title", "sku": "MUG-BOX", "price": "24.99",
+      "available": true, "grams": 800}],
+   "images": [{"id": 3, "src": "https://cdn.shopify.com/s/files/mug.jpg", "position": 1}]},
+
+  {"id": 114, "title": "Unpriced Mystery Item", "handle": "mystery",
+   "body_html": "", "vendor": "Ace Home", "product_type": "Misc", "tags": [],
+   "variants": [
+     {"id": 9115, "title": "Default Title", "sku": "", "price": "0.00",
+      "available": true, "grams": 0}],
+   "images": []}
+]}

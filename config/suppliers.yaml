@@ -8,15 +8,45 @@
 suppliers:
 
   # ---------------------------------------------------------------- ACE ----
-  # Dropship. Live stock via their dealer portal, $15 flat fee per order.
+  # acegiftsplus.ca. They run their own Shopify store, so their catalog --
+  # titles, brands, sizes, images and what is in stock right now -- is readable
+  # from /products.json. Dropship; $15 flat fee per order.
   #
-  # TO FINISH WIRING THIS UP, three things need confirming against the portal:
-  #   1. base_url and the auth mode it actually uses
-  #   2. catalog.path, how it paginates, and items_path (where the array sits
-  #      in the JSON response)
-  #   3. the field names under `fields:` below
-  # `python -m bw.cli probe ace` prints the raw first page to check all three.
+  # What that feed does NOT carry is our dealer cost: the price it shows is
+  # Ace's retail. The `cost` block says where cost really comes from. Until it
+  # is set, every item reports as unsellable rather than being guessed at --
+  # which is the correct answer, not a bug.
+  #
+  # Their retail price is still used: it becomes the item's MSRP, so we never
+  # list above Ace's own shelf price (see hold_above_msrp in pricing.yaml).
   ace:
+    kind: shopify_store
+    domain: acegiftsplus.ca
+    # collection: fragrances      # limit to one collection if you'd rather
+    page_size: 250
+    delay_seconds: 0.5
+    cost:
+      # price_list     - join our wholesale list on SKU. Most accurate; use this
+      #                  if Ace sends a dealer price list.
+      # dealer_discount- a flat % off their retail. Quick, and close enough to
+      #                  plan with, but check a few against a real invoice.
+      # field          - a cost field their feed exposes to dealer logins.
+      mode: dealer_discount
+      dealer_discount: 0.40       # <-- CONFIRM THIS. See the note in the README:
+                                  #     at 0.40 almost nothing clears the floor.
+      price_list_path: data/ace_wholesale.csv
+      price_list_sku_column: sku
+      price_list_cost_column: cost
+    qty:
+      # /products.json says in stock or not, never how many. Items marked
+      # available are listed with this count so Shopify tracks them sensibly.
+      available_qty: 5
+      # If a dealer login exposes real numbers, name the field and it wins:
+      # field: inventory_quantity
+
+  # If Ace turns out to have a proper dealer API as well, describe it here and
+  # run `plan ace_api` instead -- same pricing, same fee rules.
+  ace_api:
     kind: http
     base_url: ${ACE_BASE_URL}
     auth:
@@ -24,22 +54,19 @@ suppliers:
       token: ${ACE_TOKEN}
       username: ${ACE_USERNAME}
       password: ${ACE_PASSWORD}
-      login_path: /api/auth/login     # session mode only
+      login_path: /api/auth/login
       username_field: username
       password_field: password
-      token_path: data.token          # where the login response carries the token
+      token_path: data.token
     catalog:
       path: /api/v1/products
       method: GET
-      items_path: data                # dotted path to the array of products
-      page_param: page                # omit if the API is cursor-based
+      items_path: data
+      page_param: page
       page_size_param: per_page
       page_size: 250
-      # cursor_param: cursor
-      # next_path: meta.next_cursor
       delay_seconds: 0.25
     fields:
-      # left: our canonical name -- right: theirs. A list means "first one present".
       supplier_sku: [sku, item_code, id]
       title: [name, description, item_name]
       brand: [brand, manufacturer]

@@ -118,10 +118,17 @@ def build_product_input(
 
     files, variants = [], []
     seen_images: set[str] = set()
+    used_labels: set[str] = set()
 
     for item in priced:
         quote = quotes[item.supplier_sku]
+        # Shopify rejects a product with two identical option values, which is
+        # what a supplier of non-fragrance goods (no size on anything) would
+        # otherwise produce.
         size_label = item.size_label or "Default"
+        if size_label in used_labels:
+            size_label = f"{size_label} ({item.supplier_sku})"
+        used_labels.add(size_label)
 
         image = item.image_urls[0] if item.image_urls else None
         if image and image not in seen_images:

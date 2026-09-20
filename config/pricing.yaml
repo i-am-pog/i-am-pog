@@ -23,6 +23,10 @@ suppliers:
     order_fee: 15.00
     fee_full_below: 60.00
     fee_free_above: 150.00
+  ace_api:           # the same Ace terms over a dealer API
+    order_fee: 15.00
+    fee_full_below: 60.00
+    fee_free_above: 150.00
   ace_file:          # the same Ace terms, read from a file export
     order_fee: 15.00
     fee_full_below: 60.00
@@ -54,6 +58,12 @@ market:
   # When the market price is below our floor we cannot win that item on price.
   # It gets flagged rather than sold at a loss.
   flag_below_floor: true
+
+  # For a supplier that also sells retail (Ace does), their shelf price is the
+  # item's MSRP here. If our floor lands above it we would be the expensive
+  # option in public -- so the item is held back instead of listed. Turning
+  # this off lists them anyway, priced above the supplier's own store.
+  hold_above_msrp: true
 
 # Charm rounding. Rounding may pull a price down by at most `max_markdown`,
 # and never below the margin floor.

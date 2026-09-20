@@ -81,11 +81,23 @@ def cmd_probe(args) -> int:
               f"{item.size_label or '-':>9} qty={item.qty:<6} cost={item.cost}")
     unparsed = [i for i in items if not i.sellable]
     if unparsed:
-        print(f"\n  {len(unparsed)} items have no usable cost and would be skipped")
+        print(f"\n  {len(unparsed)} items have no usable cost and would be skipped"
+              f" -- set the `cost` block in config/suppliers.yaml")
     no_size = [i for i in items if i.size_ml is None]
     if no_size:
         print(f"  {len(no_size)} items have no recognisable size "
               f"(check the `size` field mapping)")
+
+    priced = [i for i in items if i.sellable]
+    if priced:
+        engine = PricingEngine()
+        quotes = [engine.quote(args.supplier, i.cost, None, i.msrp) for i in priced]
+        viable = [q for q in quotes if q.sellable]
+        above = [q for q in quotes if "above_supplier_retail" in q.flags]
+        print(f"\n  {len(viable)} of {len(priced)} priced items are worth listing")
+        if above:
+            print(f"  {len(above)} would cost us more than the supplier's own shelf price"
+                  f" -- the dealer discount is not deep enough for those")
     return 0
 
 
@@ -325,6 +337,36 @@ def cmd_explain_price(args) -> int:
     return 0
 
 
+def cmd_discount_needed(args) -> int:
+    """The dealer discount an item needs before it is worth listing at all."""
+    engine = PricingEngine()
+    retail = money(args.retail)
+
+    print(f"supplier shelf price ${retail} -- what we need off it to compete\n")
+    print(f"  {'discount':>9}{'our cost':>10}{'floor':>9}{'we list at':>12}   outcome")
+
+    workable = None
+    for percent in range(30, 81, 5):
+        discount = Decimal(percent) / 100
+        cost = money(retail * (Decimal("1") - discount))
+        quote = engine.quote(args.supplier, cost, None, retail)
+        if quote.sellable:
+            outcome = f"{float(quote.margin_pct) * 100:.0f}% margin, ${quote.unit_profit} a unit"
+            workable = workable or (percent, quote)
+        else:
+            outcome = "above their own price -- not worth listing"
+        print(f"  {percent:>8}%{str(cost):>10}{str(quote.floor_price):>9}"
+              f"{(str(quote.price) if quote.sellable else '-'):>12}   {outcome}")
+
+    if workable:
+        percent, quote = workable
+        print(f"\n  needs about {percent}% off retail to work, listing at ${quote.price}")
+    else:
+        print("\n  nothing in that range works -- at this price point the flat fee "
+              "eats the item.\n  Bundle it, or set a minimum order value instead.")
+    return 0
+
+
 def cmd_order_economics(args) -> int:
     engine = PricingEngine()
     fee = money(engine.supplier_rules(args.supplier).get("order_fee", 0) or 0)
@@ -400,6 +442,12 @@ def build_parser() -> argparse.ArgumentParser:
     explain.add_argument("--market", type=Decimal, default=None)
     explain.add_argument("--msrp", type=Decimal, default=None)
     explain.set_defaults(func=cmd_explain_price)
+
+    discount = subparsers.add_parser(
+        "discount-needed", help="what dealer discount an item needs to be worth listing")
+    discount.add_argument("retail", type=Decimal, help="the supplier's own shelf price")
+    discount.add_argument("--supplier", default="ace")
+    discount.set_defaults(func=cmd_discount_needed)
 
     economics = subparsers.add_parser("order-economics", help="what the flat fee does to a basket")
     economics.add_argument("--supplier", default="ace")

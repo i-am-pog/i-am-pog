@@ -63,9 +63,12 @@ class PriceQuote:
             return Decimal("0")
         return (self.unit_profit / self.price).quantize(Decimal("0.0001"))
 
+    # Flags that mean "do not list this", as opposed to "worth knowing".
+    BLOCKING_FLAGS = ("below_floor", "above_supplier_retail")
+
     @property
     def sellable(self) -> bool:
-        return "below_floor" not in self.flags and self.price > 0
+        return self.price > 0 and not any(f in self.flags for f in self.BLOCKING_FLAGS)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -279,6 +282,12 @@ class PricingEngine:
             cap = money(msrp_value * Decimal(str(market_cfg.get("msrp_cap", 1))))
             if price > cap and cap >= floor:
                 price, basis = cap, "msrp_cap"
+            elif floor > msrp_value and market_cfg.get("hold_above_msrp", True):
+                # Our cheapest viable price is above the supplier's own shelf
+                # price. A customer would just buy it from them -- listing it
+                # wins nothing and advertises that we are the expensive option.
+                flags.append("above_supplier_retail")
+                flags.append(f"retail_{msrp_value}")
 
         # Never let rounding carry us up to or past the competitor.
         ceiling = market if market and market > floor else None
