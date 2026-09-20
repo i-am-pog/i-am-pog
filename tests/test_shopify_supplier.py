@@ -171,3 +171,32 @@ class DealerSessionTests(unittest.TestCase):
 
     def test_no_auth_configured_reads_the_public_catalog(self):
         self.assertFalse(adapter().authenticated)
+
+
+class SessionDescriptionTests(unittest.TestCase):
+    """The pre-flight cookie check, which needs no network."""
+
+    @staticmethod
+    def described(cookie):
+        from bw.cli import describe_session
+        return " ".join(describe_session(ShopifyStoreAdapter("ace", {
+            "domain": "acegiftsplus.ca",
+            "auth": {"cookie": cookie} if cookie else {},
+            "cost": {"mode": "dealer_discount", "dealer_discount": 0.5},
+        })))
+
+    def test_nothing_set(self):
+        self.assertIn("NONE", self.described(None))
+
+    def test_a_logged_in_cookie_is_recognised(self):
+        text = self.described("_shopify_y=abc; secure_customer_sig=deadbeef; cart=xyz")
+        self.assertIn("logged in", text)
+        self.assertNotIn("!!", text)
+
+    def test_a_logged_out_cookie_is_called_out(self):
+        text = self.described("_shopify_y=abc; cart=xyz")
+        self.assertIn("secure_customer_sig", text)
+        self.assertIn("!!", text)
+
+    def test_a_value_pasted_without_its_name_is_called_out(self):
+        self.assertIn("no name=value pairs", self.described("justsomeopaquestring"))

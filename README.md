@@ -191,6 +191,8 @@ from your own browser, never a password — and confirm it works:
 python -m bw.cli auth-check ace
 ```
 
+Step-by-step, with the DevTools clicks: [docs/ace-session-cookie.md](docs/ace-session-cookie.md).
+
 That prints each sampled product's public price against what the session sees.
 Same price both ways means the session is not doing anything, and it says so
 rather than letting retail prices through as if they were cost. Cookies expire,
@@ -231,7 +233,7 @@ Give each consignment partner their own entry to keep stock and payouts apart.
     bw/market/         competitor prices, from public /products.json, cached
     config/            pricing rules and supplier definitions — tune these, not the code
 
-    python -m unittest discover -s tests       # 77 tests
+    python -m unittest discover -s tests       # 81 tests
 
 ## Notes
 

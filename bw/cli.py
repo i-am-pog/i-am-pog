@@ -337,6 +337,38 @@ def cmd_explain_price(args) -> int:
     return 0
 
 
+def describe_session(adapter) -> list[str]:
+    """Sanity-check a pasted cookie without needing the network.
+
+    Most of the ways this goes wrong are visible before any request: nothing
+    pasted, the cookie name copied without its value, or the login cookie
+    missing from an otherwise real-looking cookie string.
+    """
+    cookie = adapter.session.headers.get("Cookie", "")
+    jar = adapter.session.cookies
+
+    if not cookie and not jar:
+        return ["NONE",
+                "set ACE_SESSION_COOKIE, or run tools/ace_session.py login"]
+
+    lines = []
+    if cookie:
+        pairs = [c.strip() for c in cookie.split(";") if c.strip()]
+        names = [p.split("=", 1)[0] for p in pairs if "=" in p]
+        lines.append(f"cookie header, {len(pairs)} values, {len(cookie)} chars")
+        if not names:
+            lines.append("!! no name=value pairs -- copy the whole `cookie:` header")
+        # Shopify sets this only once a customer is actually logged in.
+        if not any("secure_customer_sig" in n for n in names):
+            lines.append("!! no `secure_customer_sig` -- that is Shopify's logged-in")
+            lines.append("   marker, so this was probably copied while logged out")
+        else:
+            lines.append("carries secure_customer_sig (logged in)")
+    if jar:
+        lines.append(f"{len(jar)} cookies from a saved browser session")
+    return lines
+
+
 def cmd_auth_check(args) -> int:
     """Is our dealer session actually giving us wholesale prices?"""
     adapter = get_adapter(args.supplier)
@@ -345,7 +377,9 @@ def cmd_auth_check(args) -> int:
         return 1
 
     print(f"supplier:  {args.supplier} ({adapter.domain})")
-    print(f"session:   {'carried' if adapter.authenticated else 'NONE -- set ACE_SESSION_COOKIE'}\n")
+    for line in describe_session(adapter):
+        print(f"session:   {line}")
+    print()
 
     try:
         catalog = adapter.fetch_products()[: args.sample]
