@@ -1,0 +1,109 @@
+# Where stock comes from. Each entry tells the pipeline how to reach a source
+# and what its columns/fields are called; nothing else in the code knows or
+# cares which supplier it is dealing with.
+#
+# Credentials are never written here -- ${ACE_TOKEN} and friends are read from
+# the environment (see .env.example).
+
+suppliers:
+
+  # ---------------------------------------------------------------- ACE ----
+  # Dropship. Live stock via their dealer portal, $15 flat fee per order.
+  #
+  # TO FINISH WIRING THIS UP, three things need confirming against the portal:
+  #   1. base_url and the auth mode it actually uses
+  #   2. catalog.path, how it paginates, and items_path (where the array sits
+  #      in the JSON response)
+  #   3. the field names under `fields:` below
+  # `python -m bw.cli probe ace` prints the raw first page to check all three.
+  ace:
+    kind: http
+    base_url: ${ACE_BASE_URL}
+    auth:
+      mode: ${ACE_AUTH_MODE}          # bearer | header | basic | session | none
+      token: ${ACE_TOKEN}
+      username: ${ACE_USERNAME}
+      password: ${ACE_PASSWORD}
+      login_path: /api/auth/login     # session mode only
+      username_field: username
+      password_field: password
+      token_path: data.token          # where the login response carries the token
+    catalog:
+      path: /api/v1/products
+      method: GET
+      items_path: data                # dotted path to the array of products
+      page_param: page                # omit if the API is cursor-based
+      page_size_param: per_page
+      page_size: 250
+      # cursor_param: cursor
+      # next_path: meta.next_cursor
+      delay_seconds: 0.25
+    fields:
+      # left: our canonical name -- right: theirs. A list means "first one present".
+      supplier_sku: [sku, item_code, id]
+      title: [name, description, item_name]
+      brand: [brand, manufacturer]
+      cost: [price, wholesale_price, dealer_price]
+      qty: [qty, quantity, available_qty, stock]
+      barcode: [upc, ean, barcode]
+      msrp: [msrp, retail_price, list_price]
+      size: [size, volume]
+      concentration: [concentration, type]
+      gender: [gender]
+      image_urls: [images, image_url, image]
+      description: [long_description, details]
+
+  # Same supplier, same $15 fee, read from a file instead of the API. Use this
+  # to run the whole pipeline today on a portal export (CSV) while the API
+  # details are still being confirmed:
+  #   ACE_FILE=~/Downloads/ace-export.csv python -m bw.cli plan ace_file
+  ace_file:
+    kind: csv
+    path: ${ACE_FILE}
+    fields:
+      supplier_sku: [sku, SKU, Item Code, item_code]
+      title: [name, Item Name, Description, title]
+      brand: [brand, Brand]
+      cost: [price, Price, Cost, Dealer Price]
+      qty: [qty, Qty, Available QTY, Quantity, Stock]
+      barcode: [upc, UPC, Barcode, EAN]
+      msrp: [msrp, MSRP, Retail]
+      size: [size, Size, Volume]
+      concentration: [Concentration, concentration]
+      gender: [Gender, gender]
+      image_urls: [image_url, Image, Image URL]
+
+  # ------------------------------------------------------------ ON HAND ----
+  # Our own stock in the Oakville warehouse. No dropship fee, so it prices
+  # cheaper than the same bottle from Ace.
+  onhand:
+    kind: sheet
+    # A Google Sheet works directly -- File > Share > Publish to web > CSV,
+    # or the /export?format=csv link.
+    url: ${ONHAND_SHEET_CSV_URL}
+    fields:
+      supplier_sku: [SKU, Sku, sku]
+      title: [Product Name, Title, Item Name]
+      brand: [Brand]
+      cost: [Cost, Unit Cost, Our Cost]
+      qty: [Qty On Hand, Qty, Quantity]
+      barcode: [Barcode, UPC]
+      msrp: [MSRP, Retail]
+      size: [Size, Size / Variant]
+      image_urls: [Image, Image URL]
+
+  # --------------------------------------------------------- CONSIGNMENT ----
+  # Stock a partner lets us list but that we do not own. Same shape as onhand;
+  # keep one entry per partner so stock and payouts stay separable.
+  consignment:
+    kind: sheet
+    url: ${CONSIGNMENT_SHEET_CSV_URL}
+    fields:
+      supplier_sku: [SKU, Sku]
+      title: [Product Name, Title]
+      brand: [Brand]
+      cost: [Cost, Our Cost, Partner Cost]
+      qty: [Qty On Hand, Qty]
+      barcode: [Barcode, UPC]
+      size: [Size]
+      image_urls: [Image, Image URL]

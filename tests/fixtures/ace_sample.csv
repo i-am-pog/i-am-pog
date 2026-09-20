@@ -1,0 +1,11 @@
+sku,name,brand,size,price,qty,upc,msrp,image_url
+I0079777,212 (M) EDT SP 1.7oz(NEW PACK),Carolina Herrera,1.7oz,52.70,14,8411061896259,139.00,https://cdn.example.com/ch212-50.jpg
+I0082512,212 (M) EDT SP 3.4oz,Carolina Herrera,3.4oz,71.41,6,8411061043882,175.00,https://cdn.example.com/ch212-100.jpg
+I0098516,212 HEROES FOREVER YOUNG(M)EDT SP 3.0oz,Carolina Herrera,3.0oz,74.84,3,8411061972656,180.00,https://cdn.example.com/ch212h-90.jpg
+I0091001,ASAD (M) EDP SP 3.4oz,Lattafa,3.4oz,22.50,120,6291108730324,65.00,https://cdn.example.com/asad.jpg
+I0091002,KHAMRAH (U) EDP SP 3.4oz,Lattafa,3.4oz,26.00,88,6291108738054,72.00,
+I0091003,YARA (W) EDP SP 3.4oz,Lattafa,3.4oz,21.00,0,6291108736050,60.00,https://cdn.example.com/yara.jpg
+I0060501,LE MALE (M) EDT SP 4.2oz,Jean Paul Gaultier,4.2oz,64.00,9,8435415011501,155.00,https://cdn.example.com/lemale.jpg
+I0060502,LE MALE (M) EDT SP 2.5oz,Jean Paul Gaultier,2.5oz,48.00,11,8435415011518,115.00,https://cdn.example.com/lemale-75.jpg
+I0071100,CHEAP SPLASH (U) EDC SP 1.0oz,Generic House,1.0oz,4.10,300,,18.00,https://cdn.example.com/splash.jpg
+I0071101,NO COST ITEM (U) EDT SP 3.4oz,Generic House,3.4oz,,50,,45.00,

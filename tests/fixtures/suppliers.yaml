@@ -1,0 +1,14 @@
+suppliers:
+  ace:
+    kind: csv
+    path: tests/fixtures/ace_sample.csv
+    fields:
+      supplier_sku: [sku]
+      title: [name]
+      brand: [brand]
+      cost: [price]
+      qty: [qty]
+      barcode: [upc]
+      msrp: [msrp]
+      size: [size]
+      image_urls: [image_url]

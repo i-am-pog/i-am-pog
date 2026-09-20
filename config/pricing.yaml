@@ -1,0 +1,66 @@
+# Pricing rules for Brands Warehouse. Everything here is tunable without
+# touching code; `python -m bw.cli explain-price` shows the effect of a change
+# on a real item before you commit to it.
+
+currency: CAD
+
+# What Shopify Payments takes off the top. Folded into the margin floor so the
+# margin we quote is the margin that actually lands.
+payment:
+  rate: 0.029
+  fixed: 0.30
+
+# Per-supplier order costs.
+#
+# Ace bills a flat $15 per order regardless of size. That fee is brutal on a
+# $25 bottle and trivial on a $200 one, so instead of spreading it evenly we
+# load it onto the cheap items: anything landing under `fee_full_below` must
+# carry the whole $15 on its own, the load tapers off linearly, and above
+# `fee_free_above` it is treated as covered (an order that big has already
+# paid for it many times over).
+suppliers:
+  ace:
+    order_fee: 15.00
+    fee_full_below: 60.00
+    fee_free_above: 150.00
+  ace_file:          # the same Ace terms, read from a file export
+    order_fee: 15.00
+    fee_full_below: 60.00
+    fee_free_above: 150.00
+  onhand:            # our own stock in the Oakville warehouse - no dropship fee
+    order_fee: 0
+  consignment:       # partner stock we list but do not own
+    order_fee: 0
+
+# Minimum gross margin, as a share of the selling price, AFTER supplier cost,
+# the allocated order fee and payment processing. This is the hard floor: the
+# competitor-keyed price is never allowed below it.
+margin_floor:
+  bands:
+    - max_price: 40.00
+      min_margin: 0.45
+    - max_price: 80.00
+      min_margin: 0.38
+    - max_price: 150.00
+      min_margin: 0.32
+    - max_price: null
+      min_margin: 0.28
+
+# How we price against the competition when we have a market price.
+market:
+  undercut: 0.05          # aim this far under the market price
+  min_undercut: 1.00      # ...but at least this many dollars under
+  msrp_cap: 0.95          # never ask more than 95% of MSRP
+  # When the market price is below our floor we cannot win that item on price.
+  # It gets flagged rather than sold at a loss.
+  flag_below_floor: true
+
+# Charm rounding. Rounding may pull a price down by at most `max_markdown`,
+# and never below the margin floor.
+rounding:
+  endings: [0.99, 0.95]
+  max_markdown: 6.00
+
+# Cart-level guidance derived from the fee (surfaced by `order-economics`).
+order:
+  free_shipping_threshold: 149.00
