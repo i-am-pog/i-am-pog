@@ -140,6 +140,51 @@ it is the fee. Either raise the number of items per Ace order (a minimum order
 value, or bundling), or relax `fee_full_below` in `config/pricing.yaml` if
 orders reliably carry more than one item. `order-economics` shows the effect.
 
+### Getting your wholesale prices out of Ace
+
+Three routes, best first.
+
+**1. A price list file.** If Ace sends a price list — PDF or spreadsheet —
+this is the most accurate cost there is, because it is literally what you pay,
+and their lists carry live quantities too, so it doubles as a full feed:
+
+```bash
+pip install -r requirements-tools.txt
+python tools/parse_pricelist.py their-list.pdf -o data/ace_wholesale.csv
+python -m bw.cli probe ace_pricelist
+```
+
+The parser handles the format those lists come in — one flattened line per
+item, `SKU BARCODE BRAND ITEM TYPE CONCENTRATION GENDER SIZE QTY $PRICE`, with
+no column boundaries. Splitting the brand off the item name is the hard part
+(brands are multi-word: "Attar Collection", "Abercrombie & Fitch"), so it
+learns the brand vocabulary from the rows that repeat their brand, then applies
+it to the rest. On a real 2,960-line list it parses 99.7% and finds 240 brands.
+Whatever does not parse is printed rather than dropped.
+
+**2. Your dealer login, driven from your own machine.**
+
+```bash
+pip install -r requirements-tools.txt && playwright install chromium
+
+python tools/ace_session.py login       # a real browser opens; log in yourself
+python tools/ace_session.py diagnose    # find where your wholesale prices live
+python tools/ace_session.py prices      # writes data/ace_wholesale.csv
+```
+
+Your password is typed into the real Ace site in a real browser window, never
+into the script, and is never stored. Only the resulting session is saved, to
+`data/.ace_session.json`, which is gitignored and chmod 600.
+
+`diagnose` is there because a dealer login can expose wholesale pricing in
+several places depending on how the store is built, and guessing wrong gets you
+retail prices that look perfectly plausible. It compares the site logged out
+against logged in and tells you which endpoint actually carries your pricing —
+or that none of them do, in which case route 1 is the answer.
+
+**3. A flat discount off their retail.** Quick, good enough to plan with, wrong
+in detail. `cost.mode: dealer_discount` in `config/suppliers.yaml`.
+
 ### Running it before the cost question is settled
 
 A CSV export drops straight in, with the same fee rules and pricing:
@@ -163,11 +208,12 @@ Give each consignment partner their own entry to keep stock and payouts apart.
     bw/normalize.py    "212 (M) EDT SP 1.7oz(NEW PACK)" -> brand, name, 50ml, EDT, Man
     bw/listing.py      supplier rows -> Shopify product payloads
     bw/shopify.py      Admin GraphQL client (catalog, create, price, stock, cost)
-    bw/suppliers/      one adapter per kind of source (HTTP API, spreadsheet)
+    bw/suppliers/      one adapter per kind of source (Shopify store, API, spreadsheet)
+    tools/             price-list parser, and the browser login for wholesale prices
     bw/market/         competitor prices, from public /products.json, cached
     config/            pricing rules and supplier definitions — tune these, not the code
 
-    python -m unittest discover -s tests       # 38 tests
+    python -m unittest discover -s tests       # 73 tests
 
 ## Notes
 
@@ -182,7 +228,14 @@ Give each consignment partner their own entry to keep stock and payouts apart.
   response fixtures, and will work from a normal machine or a scheduled job.
 - `/products.json` carries no barcodes, so Ace items match on brand + product +
   size rather than a code. That is what the review file is for — check it on
-  the first run.
+  the first run. A parsed price list *does* carry barcodes for most rows, which
+  makes it the better source for matching as well as for cost.
+- Supplier price lists contain typos that split a brand in two ("Abercrombie &
+  Fitch" and "Abercombie & Fitch" both appear in one real list). Matching is
+  brand-scoped with a fuzzy fallback, so those still find each other, but it is
+  worth a look in the review file.
+- Nothing under `data/` is committed: supplier pricing, saved sessions and
+  generated plans all stay local.
 - Keying to the market cuts both ways: when a competitor prices *high*, we take
   the margin rather than being needlessly cheap. Raise `market.undercut` in
   `config/pricing.yaml` to be more aggressive.

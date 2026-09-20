@@ -100,6 +100,24 @@ suppliers:
       gender: [Gender, gender]
       image_urls: [image_url, Image, Image URL]
 
+  # A PDF price list, converted by tools/parse_pricelist.py. This is the most
+  # accurate cost we can have -- it is what we actually pay -- and it carries
+  # live quantities too, so it works as a full feed on its own.
+  #   python tools/parse_pricelist.py price_list.pdf -o data/ace_wholesale.csv
+  ace_pricelist:
+    kind: csv
+    path: data/ace_wholesale.csv
+    fields:
+      supplier_sku: [sku]
+      title: [title]
+      brand: [brand]
+      cost: [cost]
+      qty: [qty]
+      barcode: [barcode]
+      size: [size]
+      concentration: [concentration]
+      gender: [gender]
+
   # ------------------------------------------------------------ ON HAND ----
   # Our own stock in the Oakville warehouse. No dropship fee, so it prices
   # cheaper than the same bottle from Ace.

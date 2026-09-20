@@ -6,3 +6,6 @@ data/out/*
 !data/cache/.gitkeep
 !data/out/.gitkeep
 .venv/
+data/*.csv
+data/*.pdf
+data/.*session*

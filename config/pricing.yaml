@@ -27,6 +27,10 @@ suppliers:
     order_fee: 15.00
     fee_full_below: 60.00
     fee_free_above: 150.00
+  ace_pricelist:     # the same Ace terms, costed from their wholesale list
+    order_fee: 15.00
+    fee_full_below: 60.00
+    fee_free_above: 150.00
   ace_file:          # the same Ace terms, read from a file export
     order_fee: 15.00
     fee_full_below: 60.00
