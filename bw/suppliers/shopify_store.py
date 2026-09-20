@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import csv
 import html
+import json
 import re
 import time
 from decimal import Decimal
@@ -55,6 +56,40 @@ class ShopifyStoreAdapter:
         self.session = session or requests.Session()
         self.session.headers["User-Agent"] = USER_AGENT
         self._price_list: Optional[dict[str, Decimal]] = None
+        self._apply_auth()
+
+    # ------------------------------------------------------------------ auth
+
+    def _apply_auth(self) -> None:
+        """Carry a dealer session, if one was supplied.
+
+        Two ways in, neither of which involves this code handling a password:
+
+          cookie:        a session cookie value, read from the environment
+          storage_state: the file tools/ace_session.py writes after you log in
+                         with your own browser
+
+        A logged-in session is what makes a B2B storefront show wholesale
+        pricing instead of retail. Without one this reads the public catalog,
+        which is still useful -- it just is not our cost.
+        """
+        auth = self.config.get("auth", {}) or {}
+
+        cookie = auth.get("cookie")
+        if cookie:
+            self.session.headers["Cookie"] = cookie
+            return
+
+        state_path = auth.get("storage_state")
+        if state_path and Path(state_path).exists():
+            state = json.loads(Path(state_path).read_text())
+            for entry in state.get("cookies", []):
+                if self.domain.endswith(str(entry.get("domain", "")).lstrip(".")):
+                    self.session.cookies.set(entry["name"], entry["value"])
+
+    @property
+    def authenticated(self) -> bool:
+        return bool(self.session.headers.get("Cookie") or self.session.cookies)
 
     # ------------------------------------------------------------------ cost
 
@@ -204,3 +239,40 @@ class ShopifyStoreAdapter:
 
     def fetch(self) -> list[SupplierItem]:
         return self.build_items(self.fetch_products())
+
+    # ------------------------------------------------------------- auth check
+
+    def price_probe(self, handles: list[str]) -> list[dict[str, Any]]:
+        """Compare what the store shows logged out against logged in.
+
+        A dealer login can surface wholesale pricing in several places, and
+        guessing wrong gives retail prices that look entirely plausible and
+        would quietly poison every price on our site. So we check rather than
+        assume: same price both ways means this endpoint is not the one.
+        """
+        anonymous = requests.Session()
+        anonymous.headers["User-Agent"] = USER_AGENT
+
+        results = []
+        for handle in handles:
+            row: dict[str, Any] = {"handle": handle}
+            for label, session in (("public", anonymous), ("dealer", self.session)):
+                try:
+                    response = session.get(
+                        f"https://{self.domain}/products/{handle}.js", timeout=45
+                    )
+                    response.raise_for_status()
+                    variants = response.json().get("variants", [])
+                    # product.js quotes prices in cents.
+                    row[label] = (
+                        f"{variants[0]['price'] / 100:.2f}" if variants else None
+                    )
+                except Exception as error:
+                    row[label] = f"error: {type(error).__name__}"
+            row["differs"] = (
+                row.get("public") != row.get("dealer")
+                and not str(row.get("dealer", "")).startswith("error")
+            )
+            results.append(row)
+            time.sleep(float(self.config.get("delay_seconds", 0.5)))
+        return results

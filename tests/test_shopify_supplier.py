@@ -129,3 +129,45 @@ class HtmlTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class DealerSessionTests(unittest.TestCase):
+    """Carrying a dealer login, and proving it actually does something."""
+
+    def test_a_cookie_is_carried_on_requests(self):
+        source = ShopifyStoreAdapter("ace", {
+            "domain": "acegiftsplus.ca",
+            "auth": {"cookie": "secure_customer_sig=abc123"},
+            "cost": {"mode": "dealer_discount", "dealer_discount": 0.5},
+        })
+        self.assertTrue(source.authenticated)
+        self.assertEqual(source.session.headers["Cookie"], "secure_customer_sig=abc123")
+
+    def test_a_saved_browser_session_is_loaded(self):
+        import json, tempfile
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as handle:
+            json.dump({"cookies": [
+                {"name": "secure_customer_sig", "value": "xyz", "domain": ".acegiftsplus.ca"},
+                {"name": "other", "value": "nope", "domain": ".example.com"},
+            ]}, handle)
+            path = handle.name
+        source = ShopifyStoreAdapter("ace", {
+            "domain": "acegiftsplus.ca",
+            "auth": {"storage_state": path},
+            "cost": {"mode": "dealer_discount", "dealer_discount": 0.5},
+        })
+        self.assertTrue(source.authenticated)
+        self.assertEqual(source.session.cookies.get("secure_customer_sig"), "xyz")
+        self.assertIsNone(source.session.cookies.get("other"),
+                          "cookies for other domains must not be sent to this one")
+
+    def test_missing_session_file_is_not_fatal(self):
+        source = ShopifyStoreAdapter("ace", {
+            "domain": "acegiftsplus.ca",
+            "auth": {"storage_state": "/nonexistent/session.json"},
+            "cost": {"mode": "dealer_discount", "dealer_discount": 0.5},
+        })
+        self.assertFalse(source.authenticated)
+
+    def test_no_auth_configured_reads_the_public_catalog(self):
+        self.assertFalse(adapter().authenticated)

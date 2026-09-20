@@ -182,6 +182,24 @@ retail prices that look perfectly plausible. It compares the site logged out
 against logged in and tells you which endpoint actually carries your pricing —
 or that none of them do, in which case route 1 is the answer.
 
+**2b. Give the pipeline the session directly.** If you would rather the sync
+fetch wholesale prices itself instead of you running the browser tool, set
+`ACE_SESSION_COOKIE` in the environment to a dealer session cookie — copied
+from your own browser, never a password — and confirm it works:
+
+```bash
+python -m bw.cli auth-check ace
+```
+
+That prints each sampled product's public price against what the session sees.
+Same price both ways means the session is not doing anything, and it says so
+rather than letting retail prices through as if they were cost. Cookies expire,
+so this needs re-pasting every so often; a price list file does not.
+
+Running this from a hosted session additionally requires the environment's
+network policy to allow `acegiftsplus.ca`, which is set per environment — see
+the [Claude Code on the web docs](https://code.claude.com/docs/en/claude-code-on-the-web).
+
 **3. A flat discount off their retail.** Quick, good enough to plan with, wrong
 in detail. `cost.mode: dealer_discount` in `config/suppliers.yaml`.
 
@@ -213,7 +231,7 @@ Give each consignment partner their own entry to keep stock and payouts apart.
     bw/market/         competitor prices, from public /products.json, cached
     config/            pricing rules and supplier definitions — tune these, not the code
 
-    python -m unittest discover -s tests       # 73 tests
+    python -m unittest discover -s tests       # 77 tests
 
 ## Notes
 

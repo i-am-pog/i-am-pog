@@ -25,6 +25,13 @@ suppliers:
     # collection: fragrances      # limit to one collection if you'd rather
     page_size: 250
     delay_seconds: 0.5
+    # A dealer session, which is what makes a B2B storefront show wholesale
+    # prices instead of retail. Set ACE_SESSION_COOKIE in the environment --
+    # never paste a cookie or a password into this file or into chat.
+    # `python -m bw.cli auth-check ace` then confirms it is actually working.
+    auth:
+      cookie: ${ACE_SESSION_COOKIE}
+      storage_state: data/.ace_session.json
     cost:
       # price_list     - join our wholesale list on SKU. Most accurate; use this
       #                  if Ace sends a dealer price list.

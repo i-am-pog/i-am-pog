@@ -337,6 +337,47 @@ def cmd_explain_price(args) -> int:
     return 0
 
 
+def cmd_auth_check(args) -> int:
+    """Is our dealer session actually giving us wholesale prices?"""
+    adapter = get_adapter(args.supplier)
+    if not hasattr(adapter, "price_probe"):
+        print(f"{args.supplier} is not a storefront supplier -- nothing to check")
+        return 1
+
+    print(f"supplier:  {args.supplier} ({adapter.domain})")
+    print(f"session:   {'carried' if adapter.authenticated else 'NONE -- set ACE_SESSION_COOKIE'}\n")
+
+    try:
+        catalog = adapter.fetch_products()[: args.sample]
+    except Exception as error:
+        print(f"could not reach {adapter.domain}: {error}")
+        print("\nIf this is a proxy 403, the domain is not allowed by this")
+        print("environment's network policy -- that has to be changed first.")
+        return 1
+
+    handles = [p["handle"] for p in catalog if p.get("handle")]
+    print(f"  {'product':<40}{'public':>10}{'dealer':>10}   verdict")
+    rows = adapter.price_probe(handles)
+    for row in rows:
+        verdict = "WHOLESALE" if row["differs"] else "same as public"
+        print(f"  {row['handle'][:39]:<40}{str(row.get('public')):>10}"
+              f"{str(row.get('dealer')):>10}   {verdict}")
+
+    differing = sum(1 for r in rows if r["differs"])
+    print()
+    if differing == len(rows) and rows:
+        print("  -> the session is working. `plan ace` will use real wholesale costs.")
+    elif differing:
+        print(f"  -> {differing} of {len(rows)} differ. Partial: some products may be")
+        print("     priced per-customer and others not. Worth a manual look.")
+    else:
+        print("  -> logged in shows the SAME prices as logged out.")
+        print("     Either the session expired, or this store does not put dealer")
+        print("     pricing in that endpoint. Use a price list file instead:")
+        print("       python tools/parse_pricelist.py list.pdf -o data/ace_wholesale.csv")
+    return 0
+
+
 def cmd_discount_needed(args) -> int:
     """The dealer discount an item needs before it is worth listing at all."""
     engine = PricingEngine()
@@ -442,6 +483,12 @@ def build_parser() -> argparse.ArgumentParser:
     explain.add_argument("--market", type=Decimal, default=None)
     explain.add_argument("--msrp", type=Decimal, default=None)
     explain.set_defaults(func=cmd_explain_price)
+
+    auth_check = subparsers.add_parser(
+        "auth-check", help="confirm a dealer session really returns wholesale prices")
+    auth_check.add_argument("supplier", nargs="?", default="ace")
+    auth_check.add_argument("--sample", type=int, default=6)
+    auth_check.set_defaults(func=cmd_auth_check)
 
     discount = subparsers.add_parser(
         "discount-needed", help="what dealer discount an item needs to be worth listing")
