@@ -2,22 +2,59 @@ import unittest
 from decimal import Decimal
 
 from bw.pricing import PricingEngine, money
+from support import fixed_engine
 
 
 class FeeAllocationTests(unittest.TestCase):
     def setUp(self):
         self.engine = PricingEngine()
 
-    def test_cheap_item_carries_the_whole_fee(self):
-        # A $30 bottle is exactly where the flat $15 does the damage.
-        self.assertEqual(self.engine.allocate_fee("ace", Decimal("30")), Decimal("15.00"))
+    def test_cheap_item_carries_the_full_share(self):
+        # A $30 bottle is exactly where the flat $15 does the damage. With
+        # expected_units at 2 the share is $7.50, and the cheap end carries all
+        # of that rather than a tapered part of it.
+        self.assertEqual(self.engine.allocate_fee("ace", Decimal("30")),
+                         self.engine.recoverable_fee("ace"))
+        self.assertEqual(self.engine.recoverable_fee("ace"), Decimal("7.50"))
+
+    def test_assuming_single_item_orders_charges_the_whole_fee(self):
+        engine = PricingEngine(config={
+            "payment": {"rate": 0.029, "fixed": 0.30},
+            "suppliers": {"x": {"order_fee": 15, "expected_units": 1,
+                                "fee_full_below": 60, "fee_free_above": 150}},
+            "margin_floor": {"bands": [{"max_price": None, "min_margin": 0.3}]},
+            "market": {}, "rounding": {"endings": [0.99], "max_markdown": 6},
+        })
+        self.assertEqual(engine.allocate_fee("x", Decimal("30")), Decimal("15.00"))
+
+    def test_shipping_revenue_reduces_what_the_catalogue_carries(self):
+        engine = PricingEngine(config={
+            "payment": {"rate": 0.029, "fixed": 0.30},
+            "suppliers": {"x": {"order_fee": 15, "expected_units": 2,
+                                "shipping_recovers": 12.99,
+                                "fee_full_below": 60, "fee_free_above": 150}},
+            "margin_floor": {"bands": [{"max_price": None, "min_margin": 0.3}]},
+            "market": {}, "rounding": {"endings": [0.99], "max_markdown": 6},
+        })
+        # (15 - 12.99) / 2
+        self.assertEqual(engine.recoverable_fee("x"), Decimal("1.01"))
+
+    def test_shipping_cannot_make_the_fee_negative(self):
+        engine = PricingEngine(config={
+            "payment": {"rate": 0.029, "fixed": 0.30},
+            "suppliers": {"x": {"order_fee": 15, "shipping_recovers": 30}},
+            "margin_floor": {"bands": [{"max_price": None, "min_margin": 0.3}]},
+            "market": {}, "rounding": {"endings": [0.99], "max_markdown": 6},
+        })
+        self.assertEqual(engine.recoverable_fee("x"), Decimal("0.00"))
 
     def test_expensive_item_carries_none(self):
         self.assertEqual(self.engine.allocate_fee("ace", Decimal("200")), Decimal("0.00"))
 
     def test_fee_tapers_in_between(self):
-        mid = self.engine.allocate_fee("ace", Decimal("105"))   # midpoint of 60..150
-        self.assertEqual(mid, Decimal("7.50"))
+        # Midpoint of the 60..150 taper: half of whatever the full share is.
+        mid = self.engine.allocate_fee("ace", Decimal("105"))
+        self.assertEqual(mid, self.engine.recoverable_fee("ace") / 2)
         self.assertGreater(self.engine.allocate_fee("ace", Decimal("70")),
                            self.engine.allocate_fee("ace", Decimal("140")))
 
@@ -129,10 +166,14 @@ if __name__ == "__main__":
 
 
 class UndercutEdgeTests(unittest.TestCase):
-    """The band where we can beat the competitor, but only just."""
+    """The band where we can beat the competitor, but only just.
+
+    Pinned to the strictest fee policy -- the whole $15 on every item -- so
+    these keep testing the undercut logic rather than the current fee split.
+    """
 
     def setUp(self):
-        self.engine = PricingEngine()
+        self.engine = fixed_engine()
 
     def test_thin_undercut_is_still_worth_selling(self):
         # Floor is ~$63.10, competitor at $66: the full 5% undercut ($62.70)

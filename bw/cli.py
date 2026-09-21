@@ -28,6 +28,7 @@ from .listing import build_product_input, group_items, missing_images
 from .market import ShopifyStoreMarket
 from .match import CatalogIndex, partition
 from .models import SupplierItem
+from .policy import FeePolicy, load_shapes, simulate
 from .pricing import PricingEngine, money
 from .shopify import ShopifyClient, chunked
 from .sourcing import choose_sources, compare
@@ -64,6 +65,44 @@ def load_market(name: Optional[str], refresh: bool):
 
 
 # --------------------------------------------------------------------- commands
+
+def cmd_pull_orders(args) -> int:
+    """Cache the shape of real orders -- how many items, how much -- for fee-policy."""
+    client = ShopifyClient(dry_run=False)
+    query = """
+    query Orders($cursor: String) {
+      orders(first: 100, after: $cursor, sortKey: CREATED_AT, reverse: true) {
+        pageInfo { hasNextPage endCursor }
+        nodes {
+          subtotalLineItemsQuantity
+          currentSubtotalPriceSet { shopMoney { amount } }
+        }
+      }
+    }
+    """
+    rows, cursor = [], None
+    while len(rows) < args.limit:
+        data = client.execute(query, {"cursor": cursor})
+        block = data["orders"]
+        for order in block["nodes"]:
+            units = order.get("subtotalLineItemsQuantity") or 0
+            amount = (order.get("currentSubtotalPriceSet") or {}).get("shopMoney", {}).get("amount")
+            if units and amount and Decimal(amount) > 0:
+                rows.append({"units": units, "subtotal": amount})
+        if not block["pageInfo"]["hasNextPage"]:
+            break
+        cursor = block["pageInfo"]["endCursor"]
+
+    path = Path(__file__).resolve().parent.parent / "data" / "order_shapes.csv"
+    write_csv(path, rows)
+    units = [int(r["units"]) for r in rows]
+    singles = sum(1 for u in units if u == 1)
+    print(f"cached {len(rows)} orders -> {path}")
+    print(f"  average {sum(units) / len(units):.2f} items per order")
+    print(f"  {singles} of {len(rows)} ({singles / len(rows) * 100:.0f}%) are a single item")
+    print("\nnow run:  python -m bw.cli fee-policy ace")
+    return 0
+
 
 def cmd_pull_catalog(args) -> int:
     client = ShopifyClient(dry_run=False)
@@ -393,6 +432,60 @@ def describe_session(adapter) -> list[str]:
     return lines
 
 
+POLICIES = [
+    FeePolicy("whole fee on every item", expected_units=Decimal("1")),
+    FeePolicy("split over 2 items", expected_units=Decimal("2")),
+    FeePolicy("split over the real average (2.9)", expected_units=Decimal("2.9")),
+    FeePolicy("split over 2, $12.99 ship under $99",
+              expected_units=Decimal("2"), shipping_fee=Decimal("12.99"),
+              free_shipping_over=Decimal("99")),
+    FeePolicy("split over 2.9, $12.99 ship under $99",
+              expected_units=Decimal("2.9"), shipping_fee=Decimal("12.99"),
+              free_shipping_over=Decimal("99")),
+    FeePolicy("as above, and Ace waives over $300",
+              expected_units=Decimal("2.9"), shipping_fee=Decimal("12.99"),
+              free_shipping_over=Decimal("99"), waived_over=Decimal("300")),
+    FeePolicy("we stock it (no fee at all)", order_fee=Decimal("0")),
+]
+
+
+def cmd_fee_policy(args) -> int:
+    """Replay real orders under each way of recovering the flat fee."""
+    engine = PricingEngine()
+    items = [i for i in get_adapter(args.supplier).fetch() if i.sellable]
+    shapes = load_shapes()
+
+    print(f"{len(items)} items from {args.supplier}, replayed against "
+          f"{len(shapes)} real orders\n")
+    print(f"  {'policy':<36}{'per item':>9}{'listable':>10}{'lose money':>12}"
+          f"{'margin':>9}")
+
+    baseline = None
+    results = []
+    for policy in POLICIES:
+        result = simulate(items, shapes, policy, engine)
+        results.append((policy, result))
+        if baseline is None:
+            baseline = result
+        share = f"{result.listable / result.catalogue * 100:.0f}%"
+        flag = "" if result.losing_orders == 0 else "  <-- unsafe"
+        print(f"  {policy.name:<36}{'$' + str(policy.per_item_fee()):>9}"
+              f"{share:>10}{result.losing_orders:>7} of {result.orders:<3}"
+              f"{float(result.margin_pct) * 100:>8.1f}%{flag}")
+
+    print("\n  lose money = how many of your real orders would have come out negative.")
+    print("  Any policy above zero there needs a shipping charge or a cart minimum.\n")
+    print("  margin is on the SAME customer spend -- it assumes people buy the same")
+    print("  baskets at lower prices, so it only shows what you give up, never the")
+    print("  extra sales cheaper prices are meant to win. Read it as the cost side")
+    print("  of the trade, against this:\n")
+    for policy, result in results:
+        gained = result.listable - baseline.listable
+        if gained > 0 and result.losing_orders == 0:
+            print(f"    {policy.name:<38} +{gained:>4} more items you can actually sell")
+    return 0
+
+
 def cmd_compare_sources(args) -> int:
     """Two price lists, head to head, on all-in cost rather than sticker price."""
     names = [s.strip() for s in args.suppliers.split(",") if s.strip()]
@@ -562,6 +655,11 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("pull-catalog", help="snapshot the Shopify catalog").set_defaults(
         func=cmd_pull_catalog)
 
+    pull_orders = subparsers.add_parser(
+        "pull-orders", help="cache real order shapes, so fee-policy has something to test against")
+    pull_orders.add_argument("--limit", type=int, default=500)
+    pull_orders.set_defaults(func=cmd_pull_orders)
+
     probe = subparsers.add_parser("probe", help="check a supplier connection and its fields")
     supplier_arg(probe, default_market=False)
     probe.add_argument("--limit", type=int, default=15)
@@ -597,6 +695,11 @@ def build_parser() -> argparse.ArgumentParser:
     explain.add_argument("--market", type=Decimal, default=None)
     explain.add_argument("--msrp", type=Decimal, default=None)
     explain.set_defaults(func=cmd_explain_price)
+
+    fee_policy = subparsers.add_parser(
+        "fee-policy", help="how to recover the flat order fee, tested on real orders")
+    fee_policy.add_argument("supplier", nargs="?", default="ace")
+    fee_policy.set_defaults(func=cmd_fee_policy)
 
     compare_cmd = subparsers.add_parser(
         "compare-sources", help="two price lists head to head, fees included")

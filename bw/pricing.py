@@ -118,14 +118,37 @@ class PricingEngine:
     def supplier_rules(self, supplier: str) -> dict:
         return self.config.get("suppliers", {}).get(supplier, {"order_fee": 0})
 
+    def recoverable_fee(self, supplier: str) -> Decimal:
+        """The order fee an item has to carry, before the price-band taper.
+
+        The fee is charged per ORDER, so making every item carry all of it
+        assumes every customer buys exactly one thing. Two settings say
+        otherwise, and both are measured rather than hoped for -- check them
+        against real orders with `python -m bw.cli fee-policy`:
+
+          expected_units      how many items an order really holds. Set this
+                              BELOW the true average: the average is not a
+                              floor, and single-item orders are common.
+          shipping_recovers   shipping revenue on small orders, which pays for
+                              the handling directly instead of the catalogue
+                              paying for it.
+        """
+        rules = self.supplier_rules(supplier)
+        fee = Decimal(str(rules.get("order_fee", 0) or 0))
+        if fee <= 0:
+            return Decimal("0.00")
+        fee = max(Decimal("0"), fee - Decimal(str(rules.get("shipping_recovers", 0) or 0)))
+        units = Decimal(str(rules.get("expected_units", 1) or 1))
+        return money(fee / max(units, Decimal("1")))
+
     def allocate_fee(self, supplier: str, base_price: Decimal) -> Decimal:
-        """How much of the flat order fee this item has to carry by itself.
+        """How much of the order fee this item has to carry by itself.
 
         Full weight below `fee_full_below`, nothing above `fee_free_above`,
         straight line in between.
         """
         rules = self.supplier_rules(supplier)
-        fee = Decimal(str(rules.get("order_fee", 0) or 0))
+        fee = self.recoverable_fee(supplier)
         if fee <= 0:
             return Decimal("0.00")
 

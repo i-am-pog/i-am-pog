@@ -12,15 +12,27 @@ payment:
 
 # Per-supplier order costs.
 #
-# Ace bills a flat $15 per order regardless of size. That fee is brutal on a
-# $25 bottle and trivial on a $200 one, so instead of spreading it evenly we
-# load it onto the cheap items: anything landing under `fee_full_below` must
-# carry the whole $15 on its own, the load tapers off linearly, and above
-# `fee_free_above` it is treated as covered (an order that big has already
-# paid for it many times over).
+# Ace bills a flat $15 per ORDER, not per item. Two things follow.
+#
+# First, the fee is brutal on a $25 bottle and trivial on a $200 one, so rather
+# than spread it evenly we load it onto the cheap end: below `fee_full_below`
+# an item carries the whole share, the load tapers off linearly, and above
+# `fee_free_above` it is treated as covered.
+#
+# Second -- and this is the lever worth the most -- an item only has to carry
+# the WHOLE fee if every customer buys exactly one thing. On Brands Warehouse's
+# real orders the average basket is 2.89 items. But 37% of orders are a single
+# item, so pricing on the average alone loses money on those: simulated against
+# real order history, dividing by 2.9 with nothing behind it puts 4 orders in 94
+# under water. Dividing by 2 does not, and unlocks 670 more listable items.
+#
+# `python -m bw.cli fee-policy` replays every option against real orders.
+# Change these two numbers there first, not here.
 suppliers:
   ace:
     order_fee: 15.00
+    expected_units: 2         # deliberately under the real 2.89 average
+    shipping_recovers: 0.00   # raise to the shipping you charge on small orders
     fee_full_below: 60.00
     fee_free_above: 150.00
   ace_api:           # the same Ace terms over a dealer API

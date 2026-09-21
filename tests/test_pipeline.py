@@ -12,6 +12,7 @@ from bw.match import CatalogIndex, partition
 from bw.models import CatalogVariant
 from bw.pricing import PricingEngine
 from bw.suppliers import get_adapter, load_config
+from support import fixed_engine
 
 FIXTURES = Path(__file__).parent / "fixtures"
 LOCATION = "gid://shopify/Location/52596932776"
@@ -27,7 +28,7 @@ class PipelineTests(unittest.TestCase):
         config = load_config(FIXTURES / "suppliers.yaml")
         self.items = get_adapter("ace", config=config).fetch()
         self.index = CatalogIndex(load_catalog())
-        self.engine = PricingEngine()
+        self.engine = fixed_engine()
 
     def test_feed_parses(self):
         self.assertEqual(len(self.items), 10)

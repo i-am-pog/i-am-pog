@@ -23,6 +23,51 @@ Cheap items carry the fee, so they can never be sold at a loss. Designer
 bottles — where the fee is noise and the competition is real — come out
 **cheaper** than the old markup, which is where the volume is.
 
+## The $15 is per order, not per item
+
+Making every item carry the whole $15 assumes every customer buys exactly one
+thing. On Brands Warehouse's real orders, **the average basket is 2.89 items** —
+so that assumption is throwing away most of the catalogue for no reason.
+
+But it cannot simply be divided by 2.89 either, because **37% of orders are a
+single item**. Replayed against real order history, splitting the fee over 2.9
+puts 4 orders in 94 under water.
+
+`fee-policy` tests each option against your actual orders:
+
+```
+policy                                 per item  listable  lose money   margin
+whole fee on every item                  $15.00       71%     0 of 94     60.8%
+split over 2 items                        $7.50       81%     0 of 94     51.1%
+split over the real average (2.9)         $5.17       85%     4 of 94     43.8%  <-- unsafe
+split over 2, $12.99 ship under $99       $1.01       89%     0 of 94     35.8%
+we stock it (no fee at all)               $0.00       89%     0 of 94     43.8%
+```
+
+Read the margin column carefully: it holds customer spend constant, so it only
+shows what you give up, never the extra sales cheaper prices are meant to win.
+The thing it is trading against is the listable column — **split over 2 makes
+670 more items sellable, and adding a shipping charge makes 1,187 more.**
+
+Three levers, in order of how much they are worth:
+
+1. **Charge shipping under a threshold.** This is the big one. $12.99 under $99
+   takes the catalogue's share of the fee from $7.50 an item to $1.01, and it
+   is what your own dropship business already does ($30 flat, free over $400).
+2. **Split over a basket you can defend.** 2 is safe against your history. 2.9
+   is the true average and is not, because averages are not floors.
+3. **Ask Ace for a waiver over some order value.** Worth asking — they already
+   publish "free over $400" terms to their own customers — though on your
+   current order sizes it barely moves the number.
+
+Set the choice in `config/pricing.yaml` as `expected_units` and
+`shipping_recovers`, then re-run `fee-policy` to confirm nothing goes negative.
+
+```bash
+python -m bw.cli pull-orders     # refresh the order history
+python -m bw.cli fee-policy ace  # test every policy against it
+```
+
 ## How a price is built
 
 1. **Allocate the fee.** Below $60 an item carries the whole $15; the load
@@ -295,6 +340,7 @@ Give each consignment partner their own entry to keep stock and payouts apart.
     bw/pricing.py      the fee allocation, margin floor and market keying
     bw/match.py        is this item already in our catalog?
     bw/sourcing.py     which supplier list to buy each item from
+    bw/policy.py       how much of the per-order fee an item carries
     bw/normalize.py    "212 (M) EDT SP 1.7oz(NEW PACK)" -> brand, name, 50ml, EDT, Man
     bw/listing.py      supplier rows -> Shopify product payloads
     bw/shopify.py      Admin GraphQL client (catalog, create, price, stock, cost)
@@ -303,7 +349,7 @@ Give each consignment partner their own entry to keep stock and payouts apart.
     bw/market/         competitor prices, from public /products.json, cached
     config/            pricing rules and supplier definitions — tune these, not the code
 
-    python -m unittest discover -s tests       # 95 tests
+    python -m unittest discover -s tests       # 124 tests
 
 ## Notes
 

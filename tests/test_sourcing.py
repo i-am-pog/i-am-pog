@@ -6,6 +6,7 @@ from decimal import Decimal
 from bw.models import SupplierItem
 from bw.pricing import PricingEngine
 from bw.sourcing import choose_sources, compare, identity
+from support import fixed_engine
 
 
 def item(supplier, sku, title, cost, qty=10, barcode=None, brand="Lattafa", size_ml=100):
@@ -36,7 +37,7 @@ class IdentityTests(unittest.TestCase):
 
 class SourceChoiceTests(unittest.TestCase):
     def setUp(self):
-        self.engine = PricingEngine()
+        self.engine = fixed_engine()
 
     def test_the_flat_fee_can_beat_a_lower_sticker_price(self):
         # $22 dropship (carrying the $15) against $26 wholesale (carrying none).
@@ -86,9 +87,10 @@ class SourceChoiceTests(unittest.TestCase):
         self.assertEqual(choose_sources(feeds, self.engine), {})
 
     def test_stock_breaks_a_tie(self):
+        # Identical terms and identical cost: nothing to choose but stock.
         feeds = {
-            "ace": [item("ace", "D1", "Asad EDP 100ml", "22.00", qty=2)],
-            "ace_file": [item("ace_file", "D2", "Asad EDP 100ml", "22.00", qty=99)],
+            "twin_a": [item("twin_a", "D1", "Asad EDP 100ml", "22.00", qty=2)],
+            "twin_b": [item("twin_b", "D2", "Asad EDP 100ml", "22.00", qty=99)],
         }
         sourced = next(iter(choose_sources(feeds, self.engine).values()))
         self.assertEqual(sourced.item.qty, 99)
