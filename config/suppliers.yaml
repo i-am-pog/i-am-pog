@@ -125,6 +125,24 @@ suppliers:
       concentration: [concentration]
       gender: [gender]
 
+  # The same Ace list, costed as if we bought the stock in and held it here
+  # rather than having Ace dropship it -- so no $15 per order, but our money is
+  # tied up. `compare-sources ace_pricelist,ace_stocked` shows which items that
+  # actually changes, which is the "what is worth stocking?" question.
+  ace_stocked:
+    kind: csv
+    path: data/ace_wholesale.csv
+    fields:
+      supplier_sku: [sku]
+      title: [title]
+      brand: [brand]
+      cost: [cost]
+      qty: [qty]
+      barcode: [barcode]
+      size: [size]
+      concentration: [concentration]
+      gender: [gender]
+
   # ------------------------------------------------------------ ON HAND ----
   # Our own stock in the Oakville warehouse. No dropship fee, so it prices
   # cheaper than the same bottle from Ace.

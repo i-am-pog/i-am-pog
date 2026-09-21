@@ -18,6 +18,7 @@ import argparse
 import csv
 import json
 import sys
+from collections import Counter
 from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
@@ -29,6 +30,7 @@ from .match import CatalogIndex, partition
 from .models import SupplierItem
 from .pricing import PricingEngine, money
 from .shopify import ShopifyClient, chunked
+from .sourcing import choose_sources, compare
 from .suppliers import get_adapter, list_suppliers
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "data" / "out"
@@ -103,11 +105,28 @@ def cmd_probe(args) -> int:
 
 def cmd_plan(args) -> int:
     engine = PricingEngine()
-    adapter = get_adapter(args.supplier)
+    suppliers = [s.strip() for s in args.supplier.split(",") if s.strip()]
 
-    print(f"fetching {args.supplier}...")
-    items = [i for i in adapter.fetch() if i.sellable]
-    print(f"  {len(items)} sellable items")
+    feeds = {}
+    for name in suppliers:
+        print(f"fetching {name}...")
+        feeds[name] = [i for i in get_adapter(name).fetch() if i.sellable]
+        print(f"  {len(feeds[name])} sellable items")
+
+    if len(suppliers) > 1:
+        # The same bottle can sit on several lists on different terms. Pick the
+        # one we could sell cheapest, which is the comparison that accounts for
+        # each list's order fee rather than just its sticker price.
+        sourced = choose_sources(feeds, engine, in_stock_only=args.in_stock_only)
+        items = [s.item for s in sourced.values()]
+        overlap = sum(1 for s in sourced.values() if s.alternatives)
+        won = Counter(s.supplier for s in sourced.values())
+        print(f"\n  {len(items)} distinct items across {len(suppliers)} lists"
+              f" ({overlap} on more than one)")
+        for name in suppliers:
+            print(f"    sourced from {name}: {won.get(name, 0)}")
+    else:
+        items = feeds[suppliers[0]]
 
     catalog = ShopifyClient.load_catalog()
     index = CatalogIndex(catalog)
@@ -122,7 +141,7 @@ def cmd_plan(args) -> int:
         print(f"  {len(market)} competitor prices loaded")
 
     new_items = [r.item for r in buckets["new"]]
-    if args.in_stock_only:
+    if args.in_stock_only and len(suppliers) == 1:
         before = len(new_items)
         new_items = [i for i in new_items if i.in_stock]
         print(f"  dropped {before - len(new_items)} out-of-stock items")
@@ -130,7 +149,9 @@ def cmd_plan(args) -> int:
     quotes, unsellable = {}, []
     for item in new_items:
         market_price = market.lookup(item.brand, item.title, item.size_ml) if len(market) else None
-        quote = engine.quote(args.supplier, item.cost, market_price, item.msrp)
+        # item.supplier, not the command's first argument: with several lists in
+        # play each item carries its own terms.
+        quote = engine.quote(item.supplier, item.cost, market_price, item.msrp)
         if quote.sellable:
             quotes[item.supplier_sku] = quote
         else:
@@ -149,20 +170,22 @@ def cmd_plan(args) -> int:
             continue
 
     run = stamp()
-    plan_path = OUT_DIR / f"plan-{args.supplier}-{run}.json"
+    label = "+".join(suppliers)
+    plan_path = OUT_DIR / f"plan-{label}-{run}.json"
     plan_path.parent.mkdir(parents=True, exist_ok=True)
     plan_path.write_text(json.dumps({
-        "supplier": args.supplier,
+        "supplier": label,
+        "suppliers": suppliers,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "location_id": location,
         "products": products,
     }, indent=2))
 
-    write_csv(OUT_DIR / f"new-{args.supplier}-{run}.csv", [
+    write_csv(OUT_DIR / f"new-{label}-{run}.csv", [
         {**item.to_dict(), **quotes[item.supplier_sku].to_dict()}
         for item in new_items if item.supplier_sku in quotes
     ])
-    write_csv(OUT_DIR / f"review-{args.supplier}-{run}.csv", [
+    write_csv(OUT_DIR / f"review-{label}-{run}.csv", [
         {"supplier_sku": r.item.supplier_sku, "feed_title": r.item.title,
          "size": r.item.size_label, "score": round(r.score, 1),
          "closest_listing": r.variant.product_title if r.variant else "",
@@ -170,14 +193,14 @@ def cmd_plan(args) -> int:
          "closest_sku": r.variant.sku if r.variant else ""}
         for r in buckets["review"]
     ])
-    write_csv(OUT_DIR / f"below-floor-{args.supplier}-{run}.csv", [
+    write_csv(OUT_DIR / f"below-floor-{label}-{run}.csv", [
         {"supplier_sku": i.supplier_sku, "title": i.title, "cost": str(i.cost),
          "our_floor": str(q.floor_price), "market": str(q.market_price or ""),
          "why": "competitor sells it below what we can afford"}
         for i, q in unsellable
     ])
     no_image = missing_images([i for i in new_items if i.supplier_sku in quotes])
-    write_csv(OUT_DIR / f"no-image-{args.supplier}-{run}.csv",
+    write_csv(OUT_DIR / f"no-image-{label}-{run}.csv",
               [{"supplier_sku": i.supplier_sku, "title": i.title} for i in no_image])
 
     total = sum(q.unit_profit for q in quotes.values())
@@ -369,6 +392,61 @@ def describe_session(adapter) -> list[str]:
     return lines
 
 
+def cmd_compare_sources(args) -> int:
+    """Two price lists, head to head, on all-in cost rather than sticker price."""
+    names = [s.strip() for s in args.suppliers.split(",") if s.strip()]
+    if len(names) < 2:
+        print("give at least two lists, e.g.  compare-sources ace_dropship,ace_wholesale")
+        return 1
+
+    engine = PricingEngine()
+    feeds = {}
+    for name in names:
+        feeds[name] = [i for i in get_adapter(name).fetch() if i.sellable]
+        fee = money(engine.supplier_rules(name).get("order_fee", 0) or 0)
+        print(f"  {name:<18} {len(feeds[name]):>6} items   ${fee} per order")
+
+    result = compare(feeds, engine)
+    print(f"\n  {result['distinct_items']} distinct items, "
+          f"{result['on_more_than_one_list']} of them on more than one list")
+    print(f"  {result['ties']} price out identically either way "
+          f"(above the fee taper the terms stop mattering)\n")
+    print("  where one list is genuinely better:")
+    for name in names:
+        print(f"    {name:<18} {result['wins'].get(name, 0):>6}")
+    print(f"\n  sourcing each from its best list takes ${result['total_saving']} "
+          f"off what we have to charge, in total")
+
+    rows = []
+    for sourced in result["chosen"].values():
+        if not sourced.alternatives or sourced.tied:
+            continue
+        loser, loser_floor = min(sourced.alternatives, key=lambda pair: pair[1])
+        rows.append({
+            "title": sourced.item.title,
+            "brand": sourced.item.brand,
+            "size": sourced.item.size_label,
+            "best_list": sourced.supplier,
+            "best_cost": str(sourced.item.cost),
+            "best_sell_from": str(sourced.floor_price),
+            "other_list": loser.supplier,
+            "other_cost": str(loser.cost),
+            "other_sell_from": str(loser_floor),
+            "saving": str(sourced.saving),
+        })
+    rows.sort(key=lambda r: Decimal(r["saving"]), reverse=True)
+    if rows:
+        path = OUT_DIR / f"compare-{'+'.join(names)}-{stamp()}.csv"
+        write_csv(path, rows)
+        print(f"\n  item-by-item detail: {path}")
+        print(f"\n  biggest differences:")
+        print(f"    {'item':<42}{'sell from':>11}{'instead of':>12}   via")
+        for row in rows[:6]:
+            print(f"    {row['title'][:41]:<42}{row['best_sell_from']:>11}"
+                  f"{row['other_sell_from']:>12}   {row['best_list']}")
+    return 0
+
+
 def cmd_auth_check(args) -> int:
     """Is our dealer session actually giving us wholesale prices?"""
     adapter = get_adapter(args.supplier)
@@ -472,7 +550,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     def supplier_arg(sub, default_market=True):
         sub.add_argument("supplier", nargs="?", default="ace",
-                         help=f"one of: {', '.join(list_suppliers())}")
+                         help=f"one of: {', '.join(list_suppliers())}"
+                              " (plan accepts several, comma separated)")
         if default_market:
             sub.add_argument("--market", default="fragrancebuy",
                              help="competitor store to price against, or '' for none")
@@ -517,6 +596,11 @@ def build_parser() -> argparse.ArgumentParser:
     explain.add_argument("--market", type=Decimal, default=None)
     explain.add_argument("--msrp", type=Decimal, default=None)
     explain.set_defaults(func=cmd_explain_price)
+
+    compare_cmd = subparsers.add_parser(
+        "compare-sources", help="two price lists head to head, fees included")
+    compare_cmd.add_argument("suppliers", help="comma separated, e.g. ace_dropship,ace_wholesale")
+    compare_cmd.set_defaults(func=cmd_compare_sources)
 
     auth_check = subparsers.add_parser(
         "auth-check", help="confirm a dealer session really returns wholesale prices")

@@ -213,6 +213,42 @@ A CSV export drops straight in, with the same fee rules and pricing:
 ACE_FILE=~/Downloads/ace-export.csv python -m bw.cli plan ace_file
 ```
 
+## More than one list from the same supplier
+
+Ace quotes on several lists, and the same bottle appears on more than one at
+different costs and different terms. Cheapest sticker price does not settle it:
+a dropship list charges $15 an order and a stocked one does not, so a $22
+dropship item and a $26 stocked item are not what they look like.
+
+Sources are compared on the only number that matters — the lowest price we
+could sell the item for and still clear margin, which folds in the fee, the
+margin band and card costs.
+
+```bash
+python -m bw.cli compare-sources ace_dropship,ace_stocked   # head to head
+python -m bw.cli plan ace_dropship,ace_stocked              # source each item from the winner
+```
+
+On Ace's own list, costed both ways:
+
+```
+  2935 distinct items, 2935 of them on more than one list
+  877 price out identically either way (above the fee taper the terms stop mattering)
+
+  where one list is genuinely better:
+    ace_pricelist           0
+    ace_stocked          2058
+
+  item                                        sell from  instead of   via
+  Cuba Black M 35ml Boxed                          9.08       37.88   ace_stocked
+```
+
+That $9.08 against $37.88 is the whole argument about cheap goods. A bottle
+costing $4.43 has to carry the entire $15 if Ace ships it one order at a time,
+which puts it at $37.88 — unsellable. Bought in and held here, it goes out at
+$9.08. **The cheap end of Ace's catalog is only worth carrying if we stock it.**
+The expensive end does not care either way, which is what those 877 ties are.
+
 ## Adding our own and partner stock
 
 `onhand` and `consignment` are already defined in `config/suppliers.yaml` —
@@ -225,6 +261,7 @@ Give each consignment partner their own entry to keep stock and payouts apart.
 
     bw/pricing.py      the fee allocation, margin floor and market keying
     bw/match.py        is this item already in our catalog?
+    bw/sourcing.py     which supplier list to buy each item from
     bw/normalize.py    "212 (M) EDT SP 1.7oz(NEW PACK)" -> brand, name, 50ml, EDT, Man
     bw/listing.py      supplier rows -> Shopify product payloads
     bw/shopify.py      Admin GraphQL client (catalog, create, price, stock, cost)
@@ -233,7 +270,7 @@ Give each consignment partner their own entry to keep stock and payouts apart.
     bw/market/         competitor prices, from public /products.json, cached
     config/            pricing rules and supplier definitions — tune these, not the code
 
-    python -m unittest discover -s tests       # 81 tests
+    python -m unittest discover -s tests       # 95 tests
 
 ## Notes
 

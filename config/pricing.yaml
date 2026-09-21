@@ -35,6 +35,8 @@ suppliers:
     order_fee: 15.00
     fee_full_below: 60.00
     fee_free_above: 150.00
+  ace_stocked:       # Ace goods bought in and held here: no per-order fee
+    order_fee: 0
   onhand:            # our own stock in the Oakville warehouse - no dropship fee
     order_fee: 0
   consignment:       # partner stock we list but do not own
