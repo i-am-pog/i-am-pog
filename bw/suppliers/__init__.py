@@ -10,6 +10,7 @@ import yaml
 from .base import SupplierAdapter, expand_env
 from .http_api import HttpApiAdapter
 from .shopify_store import ShopifyStoreAdapter
+from .spreadsheet import ExcelAdapter
 from .tabular import TabularAdapter
 
 DEFAULT_CONFIG = Path(__file__).resolve().parent.parent.parent / "config" / "suppliers.yaml"
@@ -19,6 +20,8 @@ KINDS = {
     "csv": TabularAdapter,
     "sheet": TabularAdapter,
     "shopify_store": ShopifyStoreAdapter,
+    "xlsx": ExcelAdapter,
+    "excel": ExcelAdapter,
 }
 
 

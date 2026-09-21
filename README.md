@@ -91,54 +91,96 @@ created as **drafts** — nothing goes on sale without you looking at it.
 
 ## Ace
 
-Ace runs its own Shopify store, so its catalog is readable as structured JSON
-at `/products.json` — titles, brands, sizes, images and what is in stock right
-now. No scraping, no browser pretence. That is `kind: shopify_store` in
-`config/suppliers.yaml`, and it is what `plan ace` reads.
+The source of truth is **`BW_Dropship_COST_INTERNAL.xlsx`** — 6,574 lines, every
+one `Supplier: Ace`, each carrying what we actually pay and a market retail
+reference. Put it at `data/ace_dropship_cost.xlsx` and the `ace` supplier reads
+it directly.
 
-### The one thing that feed cannot tell us: our cost
+Two columns matter, and picking the wrong one would be expensive:
 
-`/products.json` publishes Ace's **retail** price. Our dealer cost is not in
-there, and the pipeline will not invent it — with no cost configured every item
-reports as unsellable, which is the right answer rather than a bug. Set
-`suppliers.ace.cost.mode` to one of:
+| column | used as | |
+|---|---|---|
+| `My Cost` | **cost** | what we pay Ace |
+| `My Price` | *ignored* | what we charge our own dropship customers, at 20% |
+| `Retail (ref)` | **msrp** | market retail — the ceiling, and the compare-at price |
 
-| mode | when |
-|---|---|
-| `price_list` | **best** — Ace sends a wholesale list; drop it at `data/ace_wholesale.csv` and it joins on SKU |
-| `dealer_discount` | a flat % off their retail. Fine for planning, but check a few against a real invoice |
-| `field` | if a dealer login exposes a cost field in the feed |
+The companion `BW_Dropship_Price_List.xlsx` adds nothing: same SKUs, and its
+`Price (CAD)` equals this file's `My Price` to the cent.
 
-Their retail price is not wasted: it becomes the item's MSRP, which caps what
-we ask. **We are never listed above Ace's own shelf price** — a customer could
-just buy it from them. Items whose floor lands above their retail are held back
-and reported, not listed. (`market.hold_above_msrp`, on by default.)
+### What the $15 does to this catalogue
 
-### How deep the discount has to be
-
-The flat $15 sets a hard bar, and it is much higher on cheap goods:
+Run against the real list, the fee decides most of it:
 
 ```
-$ python -m bw.cli discount-needed 64.99      # a $65 item on Ace's shelf
-  needs about 65% off retail to work, listing at $63.95
-
-$ python -m bw.cli discount-needed 149.99     # a $150 item
-  needs about 40% off retail to work, listing at $141.95
+cost band      items   dropship OK   stocked OK   rescued by stocking
+under $25       1105           585         1083                  498
+$25-60          2329          1493         2160                  667
+$60-120         1795          1451         1517                   66
+over $120       1345          1116         1116                    0
+TOTAL           6574          4645         5876                 1231
 ```
 
-At a 40% dealer discount, a $65 Ace item costs us $38.99, and $15 of order fee
-puts our floor at $80 — above Ace's own price. **That item is not worth
-listing at all**, and the pipeline says so rather than quietly publishing us as
-the expensive option.
+**4,645 of 6,574 work as dropship. 5,876 work if we stock them.** The 1,231
+difference is items that are impossible one way and healthy the other:
 
-So the discount Ace gives us decides which half of their catalog is worth
-having. Run `probe ace` once the cost mode is set and it will say how many of
-their items clear the bar.
+```
+item                    cost   retail     ours   margin
+Adidas 100ml            6.25       22    12.95      46%   dropship floor was $40.01
+Afnan 100ml            40.46       75    68.99      38%   dropship floor was $80.43
+```
 
-If most of Ace's catalog sits at the cheaper end, the lever is not the markup —
-it is the fee. Either raise the number of items per Ace order (a minimum order
-value, or bundling), or relax `fee_full_below` in `config/pricing.yaml` if
-orders reliably carry more than one item. `order-economics` shows the effect.
+A $6.25 bottle that retails at $22 has to carry the whole $15, which puts the
+floor at **$40 — nearly twice retail**. Held here, it sells at $12.95 on 46%.
+And the damage reaches further up than you would guess: a $40 bottle still
+fails, because $15 on an item that only retails at $75 is most of the margin.
+
+Viability by cost, on the real list:
+
+```
+    $0-9    16% listable       $60-69    80%
+  $10-19    54%                $90-99    84%
+  $20-29    58%                $150+     83%
+  $40-49    77%
+```
+
+It never reaches 100%, because there is a second gate that has nothing to do
+with the fee: **how much of retail the cost eats.** Across this list cost is a
+median 44% of retail, but 66% at the ninetieth percentile, and some lines are
+worse. An Al Haramain at $158 against $196 retail is 81% — there is no room for
+our margin however we ship it, and it is held back either way.
+
+Roughly, an item has to land under about **69% of retail** to clear the top
+margin band with no fee, and well under that once the $15 is on it. Being
+expensive does not rescue a thin line.
+
+The two causes separate cleanly, and only one of them is fixable:
+
+- **1,231 items are held back purely by the $15.** Stocking them fixes every one.
+- **469 cost more than 69% of retail.** Held back even stocked. Nothing about
+  how we ship changes those — either negotiate the cost down or leave them.
+
+The conclusion the numbers point at: **dropship the expensive half, buy the
+cheap half in by the case.** Above roughly $60 of cost the terms barely matter;
+below $25 they decide everything.
+
+```bash
+python -m bw.cli compare-sources ace,ace_stocked   # the whole list, both ways
+python -m bw.cli plan ace,ace_stocked              # source each item from the winner
+```
+
+### What this file does not have
+
+Three gaps, all of which need a second source:
+
+- **No stock.** The list says everything was in stock when it was published,
+  which is not live. `assume_qty` in `config/suppliers.yaml` is a holding
+  value — treat every listing as needing stock confirmed until a live feed
+  exists.
+- **No barcodes**, so matching against our catalogue falls back to brand +
+  product + size. Read `review-*.csv` on the first run; that is where
+  duplicates would come from.
+- **No images.** Listings need photos. `ace_storefront` reads acegiftsplus.ca,
+  which has them — that is what it is for now, not for cost.
 
 ### Getting your wholesale prices out of Ace
 
@@ -215,10 +257,10 @@ ACE_FILE=~/Downloads/ace-export.csv python -m bw.cli plan ace_file
 
 ## More than one list from the same supplier
 
-Ace quotes on several lists, and the same bottle appears on more than one at
-different costs and different terms. Cheapest sticker price does not settle it:
-a dropship list charges $15 an order and a stocked one does not, so a $22
-dropship item and a $26 stocked item are not what they look like.
+The same bottle can be available on different terms -- dropshipped for $15 an
+order, or bought in with no per-order fee. Cheapest sticker price does not
+settle which to use: a $22 dropship item and a $26 stocked item are not what
+they look like.
 
 Sources are compared on the only number that matters — the lowest price we
 could sell the item for and still clear margin, which folds in the fee, the
@@ -229,25 +271,16 @@ python -m bw.cli compare-sources ace_dropship,ace_stocked   # head to head
 python -m bw.cli plan ace_dropship,ace_stocked              # source each item from the winner
 ```
 
-On Ace's own list, costed both ways:
+On Ace's real 6,574-line list, costed both ways:
 
 ```
-  2935 distinct items, 2935 of them on more than one list
-  877 price out identically either way (above the fee taper the terms stop mattering)
+  6504 distinct items, 1884 price out identically either way
+  4620 are genuinely cheaper if we stock them
 
-  where one list is genuinely better:
-    ace_pricelist           0
-    ace_stocked          2058
-
-  item                                        sell from  instead of   via
-  Cuba Black M 35ml Boxed                          9.08       37.88   ace_stocked
+  sourcing each from its best list takes $71,049 off what we have to charge
 ```
 
-That $9.08 against $37.88 is the whole argument about cheap goods. A bottle
-costing $4.43 has to carry the entire $15 if Ace ships it one order at a time,
-which puts it at $37.88 — unsellable. Bought in and held here, it goes out at
-$9.08. **The cheap end of Ace's catalog is only worth carrying if we stock it.**
-The expensive end does not care either way, which is what those 877 ties are.
+The 1,884 ties are items above the fee taper, where the terms stop mattering.
 
 ## Adding our own and partner stock
 
@@ -265,7 +298,7 @@ Give each consignment partner their own entry to keep stock and payouts apart.
     bw/normalize.py    "212 (M) EDT SP 1.7oz(NEW PACK)" -> brand, name, 50ml, EDT, Man
     bw/listing.py      supplier rows -> Shopify product payloads
     bw/shopify.py      Admin GraphQL client (catalog, create, price, stock, cost)
-    bw/suppliers/      one adapter per kind of source (Shopify store, API, spreadsheet)
+    bw/suppliers/      one adapter per source kind (xlsx, csv, Shopify store, API)
     tools/             price-list parser, and the browser login for wholesale prices
     bw/market/         competitor prices, from public /products.json, cached
     config/            pricing rules and supplier definitions — tune these, not the code

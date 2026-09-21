@@ -52,7 +52,7 @@ class MappingTests(unittest.TestCase):
         quote = PricingEngine().quote("ace", asad.cost, None, asad.msrp)
         self.assertGreater(quote.floor_price, Decimal("64.99"))
         self.assertFalse(quote.sellable)
-        self.assertIn("above_supplier_retail", quote.flags)
+        self.assertIn("above_retail", quote.flags)
 
     def test_a_deep_enough_discount_makes_the_same_item_work(self):
         # The same bottle at 65% off retail clears the floor comfortably.

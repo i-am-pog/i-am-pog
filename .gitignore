@@ -9,3 +9,5 @@ data/out/*
 data/*.csv
 data/*.pdf
 data/.*session*
+data/*.xlsx
+tests/fixtures/*.xlsx

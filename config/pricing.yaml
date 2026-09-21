@@ -27,16 +27,16 @@ suppliers:
     order_fee: 15.00
     fee_full_below: 60.00
     fee_free_above: 150.00
-  ace_pricelist:     # the same Ace terms, costed from their wholesale list
-    order_fee: 15.00
-    fee_full_below: 60.00
-    fee_free_above: 150.00
   ace_file:          # the same Ace terms, read from a file export
     order_fee: 15.00
     fee_full_below: 60.00
     fee_free_above: 150.00
   ace_stocked:       # Ace goods bought in and held here: no per-order fee
     order_fee: 0
+  ace_storefront:    # same Ace terms, catalogue read from their shop
+    order_fee: 15.00
+    fee_full_below: 60.00
+    fee_free_above: 150.00
   onhand:            # our own stock in the Oakville warehouse - no dropship fee
     order_fee: 0
   consignment:       # partner stock we list but do not own
@@ -65,10 +65,11 @@ market:
   # It gets flagged rather than sold at a loss.
   flag_below_floor: true
 
-  # For a supplier that also sells retail (Ace does), their shelf price is the
-  # item's MSRP here. If our floor lands above it we would be the expensive
-  # option in public -- so the item is held back instead of listed. Turning
-  # this off lists them anyway, priced above the supplier's own store.
+  # Ace's cost list carries a market retail reference per item, which lands
+  # here as the item's MSRP. If our floor is above it, we cannot sell the thing
+  # at a normal market price and still cover the order fee -- so it is held
+  # back rather than listed as the dearest option in the market. Turning this
+  # off lists them anyway, priced above retail.
   hold_above_msrp: true
 
 # Charm rounding. Rounding may pull a price down by at most `max_markdown`,

@@ -95,11 +95,12 @@ def cmd_probe(args) -> int:
         engine = PricingEngine()
         quotes = [engine.quote(args.supplier, i.cost, None, i.msrp) for i in priced]
         viable = [q for q in quotes if q.sellable]
-        above = [q for q in quotes if "above_supplier_retail" in q.flags]
+        above = [q for q in quotes if "above_retail" in q.flags]
         print(f"\n  {len(viable)} of {len(priced)} priced items are worth listing")
         if above:
-            print(f"  {len(above)} would cost us more than the supplier's own shelf price"
-                  f" -- the dealer discount is not deep enough for those")
+            print(f"  {len(above)} cannot be priced under market retail once the"
+                  f" ${money(engine.supplier_rules(args.supplier).get('order_fee', 0) or 0)}"
+                  f" order fee is covered")
     return 0
 
 
