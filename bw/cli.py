@@ -442,11 +442,56 @@ POLICIES = [
     FeePolicy("split over 2.9, $12.99 ship under $99",
               expected_units=Decimal("2.9"), shipping_fee=Decimal("12.99"),
               free_shipping_over=Decimal("99")),
-    FeePolicy("as above, and Ace waives over $300",
+    FeePolicy("as above, with Ace's $1000 waiver",
               expected_units=Decimal("2.9"), shipping_fee=Decimal("12.99"),
-              free_shipping_over=Decimal("99"), waived_over=Decimal("300")),
+              free_shipping_over=Decimal("99"), waived_over=Decimal("1000")),
     FeePolicy("we stock it (no fee at all)", order_fee=Decimal("0")),
 ]
+
+
+def cmd_shipping_threshold(args) -> int:
+    """Where to set free shipping, tested against real orders."""
+    engine = PricingEngine()
+    order_cfg = engine.config.get("order", {}) or {}
+    shipping = money(args.shipping or order_cfg.get("shipping_fee", 12.99))
+    shapes = load_shapes()
+    values = [s.subtotal for s in shapes]
+    fee = money(engine.supplier_rules(args.supplier).get("order_fee", 0) or 0)
+    total_fees = fee * len(values)
+
+    print(f"{len(values)} real orders, average ${money(sum(values) / len(values))}, "
+          f"${total_fees} of {args.supplier} fees in total")
+    print(f"shipping charged below the threshold: ${shipping}\n")
+    print(f"  {'threshold':>10}{'pay ship':>10}{'ship revenue':>14}"
+          f"{'fees covered':>14}{'get it free':>13}")
+
+    candidates = sorted({Decimal(str(t)) for t in (60, 75, 99, 120, 149, 199)}
+                        | {money(order_cfg.get("free_shipping_threshold", 99))})
+    for threshold in candidates:
+        below = [v for v in values if v < threshold]
+        revenue = shipping * len(below)
+        covered = (revenue / total_fees * 100) if total_fees else Decimal(0)
+        marker = "  <-- configured" if threshold == money(
+            order_cfg.get("free_shipping_threshold", 0)) else ""
+        print(f"  {'$' + str(threshold):>10}{len(below):>10}{'$' + str(revenue):>14}"
+              f"{float(covered):>13.0f}%"
+              f"{(len(values) - len(below)) / len(values) * 100:>12.0f}%{marker}")
+
+    print("\n  'get it free' is the share of customers who actually reach it. Set it")
+    print("  too high and it stops being a benefit and starts being a shipping fee.\n")
+
+    rivals = order_cfg.get("competitor_thresholds", {}) or {}
+    if rivals:
+        print("  what the competition does (verify -- shipping terms move):")
+        for name, value in sorted(rivals.items(), key=lambda kv: kv[1]):
+            label = "free on everything" if not value else f"${money(value)}"
+            print(f"    {name:<24} {label}")
+
+    average = sum(values) / len(values)
+    print(f"\n  your average order is ${money(average)}. A threshold within one item's")
+    print("  reach of that grows baskets, which is the thing that actually divides")
+    print("  the order fee. One too far away is ignored.")
+    return 0
 
 
 def cmd_fee_policy(args) -> int:
@@ -695,6 +740,12 @@ def build_parser() -> argparse.ArgumentParser:
     explain.add_argument("--market", type=Decimal, default=None)
     explain.add_argument("--msrp", type=Decimal, default=None)
     explain.set_defaults(func=cmd_explain_price)
+
+    threshold = subparsers.add_parser(
+        "shipping-threshold", help="where to set free shipping, tested on real orders")
+    threshold.add_argument("supplier", nargs="?", default="ace")
+    threshold.add_argument("--shipping", type=Decimal, default=None)
+    threshold.set_defaults(func=cmd_shipping_threshold)
 
     fee_policy = subparsers.add_parser(
         "fee-policy", help="how to recover the flat order fee, tested on real orders")

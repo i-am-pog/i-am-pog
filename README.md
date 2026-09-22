@@ -56,17 +56,50 @@ Three levers, in order of how much they are worth:
    is what your own dropship business already does ($30 flat, free over $400).
 2. **Split over a basket you can defend.** 2 is safe against your history. 2.9
    is the true average and is not, because averages are not floors.
-3. **Ask Ace for a waiver over some order value.** Worth asking — they already
-   publish "free over $400" terms to their own customers — though on your
-   current order sizes it barely moves the number.
+3. **Ace's waiver is a dead end for dropship.** They drop the fee over $1,000.
+   Not one of the 94 real orders comes close — the largest ever was $350.80 —
+   so it changes nothing, and `fee-policy` shows that row as identical to the
+   one without it. It matters only for *restocking*: a $1,000+ buy-in order
+   ships free, which is another argument for holding the cheap end here.
 
 Set the choice in `config/pricing.yaml` as `expected_units` and
 `shipping_recovers`, then re-run `fee-policy` to confirm nothing goes negative.
 
 ```bash
-python -m bw.cli pull-orders     # refresh the order history
-python -m bw.cli fee-policy ace  # test every policy against it
+python -m bw.cli pull-orders          # refresh the order history
+python -m bw.cli fee-policy ace       # test every policy against it
+python -m bw.cli shipping-threshold   # where to put free shipping
 ```
+
+### Where to set free shipping
+
+```
+ threshold  pay ship  ship revenue  fees covered  get it free
+       $75        55       $714.45           51%          41%
+       $99        77      $1000.23           71%          18%  <-- configured
+      $149        90      $1169.10           83%           4%
+```
+
+The competition, as of September 2026 — **verify before relying on these,
+shipping terms move**:
+
+| | |
+|---|---|
+| [eleganscents.ca](https://eleganscents.ca/) | free on everything |
+| [fragrance365.ca](https://fragrance365.ca/) | $120 |
+| [fragrancebuy.ca](https://fragrancebuy.ca/pages/shipping-refunds-policy) | $149, or free on 5+ different SKUs |
+| [thefragranceshop.ca](https://www.thefragranceshop.ca/shipping-and-return) | flat $14.95 ON/QC, $18 elsewhere — no threshold found |
+
+**$99 is the pick, and it is set that way in config.** It undercuts the market,
+covers 71% of the fee, and — the real reason — it sits one item away from a $67
+average order. A $149 threshold recovers more fee on paper but only 4% of
+customers ever reach it, so it nudges nobody and just reads as a shipping
+charge. The threshold's job is to grow baskets, because basket size is what
+actually divides the $15.
+
+FragranceBuy's second rule is worth stealing: **free shipping on 5+ different
+items.** That targets units per order directly, which is the number that
+matters here, rather than dollars.
 
 ## How a price is built
 

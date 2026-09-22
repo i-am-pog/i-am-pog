@@ -104,3 +104,33 @@ class SimulationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class WaiverTests(unittest.TestCase):
+    """A supplier waiver only helps if orders actually reach it."""
+
+    def setUp(self):
+        self.engine = fixed_engine()
+        self.items = catalogue()
+        # Shaped like the real order book: average around $67.
+        self.shapes = [OrderShape(1, Decimal("40")), OrderShape(2, Decimal("76")),
+                       OrderShape(3, Decimal("90")), OrderShape(1, Decimal("28"))]
+
+    def test_a_waiver_nobody_reaches_changes_nothing(self):
+        # Ace waives its fee over $1,000. No order in the book is close.
+        plain = FeePolicy("plain", expected_units=Decimal("2"))
+        waived = FeePolicy("waived", expected_units=Decimal("2"),
+                           waived_over=Decimal("1000"))
+        self.assertEqual(
+            simulate(self.items, self.shapes, plain, self.engine).profit,
+            simulate(self.items, self.shapes, waived, self.engine).profit,
+        )
+
+    def test_a_reachable_waiver_does_help(self):
+        plain = FeePolicy("plain", expected_units=Decimal("2"))
+        waived = FeePolicy("waived", expected_units=Decimal("2"),
+                           waived_over=Decimal("50"))
+        self.assertGreater(
+            simulate(self.items, self.shapes, waived, self.engine).profit,
+            simulate(self.items, self.shapes, plain, self.engine).profit,
+        )

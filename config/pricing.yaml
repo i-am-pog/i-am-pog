@@ -90,6 +90,19 @@ rounding:
   endings: [0.99, 0.95]
   max_markdown: 6.00
 
-# Cart-level guidance derived from the fee (surfaced by `order-economics`).
+# Cart-level policy. `shipping-threshold` tests these against real orders.
 order:
-  free_shipping_threshold: 149.00
+  # Where we offer free shipping. $99 is deliberately under the market: it is
+  # reachable from a $67 average order by adding one item, which is the whole
+  # point -- a threshold nobody reaches nudges nobody.
+  free_shipping_threshold: 99.00
+  shipping_fee: 12.99
+
+  # What the competition does, for reference. CHECK THESE BEFORE RELYING ON
+  # THEM -- they were read off the web in September 2026 and shipping terms
+  # change without notice.
+  competitor_thresholds:
+    fragrancebuy.ca: 149.00        # also free on 5+ different SKUs
+    fragrance365.ca: 120.00
+    eleganscents.ca: 0.00          # free on everything
+    # thefragranceshop.ca: flat $14.95 Ontario/Quebec, $18 elsewhere, no threshold found
