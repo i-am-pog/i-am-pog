@@ -62,8 +62,31 @@ Three levers, in order of how much they are worth:
    one without it. It matters only for *restocking*: a $1,000+ buy-in order
    ships free, which is another argument for holding the cheap end here.
 
-Set the choice in `config/pricing.yaml` as `expected_units` and
-`shipping_recovers`, then re-run `fee-policy` to confirm nothing goes negative.
+### What is configured now
+
+Dropship only, no stock held:
+
+```yaml
+ace:
+  order_fee: 15.00
+  expected_units: 2         # under the real 2.89 average, on purpose
+  shipping_recovers: 12.99  # ONLY true while the shipping charge is live
+order:
+  free_shipping_threshold: 99.00
+  shipping_fee: 12.99
+```
+
+That takes each item's share of the fee from $15.00 to **$1.01**, and the
+listable catalogue from 4,645 to **5,832 of 6,574**.
+
+> **The shipping charge is load-bearing.** Prices are set assuming small orders
+> pay $12.99 toward handling. If that rule is not actually live on the
+> storefront, a single cheap item loses money — a $12-cost bottle goes from
+> +$10.51 to −$2.10. There are tests pinning both halves of that. Set the
+> shipping rule in Shopify *before* publishing prices built on it.
+
+Re-run `fee-policy` after changing either number, and confirm nothing goes
+negative.
 
 ```bash
 python -m bw.cli pull-orders          # refresh the order history

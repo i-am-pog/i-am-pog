@@ -5,6 +5,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from bw.suppliers.spreadsheet import ExcelAdapter
+from support import fixed_engine
 
 FIXTURE = Path(__file__).parent / "fixtures" / "ace_cost.xlsx"
 
@@ -105,8 +106,9 @@ class AceEconomicsTests(unittest.TestCase):
         build_fixture()
 
     def setUp(self):
-        from bw.pricing import PricingEngine
-        self.engine = PricingEngine()
+        # Pinned to the strict policy (whole fee per item), since these test
+        # what the fee does to an item, not what today's fee split is.
+        self.engine = fixed_engine()
         self.items = {i.supplier_sku: i for i in ExcelAdapter("ace", {
             "path": str(FIXTURE), "sheet": "Dropship Cost List",
             "fields": FIELDS, "assume_qty": 3,

@@ -32,7 +32,11 @@ suppliers:
   ace:
     order_fee: 15.00
     expected_units: 2         # deliberately under the real 2.89 average
-    shipping_recovers: 0.00   # raise to the shipping you charge on small orders
+    # $12.99 shipping charged below the $99 free-shipping threshold. The
+    # customer covers handling on small orders so the catalogue does not have
+    # to -- this is what takes each item's share of the fee from $7.50 to $1.01.
+    # It only holds while that shipping charge is actually live on the site.
+    shipping_recovers: 12.99
     fee_full_below: 60.00
     fee_free_above: 150.00
   ace_api:           # the same Ace terms over a dealer API

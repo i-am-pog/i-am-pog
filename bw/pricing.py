@@ -340,26 +340,42 @@ class PricingEngine:
 
     # ------------------------------------------------------ order economics
 
+    def shipping_charged(self, subtotal: Decimal) -> Decimal:
+        """What the customer pays for shipping on a basket this size."""
+        order = self.config.get("order", {}) or {}
+        threshold = Decimal(str(order.get("free_shipping_threshold", 0) or 0))
+        fee = Decimal(str(order.get("shipping_fee", 0) or 0))
+        if threshold <= 0 or fee <= 0 or subtotal >= threshold:
+            return Decimal("0.00")
+        return money(fee)
+
     def order_economics(self, supplier: str, quotes: list[PriceQuote]) -> dict[str, Any]:
         """True profit on a basket, charging the flat fee once for the order.
 
         Per-item allocation is a modelling device; this is what the order
-        actually earns.
+        actually earns -- including the shipping the customer pays on a small
+        order. That shipping is not a detail: once items are priced on the
+        assumption it exists (`shipping_recovers`), a single cheap item loses
+        money without it. Leaving it out of this sum would hide exactly the
+        risk the sum is for.
         """
         rules = self.supplier_rules(supplier)
         fee = Decimal(str(rules.get("order_fee", 0) or 0))
         revenue = sum((q.price for q in quotes), Decimal("0"))
         cost = sum((q.cost for q in quotes), Decimal("0"))
-        processing = money(revenue * self.pay_rate + self.pay_fixed) if revenue else Decimal("0")
-        profit = money(revenue - cost - fee - processing)
+        shipping = self.shipping_charged(revenue)
+        taken = revenue + shipping
+        processing = money(taken * self.pay_rate + self.pay_fixed) if taken else Decimal("0")
+        profit = money(taken - cost - fee - processing)
         return {
             "items": len(quotes),
             "revenue": money(revenue),
+            "shipping": shipping,
             "cost": money(cost),
             "order_fee": money(fee),
             "processing": processing,
             "profit": profit,
-            "margin_pct": (profit / revenue).quantize(Decimal("0.0001")) if revenue else Decimal("0"),
+            "margin_pct": (profit / taken).quantize(Decimal("0.0001")) if taken else Decimal("0"),
         }
 
     def break_even_order_value(self, supplier: str, margin: Decimal = Decimal("0")) -> Decimal:

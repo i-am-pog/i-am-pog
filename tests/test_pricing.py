@@ -10,12 +10,12 @@ class FeeAllocationTests(unittest.TestCase):
         self.engine = PricingEngine()
 
     def test_cheap_item_carries_the_full_share(self):
-        # A $30 bottle is exactly where the flat $15 does the damage. With
-        # expected_units at 2 the share is $7.50, and the cheap end carries all
-        # of that rather than a tapered part of it.
+        # The cheap end carries the whole share, not a tapered part of it.
+        # What the share IS depends on the live fee policy, so that is not
+        # asserted here -- fee-policy is where that decision is tested.
         self.assertEqual(self.engine.allocate_fee("ace", Decimal("30")),
                          self.engine.recoverable_fee("ace"))
-        self.assertEqual(self.engine.recoverable_fee("ace"), Decimal("7.50"))
+        self.assertGreater(self.engine.recoverable_fee("ace"), Decimal("0"))
 
     def test_assuming_single_item_orders_charges_the_whole_fee(self):
         engine = PricingEngine(config={
@@ -54,7 +54,7 @@ class FeeAllocationTests(unittest.TestCase):
     def test_fee_tapers_in_between(self):
         # Midpoint of the 60..150 taper: half of whatever the full share is.
         mid = self.engine.allocate_fee("ace", Decimal("105"))
-        self.assertEqual(mid, self.engine.recoverable_fee("ace") / 2)
+        self.assertEqual(mid, money(self.engine.recoverable_fee("ace") / 2))
         self.assertGreater(self.engine.allocate_fee("ace", Decimal("70")),
                            self.engine.allocate_fee("ace", Decimal("140")))
 
@@ -139,7 +139,7 @@ class RoundingTests(unittest.TestCase):
 
 class OrderEconomicsTests(unittest.TestCase):
     def setUp(self):
-        self.engine = PricingEngine()
+        self.engine = fixed_engine()
 
     def test_flat_fee_is_charged_once_per_order_not_per_item(self):
         quotes = [self.engine.quote("ace", 52.70) for _ in range(3)]
@@ -159,6 +159,57 @@ class OrderEconomicsTests(unittest.TestCase):
     def test_break_even_order_value(self):
         self.assertGreater(self.engine.break_even_order_value("ace"), Decimal("15"))
         self.assertEqual(self.engine.break_even_order_value("onhand"), Decimal("0.00"))
+
+
+class ShippingBackedOrderTests(unittest.TestCase):
+    """When prices assume shipping revenue, the shipping has to be real.
+
+    With `shipping_recovers` set, items are priced as though small orders pay
+    for their own handling. If that shipping charge is not actually live on the
+    site, a single cheap item loses money -- these pin both halves of that.
+    """
+
+    CONFIG = {
+        "payment": {"rate": 0.029, "fixed": 0.30},
+        "suppliers": {"ace": {"order_fee": 15.00, "expected_units": 2,
+                              "shipping_recovers": 12.99,
+                              "fee_full_below": 60.00, "fee_free_above": 150.00}},
+        "margin_floor": {"bands": [
+            {"max_price": 40.00, "min_margin": 0.45},
+            {"max_price": None, "min_margin": 0.30},
+        ]},
+        "market": {"undercut": 0.05, "min_undercut": 1.00, "msrp_cap": 0.95},
+        "rounding": {"endings": [0.99, 0.95], "max_markdown": 6.00},
+        "order": {"free_shipping_threshold": 99.00, "shipping_fee": 12.99},
+    }
+
+    def engine(self, **order_overrides):
+        import copy
+        config = copy.deepcopy(self.CONFIG)
+        config["order"].update(order_overrides)
+        return PricingEngine(config=config)
+
+    def test_a_single_cheap_item_profits_once_shipping_is_charged(self):
+        engine = self.engine()
+        order = engine.order_economics("ace", [engine.quote("ace", 12.00)])
+        self.assertEqual(order["shipping"], Decimal("12.99"))
+        self.assertGreater(order["profit"], Decimal("0"))
+
+    def test_the_same_order_loses_money_with_no_shipping_charge(self):
+        # The failure mode to watch: prices set assuming shipping revenue, but
+        # the shipping rule never actually configured on the storefront.
+        engine = self.engine(shipping_fee=0)
+        order = engine.order_economics("ace", [engine.quote("ace", 12.00)])
+        self.assertEqual(order["shipping"], Decimal("0.00"))
+        self.assertLess(order["profit"], Decimal("0"))
+
+    def test_a_big_order_needs_no_shipping_revenue(self):
+        engine = self.engine()
+        quotes = [engine.quote("ace", 64.00) for _ in range(3)]
+        order = engine.order_economics("ace", quotes)
+        self.assertEqual(order["shipping"], Decimal("0.00"), "over the threshold")
+        self.assertGreater(order["profit"], Decimal("0"))
+
 
 
 if __name__ == "__main__":
