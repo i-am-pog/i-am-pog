@@ -54,10 +54,11 @@ def write_csv(path: Path, rows: list[dict]) -> None:
 def load_market(name: Optional[str], refresh: bool, path: Optional[str] = None):
     """Competitor prices: from a saved file if given one, otherwise fetched."""
     if path:
+        files = [p.strip() for p in str(path).split(",") if p.strip()]
         source = ShopifyStoreMarket(name=name or "market",
                                     domain=f"{name}" if name and "." in name else "market")
-        index = source.load_file(path)
-        print(f"  {len(index)} competitor prices read from {path}")
+        index = source.load_file(files)
+        print(f"  {len(index)} competitor prices read from {len(files)} file(s)")
         return index
     if not name:
         from .market.shopify_store import empty_index
@@ -457,6 +458,50 @@ POLICIES = [
 ]
 
 
+def cmd_market_report(args) -> int:
+    """How a supplier's costs stand up against a competitor's shelf prices."""
+    import statistics
+    from .normalize import squash
+
+    market = load_market(args.market, refresh=not args.no_refresh,
+                         path=getattr(args, "market_file", None))
+    if not len(market):
+        print("no competitor prices -- pass --market-file, or allow the domain")
+        return 1
+
+    engine = PricingEngine()
+    items = [i for i in get_adapter(args.supplier).fetch() if i.sellable]
+    matched = [(i, price) for i in items
+               if (price := market.lookup(i.brand, i.title, i.size_ml))]
+    if not matched:
+        print("nothing matched -- different ranges, or the names are too far apart")
+        return 0
+
+    ratios = sorted(float(i.cost / price) for i, price in matched)
+    print(f"\n  {len(matched)} of {len(items)} {args.supplier} items matched\n")
+    print("  our cost as a share of their selling price:")
+    for q in (10, 25, 50, 75, 90):
+        print(f"    {q:>2}th pct: {ratios[int(len(ratios) * q / 100)] * 100:>4.0f}%")
+
+    wins = [1 for i, price in matched
+            if (q := engine.quote(args.supplier, i.cost, price, i.msrp)).sellable
+            and q.price < price]
+    under = [1 for i, price in matched if price <= i.cost]
+    print(f"\n  we can undercut them on {len(wins)} of {len(matched)}")
+    print(f"  they sell below our cost on {len(under)}")
+
+    their_brands = {squash(e.brand) for e in market.entries if e.brand}
+    contested = [i for i in items if squash(i.brand) in their_brands]
+    print(f"\n  {len(items) - len(contested)} of our items are in brands they do not"
+          f" carry at all -- uncontested")
+
+    if statistics.median(ratios) > 0.75:
+        print("\n  Our cost is close to their shelf price. That is a sourcing problem:")
+        print("  no margin setting wins it. Compete where they are absent, and take")
+        print("  the overlap list back to the supplier.")
+    return 0
+
+
 def cmd_restock(args) -> int:
     """Switch supplier-backed items that are sitting at zero back on.
 
@@ -840,6 +885,15 @@ def build_parser() -> argparse.ArgumentParser:
     explain.add_argument("--market", type=Decimal, default=None)
     explain.add_argument("--msrp", type=Decimal, default=None)
     explain.set_defaults(func=cmd_explain_price)
+
+    report = subparsers.add_parser(
+        "market-report", help="how our costs stand up against a competitor")
+    report.add_argument("supplier", nargs="?", default="ace")
+    report.add_argument("--market", default="perfumeonline")
+    report.add_argument("--market-file", default=None,
+                        help="comma separated products.json files saved from a browser")
+    report.add_argument("--no-refresh", action="store_true")
+    report.set_defaults(func=cmd_market_report)
 
     restock = subparsers.add_parser(
         "restock", help="switch zero-stock supplier items back on, price and stock together")

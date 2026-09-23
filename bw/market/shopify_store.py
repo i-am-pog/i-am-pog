@@ -179,8 +179,18 @@ class ShopifyStoreMarket:
         hand over the file. Same data the fetcher would have got.
         """
         from pathlib import Path as _Path
-        payload = json.loads(_Path(path).read_text())
-        products = payload.get("products", payload if isinstance(payload, list) else [])
+        paths = [path] if isinstance(path, (str, _Path)) else list(path)
+        products, seen = [], set()
+        for one in paths:
+            payload = json.loads(_Path(one).read_text())
+            batch = payload.get("products", payload if isinstance(payload, list) else [])
+            for product in batch:
+                # Saved pages overlap when a catalogue shifts between saves.
+                key = product.get("id") or (product.get("handle"), product.get("title"))
+                if key in seen:
+                    continue
+                seen.add(key)
+                products.append(product)
         entries: list[MarketEntry] = []
         for product in products:
             vendor = product.get("vendor") or ""
