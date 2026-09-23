@@ -275,25 +275,36 @@ class CompetitivenessTests(unittest.TestCase):
         self.assertTrue(quote.sellable)
         self.assertLess(quote.price / Decimal("100"), Decimal("0.85"))
 
+    # $35 cost against $60 retail prices at 92% of retail: under the market,
+    # but far too close to it. This case isolates the ceiling -- a thinner one
+    # like $22 against $29 also trips `above_retail`, so it would pass whether
+    # the ceiling worked or not.
+    NEAR_RETAIL = (Decimal("35"), Decimal("60"))
+
     def test_an_item_too_close_to_retail_is_held_back(self):
-        # $22 cost against $29 retail: profitable, and nobody would buy it here.
-        quote = self.engine.quote("ace", Decimal("22"), None, Decimal("29"))
+        cost, retail = self.NEAR_RETAIL
+        quote = self.engine.quote("ace", cost, None, retail)
         self.assertIn("uncompetitive", quote.flags)
+        self.assertNotIn("above_retail", quote.flags, "this one is under retail")
         self.assertFalse(quote.sellable)
 
     def test_uncompetitive_is_distinct_from_unprofitable(self):
-        quote = self.engine.quote("ace", Decimal("22"), None, Decimal("29"))
+        cost, retail = self.NEAR_RETAIL
+        quote = self.engine.quote("ace", cost, None, retail)
         self.assertNotIn("below_floor", quote.flags)
+        self.assertLess(quote.price, retail)
         self.assertGreater(quote.unit_profit, Decimal("0"),
                            "it does make money -- it just will not sell")
 
     def test_the_ceiling_can_be_turned_off(self):
         import copy
+        cost, retail = self.NEAR_RETAIL
         config = copy.deepcopy(self.CONFIG)
         config["market"].pop("max_share_of_retail")
         engine = PricingEngine(config=config)
-        self.assertTrue(engine.quote("ace", Decimal("22"), None, Decimal("29")).sellable)
+        self.assertTrue(engine.quote("ace", cost, None, retail).sellable)
 
     def test_no_retail_reference_means_no_ceiling(self):
         # Nothing to measure against, so the item is judged on margin alone.
-        self.assertTrue(self.engine.quote("ace", Decimal("22")).sellable)
+        cost, _ = self.NEAR_RETAIL
+        self.assertTrue(self.engine.quote("ace", cost).sellable)
