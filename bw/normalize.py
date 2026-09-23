@@ -221,10 +221,17 @@ def clean_product_name(title: str, brand: str = "") -> str:
     text = _TESTER.sub(" ", text)
     for pattern, _ in CONCENTRATIONS:
         text = re.sub(pattern, " ", text, flags=re.I)
+    # Gender markers, but only where they are a marker rather than part of the
+    # name. A bare "Man" cannot be stripped everywhere or "Man In Black" and
+    # "Iron Man" lose their names; it goes only after a separator ("/Woman")
+    # or at the very end ("... For Man").
     text = re.sub(
         r"\bfor\s+(him|her|men|man|women|woman|unisex|ladies)\b|\bunisex\b|\bmen\b|\bwomen\b",
         " ", text, flags=re.I,
     )
+    text = re.sub(r"[/\\]\s*(man|woman|men|women|unisex|ladies|homme|femme)\b", " ",
+                  text, flags=re.I)
+    text = re.sub(r"\b(man|woman|men|women|unisex|ladies)\s*$", " ", text, flags=re.I)
     text = re.sub(r"\b[MWU]\b(?!\.)", " ", text)      # bare gender marker
     if brand:
         text = re.sub(rf"^\s*{re.escape(brand)}\b", " ", text, flags=re.I)

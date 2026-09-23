@@ -62,10 +62,15 @@ class MarketIndex:
     def __len__(self) -> int:
         return len(self.entries)
 
-    @staticmethod
-    def _significant(name: str) -> set[str]:
+    # Words that say who a scent is for, not which scent it is. Two listings
+    # of the same bottle routinely disagree about these.
+    GENDER_WORDS = {"man", "woman", "men", "women", "unisex", "ladies",
+                    "homme", "femme", "him", "her"}
+
+    @classmethod
+    def _significant(cls, name: str) -> set[str]:
         """Words that distinguish one product from another in the same range."""
-        return {t for t in name.split() if len(t) > 2}
+        return {t for t in name.split() if len(t) > 2 and t not in cls.GENDER_WORDS}
 
     def lookup(self, brand: str, title: str, size_ml: Optional[int],
                min_score: float = 96.0) -> Optional[Decimal]:
