@@ -32,11 +32,16 @@ suppliers:
   ace:
     order_fee: 15.00
     expected_units: 2         # deliberately under the real 2.89 average
-    # $12.99 shipping charged below the $99 free-shipping threshold. The
-    # customer covers handling on small orders so the catalogue does not have
-    # to -- this is what takes each item's share of the fee from $7.50 to $1.01.
-    # It only holds while that shipping charge is actually live on the site.
-    shipping_recovers: 12.99
+    # Shipping actually charged below the $75 threshold, read off the live
+    # delivery profile rather than assumed: $9.99 in Ontario/Quebec and $14.99
+    # for the rest of Canada, on a parcel under 750g (a 100ml bottle is ~460g).
+    #
+    # The LOWER of the two on purpose. Pricing on $14.99 would assume every
+    # order pays the out-of-province rate and come up short on every order from
+    # the home market; at $9.99 the out-of-province orders simply come in
+    # ahead. It costs almost nothing either way -- median price is $80.95 for
+    # both, and 35% off retail instead of 36%.
+    shipping_recovers: 9.99
     fee_full_below: 60.00
     fee_free_above: 150.00
   ace_api:           # the same Ace terms over a dealer API
