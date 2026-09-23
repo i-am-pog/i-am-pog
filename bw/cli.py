@@ -51,7 +51,14 @@ def write_csv(path: Path, rows: list[dict]) -> None:
         writer.writerows(rows)
 
 
-def load_market(name: Optional[str], refresh: bool):
+def load_market(name: Optional[str], refresh: bool, path: Optional[str] = None):
+    """Competitor prices: from a saved file if given one, otherwise fetched."""
+    if path:
+        source = ShopifyStoreMarket(name=name or "market",
+                                    domain=f"{name}" if name and "." in name else "market")
+        index = source.load_file(path)
+        print(f"  {len(index)} competitor prices read from {path}")
+        return index
     if not name:
         from .market.shopify_store import empty_index
         return empty_index()
@@ -176,8 +183,9 @@ def cmd_plan(args) -> int:
     print(f"  new: {len(buckets['new'])}   already carried: {len(buckets['existing'])}   "
           f"needs a look: {len(buckets['review'])}")
 
-    market = load_market(args.market, refresh=not args.no_refresh)
-    if len(market):
+    market = load_market(args.market, refresh=not args.no_refresh,
+                         path=getattr(args, "market_file", None))
+    if len(market) and not getattr(args, "market_file", None):
         print(f"  {len(market)} competitor prices loaded")
 
     new_items = [r.item for r in buckets["new"]]
@@ -784,6 +792,8 @@ def build_parser() -> argparse.ArgumentParser:
         if default_market:
             sub.add_argument("--market", default="fragrancebuy",
                              help="competitor store to price against, or '' for none")
+            sub.add_argument("--market-file", default=None,
+                             help="a products.json saved from a browser, instead of fetching")
             sub.add_argument("--no-refresh", action="store_true",
                              help="use cached competitor prices even if stale")
 

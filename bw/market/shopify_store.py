@@ -144,6 +144,36 @@ class ShopifyStoreMarket:
         self._save(entries)
         return entries
 
+    def load_file(self, path) -> MarketIndex:
+        """Read a products.json someone saved from their own browser.
+
+        The plainest way past a blocked network: open
+        https://<store>/products.json?limit=250 in a browser, save the page,
+        hand over the file. Same data the fetcher would have got.
+        """
+        from pathlib import Path as _Path
+        payload = json.loads(_Path(path).read_text())
+        products = payload.get("products", payload if isinstance(payload, list) else [])
+        entries: list[MarketEntry] = []
+        for product in products:
+            vendor = product.get("vendor") or ""
+            title = product.get("title") or ""
+            handle = product.get("handle") or ""
+            for variant in product.get("variants", []):
+                price = variant.get("price")
+                if price in (None, ""):
+                    continue
+                size_ml, _ = parse_size(variant.get("title") or "")
+                if size_ml is None:
+                    size_ml, _ = parse_size(title)
+                entries.append(MarketEntry(
+                    brand=vendor, title=title, size_ml=size_ml,
+                    price=Decimal(str(price)),
+                    url=f"https://{self.domain}/products/{handle}",
+                ))
+        self._save(entries)
+        return MarketIndex(entries)
+
     # ------------------------------------------------------------------ cache
 
     def _save(self, entries: list[MarketEntry]) -> None:
