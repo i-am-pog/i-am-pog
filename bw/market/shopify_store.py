@@ -62,8 +62,21 @@ class MarketIndex:
     def __len__(self) -> int:
         return len(self.entries)
 
+    @staticmethod
+    def _significant(name: str) -> set[str]:
+        """Words that distinguish one product from another in the same range."""
+        return {t for t in name.split() if len(t) > 2}
+
     def lookup(self, brand: str, title: str, size_ml: Optional[int],
-               min_score: float = 90.0) -> Optional[Decimal]:
+               min_score: float = 96.0) -> Optional[Decimal]:
+        """The competitor's price for this exact bottle, or nothing.
+
+        Strict on purpose. A near match here does not produce a slightly wrong
+        price, it produces the price of a different product -- "Club De Nuit
+        Intense" against "Club De Nuit Intense Overdose" is a $40 error, and
+        "Odyssey Mandarin" scores well against "Ombre D'Or" on letters alone.
+        Fewer matches priced correctly beats more priced from the wrong row.
+        """
         brand_key = squash(brand)
         name = squash(clean_product_name(title, brand))
 
@@ -74,12 +87,21 @@ class MarketIndex:
         candidates = {i: self._names[i] for i in self._by_brand.get(brand_key, [])}
         if not candidates:
             return None
-        best = process.extractOne(name, candidates, scorer=fuzz.WRatio, score_cutoff=min_score)
+        best = process.extractOne(name, candidates, scorer=fuzz.token_sort_ratio,
+                                  score_cutoff=min_score)
         if not best:
             return None
+
         entry = self.entries[best[2]]
-        # Same scent, wrong bottle size is the wrong price.
-        return entry.price if entry.size_ml == size_ml else None
+        if entry.size_ml != size_ml:
+            return None          # same scent, wrong bottle, wrong price
+
+        # One distinguishing word apart is a different product, whatever the
+        # letters say: Overdose, Elixir, Intense, Black, Ultra.
+        theirs = self._significant(squash(clean_product_name(entry.title, entry.brand)))
+        if self._significant(name) ^ theirs:
+            return None
+        return entry.price
 
 
 class ShopifyStoreMarket:

@@ -310,8 +310,14 @@ class PricingEngine:
             # the shopper came here precisely because it should be cheaper.
             # Anything we cannot get under this share is held back rather than
             # published to sit there looking expensive.
+            # The retail reference is a STAND-IN for the market, used when we
+            # have no real competitor price. Where we do have one, and we are
+            # under it, that is the actual competitiveness test and the
+            # stand-in must not overrule it -- otherwise a clear win gets held
+            # back for looking expensive against a number nobody is charging.
             ceiling_share = market_cfg.get("max_share_of_retail")
-            if ceiling_share and price > msrp_value * Decimal(str(ceiling_share)):
+            beating_market = market is not None and market > 0 and price < market
+            if ceiling_share and not beating_market and price > msrp_value * Decimal(str(ceiling_share)):
                 flags.append("uncompetitive")
                 flags.append(f"retail_{msrp_value}")
 

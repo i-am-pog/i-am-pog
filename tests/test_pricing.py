@@ -308,3 +308,57 @@ class CompetitivenessTests(unittest.TestCase):
         # Nothing to measure against, so the item is judged on margin alone.
         cost, _ = self.NEAR_RETAIL
         self.assertTrue(self.engine.quote("ace", cost).sellable)
+
+
+class CeilingVersusRealMarketTests(unittest.TestCase):
+    """A real competitor price outranks the retail stand-in."""
+
+    def setUp(self):
+        import copy
+        self.engine = PricingEngine(config=copy.deepcopy(CompetitivenessTests.CONFIG))
+
+    def test_a_win_against_the_competitor_is_not_held_back(self):
+        # Retail says $60 and we land at 92% of it, which alone would be held.
+        # But the competitor is actually charging $70, so we are the cheap one.
+        quote = self.engine.quote("ace", Decimal("35"), Decimal("70"), Decimal("60"))
+        self.assertTrue(quote.sellable, "we undercut them; that is what matters")
+        self.assertNotIn("uncompetitive", quote.flags)
+
+    def test_the_ceiling_still_applies_with_no_competitor_price(self):
+        quote = self.engine.quote("ace", Decimal("35"), None, Decimal("60"))
+        self.assertIn("uncompetitive", quote.flags)
+
+    def test_the_ceiling_still_applies_when_we_cannot_beat_them(self):
+        # Competitor at $50, our floor above it: no win, so the stand-in rules.
+        quote = self.engine.quote("ace", Decimal("35"), Decimal("50"), Decimal("60"))
+        self.assertFalse(quote.sellable)
+
+
+class MarketMatchStrictnessTests(unittest.TestCase):
+    """A near match on a competitor's catalogue is a different product."""
+
+    def index(self):
+        from bw.market import MarketIndex
+        from bw.market.shopify_store import MarketEntry
+        return MarketIndex([
+            MarketEntry("Armaf", "Armaf Club De Nuit Intense Overdose", 100, Decimal("69.15")),
+            MarketEntry("Armaf", "Armaf Odyssey Soda Pop", 100, Decimal("43.85")),
+        ])
+
+    def test_an_extra_word_is_a_different_product(self):
+        # "Club De Nuit Intense" is not "Club De Nuit Intense Overdose", and
+        # pricing one against the other is a $40 error.
+        self.assertIsNone(self.index().lookup("Armaf", "Club De Nuit Intense", 100))
+
+    def test_the_exact_product_still_matches(self):
+        self.assertEqual(
+            self.index().lookup("Armaf", "Armaf Odyssey Soda Pop /Woman", 100),
+            Decimal("43.85"))
+
+    def test_the_wrong_size_is_the_wrong_price(self):
+        self.assertIsNone(self.index().lookup("Armaf", "Armaf Odyssey Soda Pop", 50))
+
+    def test_letters_alone_do_not_make_a_match(self):
+        # "Odyssey Mandarin" scores respectably against "Ombre D'Or" on
+        # characters; it is plainly a different bottle.
+        self.assertIsNone(self.index().lookup("Armaf", "Odyssey Mandarin", 100))
