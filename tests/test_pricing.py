@@ -248,3 +248,52 @@ class UndercutEdgeTests(unittest.TestCase):
         self.assertEqual(quote.basis, "floor")
         self.assertIn("below_floor", quote.flags)
         self.assertFalse(quote.sellable)
+
+
+class CompetitivenessTests(unittest.TestCase):
+    """Clearing the floor only means it makes money if it sells."""
+
+    CONFIG = {
+        "payment": {"rate": 0.029, "fixed": 0.30},
+        "suppliers": {"ace": {"order_fee": 15.00, "expected_units": 2,
+                              "shipping_recovers": 12.99,
+                              "fee_full_below": 60.00, "fee_free_above": 150.00}},
+        "margin_floor": {"bands": [{"max_price": None, "min_margin": 0.30}]},
+        "market": {"undercut": 0.05, "min_undercut": 1.00, "msrp_cap": 0.95,
+                   "hold_above_msrp": True, "max_share_of_retail": 0.85},
+        "rounding": {"endings": [0.99, 0.95], "max_markdown": 6.00},
+        "order": {},
+    }
+
+    def setUp(self):
+        import copy
+        self.engine = PricingEngine(config=copy.deepcopy(self.CONFIG))
+
+    def test_a_keenly_priced_item_is_fine(self):
+        # $30 cost against $100 retail: lands well under the ceiling.
+        quote = self.engine.quote("ace", Decimal("30"), None, Decimal("100"))
+        self.assertTrue(quote.sellable)
+        self.assertLess(quote.price / Decimal("100"), Decimal("0.85"))
+
+    def test_an_item_too_close_to_retail_is_held_back(self):
+        # $22 cost against $29 retail: profitable, and nobody would buy it here.
+        quote = self.engine.quote("ace", Decimal("22"), None, Decimal("29"))
+        self.assertIn("uncompetitive", quote.flags)
+        self.assertFalse(quote.sellable)
+
+    def test_uncompetitive_is_distinct_from_unprofitable(self):
+        quote = self.engine.quote("ace", Decimal("22"), None, Decimal("29"))
+        self.assertNotIn("below_floor", quote.flags)
+        self.assertGreater(quote.unit_profit, Decimal("0"),
+                           "it does make money -- it just will not sell")
+
+    def test_the_ceiling_can_be_turned_off(self):
+        import copy
+        config = copy.deepcopy(self.CONFIG)
+        config["market"].pop("max_share_of_retail")
+        engine = PricingEngine(config=config)
+        self.assertTrue(engine.quote("ace", Decimal("22"), None, Decimal("29")).sellable)
+
+    def test_no_retail_reference_means_no_ceiling(self):
+        # Nothing to measure against, so the item is judged on margin alone.
+        self.assertTrue(self.engine.quote("ace", Decimal("22")).sellable)

@@ -88,6 +88,17 @@ market:
   # off lists them anyway, priced above retail.
   hold_above_msrp: true
 
+  # The competitiveness ceiling. Clearing the margin floor only means an item
+  # makes money IF it sells; this is the other half. Median pricing lands at
+  # 68% of retail, which is proper discount territory -- but a fifth of the
+  # catalogue lands above 85%, profitable and unsellable, because someone
+  # shopping a discount site will not pay near-retail here.
+  #
+  # Lowering the margin bands is the wrong fix: it costs real money on the 80%
+  # that are already keen in order to rescue items whose cost is simply too
+  # close to retail. Holding those back costs nothing.
+  max_share_of_retail: 0.85
+
 # Charm rounding. Rounding may pull a price down by at most `max_markdown`,
 # and never below the margin floor.
 rounding:

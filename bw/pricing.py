@@ -64,7 +64,7 @@ class PriceQuote:
         return (self.unit_profit / self.price).quantize(Decimal("0.0001"))
 
     # Flags that mean "do not list this", as opposed to "worth knowing".
-    BLOCKING_FLAGS = ("below_floor", "above_retail")
+    BLOCKING_FLAGS = ("below_floor", "above_retail", "uncompetitive")
 
     @property
     def sellable(self) -> bool:
@@ -305,7 +305,17 @@ class PricingEngine:
             cap = money(msrp_value * Decimal(str(market_cfg.get("msrp_cap", 1))))
             if price > cap and cap >= floor:
                 price, basis = cap, "msrp_cap"
-            elif floor > msrp_value and market_cfg.get("hold_above_msrp", True):
+            # Being under retail is not the same as being worth buying. A
+            # discount store priced at 93% of retail is profitable and unsold:
+            # the shopper came here precisely because it should be cheaper.
+            # Anything we cannot get under this share is held back rather than
+            # published to sit there looking expensive.
+            ceiling_share = market_cfg.get("max_share_of_retail")
+            if ceiling_share and price > msrp_value * Decimal(str(ceiling_share)):
+                flags.append("uncompetitive")
+                flags.append(f"retail_{msrp_value}")
+
+            if floor > msrp_value and market_cfg.get("hold_above_msrp", True):
                 # Our cheapest viable price is above what this thing sells for
                 # in the market. Listing it wins nothing and advertises us as
                 # the expensive option, so it is held back instead.
