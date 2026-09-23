@@ -449,6 +449,96 @@ POLICIES = [
 ]
 
 
+def cmd_restock(args) -> int:
+    """Switch supplier-backed items that are sitting at zero back on.
+
+    Stock and price move together, deliberately. Turning stock on alone would
+    put items live at whatever they were priced at last time, and on this
+    catalogue most of those prices are now below what the supplier charges --
+    so a stock-only update would sell at a loss on contact.
+    """
+    engine = PricingEngine()
+    variants = ShopifyClient.parse_bulk_catalog(Path(args.catalog))
+    live = [v for v in variants if v.status == "ACTIVE"]
+    index = CatalogIndex(live)
+    items = [i for i in get_adapter(args.supplier).fetch() if i.sellable]
+
+    print(f"{len(items)} items from {args.supplier} against {len(live)} live variants")
+    buckets = partition(items, index)
+
+    market = load_market(args.market, refresh=not args.no_refresh)
+    rows, flagged = [], []
+    for result in buckets["existing"]:
+        variant = result.variant
+        if variant.inventory_qty > 0:
+            continue
+        item = result.item
+        price = market.lookup(item.brand, item.title, item.size_ml) if len(market) else None
+        quote = engine.quote(item.supplier, item.cost, price, item.msrp)
+        if not quote.sellable:
+            continue
+
+        row = {
+            "variant_id": variant.variant_id,
+            "inventory_item_id": variant.inventory_item_id,
+            "sku": variant.sku, "product": variant.product_title,
+            "variant": variant.title, "vendor": variant.vendor,
+            "was_price": str(variant.price or ""), "cost": str(item.cost),
+            "new_price": str(quote.price), "qty": str(max(0, item.qty)),
+            "margin": str(quote.margin_pct),
+        }
+        # A price that moves by more than this is more likely a bad match than
+        # a bargain. Those get looked at rather than published.
+        if variant.price and variant.price > 0:
+            ratio = quote.price / variant.price
+            if ratio > Decimal(str(args.max_move)) or ratio < 1 / Decimal(str(args.max_move)):
+                row["ratio"] = f"{float(ratio):.2f}x"
+                flagged.append(row)
+                continue
+        rows.append(row)
+
+    run = stamp()
+    write_csv(OUT_DIR / f"restock-{args.supplier}-{run}.csv", rows)
+    write_csv(OUT_DIR / f"restock-flagged-{args.supplier}-{run}.csv", flagged)
+
+    raised = sum(1 for r in rows if r["was_price"] and Decimal(r["was_price"]) < Decimal(r["new_price"]))
+    print(f"\n  {len(rows)} to switch on")
+    print(f"    {raised} of them are currently priced BELOW what we need -- "
+          f"those prices go up")
+    print(f"  {len(flagged)} held back: price moves more than {args.max_move}x, "
+          f"which usually means a bad match")
+    print(f"  reports in {OUT_DIR}")
+
+    if not rows:
+        return 0
+
+    client = ShopifyClient(dry_run=not args.live)
+    by_product: dict[str, list[dict]] = {}
+    for row in rows:
+        by_product.setdefault(row["variant_id"], []).append(row)
+
+    # Price first: an item must never be purchasable at the old price.
+    updates: dict[str, list[dict]] = {}
+    for row in rows:
+        variant = next(v for v in live if v.variant_id == row["variant_id"])
+        updates.setdefault(variant.product_id, []).append(
+            {"id": row["variant_id"], "price": row["new_price"]})
+    for product_id, batch in updates.items():
+        for chunk in chunked(batch, 50):
+            client.update_prices(product_id, chunk)
+
+    quantities = [(r["inventory_item_id"], int(r["qty"])) for r in rows
+                  if r["inventory_item_id"]]
+    for chunk in chunked(quantities, 100):
+        client.set_inventory(chunk, reason="restock")
+
+    if not args.live:
+        print("\n  DRY RUN -- nothing sent. Re-run with --live once the CSV looks right.")
+    else:
+        print(f"\n  updated {len(rows)} variants: price first, then stock.")
+    return 0
+
+
 def cmd_shipping_threshold(args) -> int:
     """Where to set free shipping, tested against real orders."""
     engine = PricingEngine()
@@ -740,6 +830,17 @@ def build_parser() -> argparse.ArgumentParser:
     explain.add_argument("--market", type=Decimal, default=None)
     explain.add_argument("--msrp", type=Decimal, default=None)
     explain.set_defaults(func=cmd_explain_price)
+
+    restock = subparsers.add_parser(
+        "restock", help="switch zero-stock supplier items back on, price and stock together")
+    restock.add_argument("supplier", nargs="?", default="ace")
+    restock.add_argument("--catalog", default="data/cache/bulk_catalog.jsonl")
+    restock.add_argument("--market", default="")
+    restock.add_argument("--no-refresh", action="store_true")
+    restock.add_argument("--max-move", type=float, default=2.0,
+                         help="hold back anything whose price moves by more than this")
+    restock.add_argument("--live", action="store_true")
+    restock.set_defaults(func=cmd_restock)
 
     threshold = subparsers.add_parser(
         "shipping-threshold", help="where to set free shipping, tested on real orders")

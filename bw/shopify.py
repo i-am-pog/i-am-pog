@@ -158,6 +158,112 @@ class ShopifyClient:
                 count += 1
         return count
 
+    # A bulk export is one request instead of a hundred, and the result lands
+    # as a file rather than in memory. It is the only sane way to read a
+    # catalogue this size.
+    BULK_START = """
+    mutation Bulk($query: String!) {
+      bulkOperationRunQuery(query: $query) {
+        bulkOperation { id status }
+        userErrors { field message }
+      }
+    }
+    """
+
+    BULK_POLL = """
+    { currentBulkOperation { status objectCount fileSize url errorCode } }
+    """
+
+    BULK_CATALOG_QUERY = """
+    {
+      products {
+        edges {
+          node {
+            id title vendor status handle
+            featuredMedia { preview { image { url } } }
+            variants {
+              edges {
+                node {
+                  id sku barcode title price inventoryQuantity
+                  inventoryItem { id }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+
+    def start_bulk_export(self, query: Optional[str] = None) -> str:
+        result = self.execute(self.BULK_START,
+                              {"query": query or self.BULK_CATALOG_QUERY},
+                              is_mutation=True)
+        if result.get("_dry_run"):
+            return ""
+        self._raise_user_errors(result, "bulkOperationRunQuery")
+        return result["bulkOperationRunQuery"]["bulkOperation"]["id"]
+
+    def poll_bulk(self) -> dict:
+        return self.execute(self.BULK_POLL)["currentBulkOperation"] or {}
+
+    @staticmethod
+    def parse_bulk_catalog(path: Path) -> list[CatalogVariant]:
+        """Read a bulk export into variants.
+
+        Bulk JSONL interleaves parents and children: a line with __parentId is
+        a variant belonging to the product line that came before it.
+        """
+        products: dict[str, dict] = {}
+        pending: list[dict] = []
+        with Path(path).open() as handle:
+            for line in handle:
+                if not line.strip():
+                    continue
+                row = json.loads(line)
+                if "__parentId" in row:
+                    pending.append(row)
+                else:
+                    products[row["id"]] = row
+
+        variants = []
+        for row in pending:
+            product = products.get(row["__parentId"])
+            if not product:
+                continue
+            item = row.get("inventoryItem") or {}
+            variants.append(CatalogVariant(
+                variant_id=row["id"],
+                product_id=product["id"],
+                sku=row.get("sku") or "",
+                barcode=row.get("barcode") or "",
+                title=row.get("title") or "",
+                product_title=product.get("title") or "",
+                vendor=product.get("vendor") or "",
+                price=row.get("price"),
+                inventory_item_id=item.get("id", ""),
+                inventory_qty=row.get("inventoryQuantity") or 0,
+                status=product.get("status") or "",
+            ))
+        return variants
+
+    @staticmethod
+    def bulk_product_images(path: Path) -> dict[str, list[str]]:
+        """Product id -> the image URLs already on it."""
+        images: dict[str, list[str]] = {}
+        with Path(path).open() as handle:
+            for line in handle:
+                if not line.strip():
+                    continue
+                row = json.loads(line)
+                if "__parentId" in row:
+                    continue
+                url = (((row.get("featuredMedia") or {}).get("preview") or {})
+                       .get("image") or {}).get("url")
+                if url:
+                    images[row["id"]] = [url]
+        return images
+
     @staticmethod
     def load_catalog(path: Path = CATALOG_CACHE) -> list[CatalogVariant]:
         if not path.exists():
@@ -220,14 +326,16 @@ class ShopifyClient:
 
     def set_inventory(self, quantities: list[tuple[str, int]], reason: str = "correction") -> dict:
         """quantities: (inventory_item_id, on-hand count) pairs."""
-        if not self.location_id:
+        if not self.location_id and not self.dry_run:
             raise ShopifyError("SHOPIFY_LOCATION_ID must be set to write stock levels")
         payload = {
             "name": "available",
             "reason": reason,
             "ignoreCompareQuantity": True,
             "quantities": [
-                {"inventoryItemId": item_id, "locationId": self.location_id, "quantity": qty}
+                {"inventoryItemId": item_id,
+                 "locationId": self.location_id or "gid://shopify/Location/UNSET",
+                 "quantity": qty}
                 for item_id, qty in quantities
             ],
         }

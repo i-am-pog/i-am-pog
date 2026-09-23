@@ -152,3 +152,58 @@ class AceEconomicsTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class BulkExportTests(unittest.TestCase):
+    """Reading a Shopify bulk export, which interleaves products and variants."""
+
+    @classmethod
+    def setUpClass(cls):
+        import json, tempfile
+        cls.path = Path(tempfile.mkdtemp()) / "bulk.jsonl"
+        lines = [
+            {"id": "gid://shopify/Product/1", "title": "Lattafa Asad", "vendor": "Lattafa",
+             "status": "ACTIVE", "handle": "asad",
+             "featuredMedia": {"preview": {"image": {"url": "https://cdn/asad.jpg"}}}},
+            {"id": "gid://shopify/ProductVariant/11", "__parentId": "gid://shopify/Product/1",
+             "sku": "A1", "barcode": "6291108730324", "title": "100ml", "price": "64.99",
+             "inventoryQuantity": 0, "inventoryItem": {"id": "gid://shopify/InventoryItem/111"}},
+            {"id": "gid://shopify/Product/2", "title": "Orphan Product", "vendor": "X",
+             "status": "DRAFT", "handle": "orphan"},
+            {"id": "gid://shopify/ProductVariant/99", "__parentId": "gid://shopify/Product/404",
+             "sku": "GONE", "title": "100ml", "price": "1.00", "inventoryQuantity": 0},
+        ]
+        cls.path.write_text("".join(json.dumps(line) + "\n" for line in lines))
+
+    def test_variants_are_joined_to_their_product(self):
+        from bw.shopify import ShopifyClient
+        variants = ShopifyClient.parse_bulk_catalog(self.path)
+        self.assertEqual(len(variants), 1, "the orphaned variant must be dropped")
+        variant = variants[0]
+        self.assertEqual(variant.product_title, "Lattafa Asad")
+        self.assertEqual(variant.vendor, "Lattafa")
+        self.assertEqual(variant.status, "ACTIVE")
+        self.assertEqual(variant.inventory_item_id, "gid://shopify/InventoryItem/111")
+        self.assertEqual(variant.inventory_qty, 0)
+
+    def test_product_images_are_collected(self):
+        from bw.shopify import ShopifyClient
+        images = ShopifyClient.bulk_product_images(self.path)
+        self.assertEqual(images["gid://shopify/Product/1"], ["https://cdn/asad.jpg"])
+        self.assertNotIn("gid://shopify/Product/2", images)
+
+
+class DryRunTests(unittest.TestCase):
+    def test_a_dry_run_needs_no_credentials(self):
+        # A dry run that demands a location id cannot be used to check a plan
+        # before the store is wired up, which is exactly when it is needed.
+        from bw.shopify import ShopifyClient
+        client = ShopifyClient(store="", token="", location_id="", dry_run=True)
+        client.set_inventory([("gid://shopify/InventoryItem/1", 3)])
+        self.assertEqual(len(client.calls), 1)
+
+    def test_a_live_run_still_demands_one(self):
+        from bw.shopify import ShopifyClient, ShopifyError
+        client = ShopifyClient(store="s", token="t", location_id="", dry_run=False)
+        with self.assertRaises(ShopifyError):
+            client.set_inventory([("gid://shopify/InventoryItem/1", 3)])
