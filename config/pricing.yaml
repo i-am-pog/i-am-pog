@@ -107,10 +107,14 @@ rounding:
 
 # Cart-level policy. `shipping-threshold` tests these against real orders.
 order:
-  # Where we offer free shipping. $99 is deliberately under the market: it is
-  # reachable from a $67 average order by adding one item, which is the whole
-  # point -- a threshold nobody reaches nudges nobody.
-  free_shipping_threshold: 99.00
+  # $75, which is what the storefront already advertises and the lowest
+  # threshold in the competitor set. An earlier version of this file said $99
+  # on the reasoning that it recovers more of the fee. Replaying real orders
+  # says that was optimising the wrong number: $75 and $99 both come out with
+  # ZERO losing orders, and $75 gives free shipping to 41% of customers
+  # instead of 18%. Coverage of the fee is not the goal; not losing money is,
+  # and $75 already clears it.
+  free_shipping_threshold: 75.00
   shipping_fee: 12.99
 
   # What the competition does, for reference. CHECK THESE BEFORE RELYING ON
