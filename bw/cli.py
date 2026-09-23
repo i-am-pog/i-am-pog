@@ -539,6 +539,10 @@ def cmd_restock(args) -> int:
             "was_price": str(variant.price or ""), "cost": str(item.cost),
             "new_price": str(quote.price), "qty": str(max(0, item.qty)),
             "margin": str(quote.margin_pct),
+            "priced_by": quote.basis,
+            "competitor": str(price) if price else "",
+            "retail_ref": str(item.msrp or ""),
+            "compare_at": str(quote.compare_at or ""),
         }
         # A price that moves by more than this is more likely a bad match than
         # a bargain. Those get looked at rather than published.
@@ -574,8 +578,13 @@ def cmd_restock(args) -> int:
     updates: dict[str, list[dict]] = {}
     for row in rows:
         variant = next(v for v in live if v.variant_id == row["variant_id"])
-        updates.setdefault(variant.product_id, []).append(
-            {"id": row["variant_id"], "price": row["new_price"]})
+        update = {"id": row["variant_id"], "price": row["new_price"]}
+        # Without a compare-at the shopper sees a price, not a saving. These
+        # are genuinely below the market reference, so the strike-through is
+        # true rather than invented.
+        if row.get("compare_at"):
+            update["compareAtPrice"] = row["compare_at"]
+        updates.setdefault(variant.product_id, []).append(update)
     for product_id, batch in updates.items():
         for chunk in chunked(batch, 50):
             client.update_prices(product_id, chunk)
@@ -900,6 +909,8 @@ def build_parser() -> argparse.ArgumentParser:
     restock.add_argument("supplier", nargs="?", default="ace")
     restock.add_argument("--catalog", default="data/cache/bulk_catalog.jsonl")
     restock.add_argument("--market", default="")
+    restock.add_argument("--market-file", default=None,
+                         help="comma separated products.json files saved from a browser")
     restock.add_argument("--no-refresh", action="store_true")
     restock.add_argument("--max-move", type=float, default=2.0,
                          help="hold back anything whose price moves by more than this")
