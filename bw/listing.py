@@ -114,7 +114,7 @@ def build_product_input(
     first = priced[0]
     brand = first.brand
     name = clean_product_name(first.title, brand)
-    title = listing_title(brand, name, first.gender, first.concentration)
+    title = listing_title(brand, name, first.gender, first.concentration, first.tester)
 
     files, variants = [], []
     seen_images: set[str] = set()

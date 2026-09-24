@@ -24,6 +24,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Optional
 
+from .export import COLUMNS as IMPORT_COLUMNS, plan_rows
 from .images import ImageLibrary, attach_images
 from .listing import build_product_input, group_items, missing_images
 from .market import ShopifyStoreMarket
@@ -42,12 +43,12 @@ def stamp() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
 
 
-def write_csv(path: Path, rows: list[dict]) -> None:
+def write_csv(path: Path, rows: list[dict], columns: Optional[list[str]] = None) -> None:
     if not rows:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(handle, fieldnames=columns or list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
 
@@ -295,6 +296,35 @@ def cmd_plan(args) -> int:
     print(f"  profit if one of each sold: ${total}")
     print(f"\nplan written to {plan_path}")
     print(f"reports in {OUT_DIR}")
+    return 0
+
+
+def cmd_export_csv(args) -> int:
+    """Turn a plan into a CSV for Shopify's own product importer.
+
+    The API route wants an admin token this machine has no business holding,
+    and the importer is the path this store already uses. Everything lands as
+    a draft either way.
+    """
+    path = Path(args.plan) if args.plan else max(
+        OUT_DIR.glob("plan-*.json"), default=None, key=lambda p: p.stat().st_mtime)
+    if not path:
+        print("no plan found -- run `plan` first")
+        return 1
+    products = json.loads(Path(path).read_text())["products"]
+
+    rows = plan_rows(products, with_images_only=args.with_images_only,
+                     limit=args.limit or None)
+    handles = {r["Handle"] for r in rows}
+    out = OUT_DIR / f"IMPORT-{Path(path).stem}{'-with-photos' if args.with_images_only else ''}.csv"
+    write_csv(out, rows, columns=IMPORT_COLUMNS)
+
+    skipped = len(products) - len(handles)
+    print(f"{len(handles)} products / {len(rows)} rows -> {out}")
+    if skipped:
+        print(f"  {skipped} left out" +
+              (" (no photo)" if args.with_images_only else " (limit)"))
+    print("  every product is a DRAFT; nothing shows on the storefront until published")
     return 0
 
 
@@ -944,6 +974,14 @@ def build_parser() -> argparse.ArgumentParser:
     plan.add_argument("--in-stock-only", action="store_true", default=True)
     plan.add_argument("--include-out-of-stock", dest="in_stock_only", action="store_false")
     plan.set_defaults(func=cmd_plan)
+
+    export_csv = subparsers.add_parser(
+        "export-csv", help="turn a plan into a CSV for Shopify's product importer")
+    export_csv.add_argument("--plan", default="", help="plan file (default: the newest)")
+    export_csv.add_argument("--with-images-only", action="store_true",
+                            help="leave out products that have no photo")
+    export_csv.add_argument("--limit", type=int, default=0, help="only the first N products")
+    export_csv.set_defaults(func=cmd_export_csv)
 
     apply_cmd = subparsers.add_parser("apply", help="create the planned products as drafts")
     supplier_arg(apply_cmd, default_market=False)

@@ -276,14 +276,25 @@ def title_case(text: str) -> str:
     return " ".join(words)
 
 
-def listing_title(brand: str, product_name: str, gender: str = "", concentration: str = "") -> str:
-    """The customer-facing product title (sizes live on the variants)."""
+def listing_title(brand: str, product_name: str, gender: str = "",
+                  concentration: str = "", tester: bool = False) -> str:
+    """The customer-facing product title (sizes live on the variants).
+
+    Testers say so. Two reasons, and both matter: a tester and the boxed
+    bottle are separate products with the same brand, name, concentration and
+    gender, so without this they render the same title -- and therefore the
+    same handle, which Shopify's importer merges, silently collapsing one into
+    the other. And a customer paying tester money should be able to see that
+    from the title, not discover it when an unboxed bottle arrives.
+    """
     parts = [title_case(brand.strip()), title_case(product_name.strip())]
     title = " ".join(p for p in parts if p).strip()
     if concentration and concentration.lower() not in title.lower():
         title = f"{title} {concentration}"
     if gender in ("Man", "Woman") and f"for {gender}".lower() not in title.lower():
         title = f"{title} for {gender}"
+    if tester and "tester" not in title.lower():
+        title = f"{title} (Tester)"
     return re.sub(r"\s+", " ", title).strip()
 
 
