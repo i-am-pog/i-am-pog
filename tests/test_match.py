@@ -1,4 +1,5 @@
 import unittest
+from decimal import Decimal
 
 from bw.match import CatalogIndex, partition
 from bw.models import CatalogVariant, SupplierItem
@@ -110,3 +111,36 @@ class MatchingTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class TestersDoNotMatchRetailListings(unittest.TestCase):
+    """A tester is cheaper and unboxed -- it must not price a retail listing."""
+
+    def setUp(self):
+        self.retail = CatalogVariant(
+            variant_id="gid://shopify/ProductVariant/1",
+            product_id="gid://shopify/Product/1",
+            inventory_item_id="gid://shopify/InventoryItem/1",
+            product_title="Escada Fairy Love For Women",
+            title="Escada / 100 ML / Women",
+            sku="FAIR100TS-W", vendor="Escada", barcode="",
+            price=Decimal("105.00"), inventory_qty=0, status="ACTIVE",
+        )
+        self.index = CatalogIndex([self.retail])
+
+    def item(self, title, tester):
+        return SupplierItem(
+            supplier="ace", supplier_sku="BW01789253", title=title,
+            brand="Escada", cost=Decimal("23"), size_ml=100, gender="Women",
+            tester=tester, qty=3,
+        )
+
+    def test_tester_does_not_auto_match_a_boxed_listing(self):
+        result = self.index.match(self.item("Tester - Escada Fairy Love For Women", True))
+        self.assertNotEqual(result.method, "key")
+        self.assertTrue(result.needs_review)
+
+    def test_the_boxed_bottle_still_matches(self):
+        result = self.index.match(self.item("Escada Fairy Love For Women", False))
+        self.assertEqual(result.variant, self.retail)
+        self.assertFalse(result.needs_review)

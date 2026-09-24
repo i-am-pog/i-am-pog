@@ -321,16 +321,26 @@ class PricingEngine:
                 flags.append("uncompetitive")
                 flags.append(f"retail_{msrp_value}")
 
-            if floor > msrp_value and market_cfg.get("hold_above_msrp", True):
-                # Our cheapest viable price is above what this thing sells for
-                # in the market. Listing it wins nothing and advertises us as
-                # the expensive option, so it is held back instead.
-                flags.append("above_retail")
-                flags.append(f"retail_{msrp_value}")
-
         # Never let rounding carry us up to or past the competitor.
         ceiling = market if market and market > floor else None
         price = self._round_charm(price, floor, ceiling)
+
+        if msrp_value and price > msrp_value and market_cfg.get("hold_above_msrp", True):
+            # Priced above what this thing sells for in the market. Listing it
+            # wins nothing and advertises us as the expensive option, so it is
+            # held back instead.
+            #
+            # Checked on the final price rather than on the floor, because two
+            # routes get past a floor test. The cap above is skipped whenever
+            # it lands below the floor, and the competitiveness exemption lets
+            # a market price through on the grounds that we are undercutting
+            # someone -- but undercutting a competitor who is themselves above
+            # retail still leaves us above retail. Carolina Herrera Bad Boy
+            # went out at $236.99 against a $209 retail reference that way:
+            # floor $205.94, cap $198.55 skipped for being under the floor,
+            # and a $249.95 competitor waving the rest through.
+            flags.append("above_retail")
+            flags.append(f"retail_{msrp_value}")
 
         # Rounding changes the price, which can change the fee share. Re-check
         # so the reported margin is the real one.

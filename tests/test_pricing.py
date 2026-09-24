@@ -362,3 +362,33 @@ class MarketMatchStrictnessTests(unittest.TestCase):
         # "Odyssey Mandarin" scores respectably against "Ombre D'Or" on
         # characters; it is plainly a different bottle.
         self.assertIsNone(self.index().lookup("Armaf", "Odyssey Mandarin", 100))
+
+
+class NeverPricedAboveRetail(unittest.TestCase):
+    """A competitor above retail must not drag our price above retail with it."""
+
+    def setUp(self):
+        self.engine = fixed_engine()
+
+    def test_competitor_above_retail_does_not_licence_an_above_retail_price(self):
+        # Carolina Herrera Bad Boy, live: cost $142, retail $209, a competitor
+        # at $249.95. The retail cap ($198.55) lands below the floor ($205.94)
+        # and is skipped, and undercutting the competitor used to wave the rest
+        # through -- it went out at $236.99, above its own retail reference.
+        quote = self.engine.quote("ace", Decimal("142"), Decimal("249.95"), Decimal("209"))
+        self.assertIn("above_retail", quote.flags)
+        self.assertFalse(quote.sellable)
+
+    def test_beating_a_competitor_still_allowed_below_retail(self):
+        # The exemption this guard narrows is a real one: cheap cost, a
+        # competitor far above us, a price under retail. That still sells.
+        quote = self.engine.quote("ace", Decimal("55"), Decimal("166.95"), Decimal("130"))
+        self.assertLess(quote.price, Decimal("130"))
+        self.assertNotIn("above_retail", quote.flags)
+        self.assertTrue(quote.sellable)
+
+    def test_floor_above_retail_is_still_held(self):
+        # The case the old floor-based check covered, kept working.
+        quote = self.engine.quote("ace", Decimal("120"), None, Decimal("100"))
+        self.assertIn("above_retail", quote.flags)
+        self.assertFalse(quote.sellable)

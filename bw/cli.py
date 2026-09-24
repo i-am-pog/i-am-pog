@@ -547,7 +547,7 @@ def cmd_restock(args) -> int:
 
     market = load_market(args.market, refresh=not args.no_refresh,
                          path=args.market_file)
-    rows, flagged = [], []
+    candidates = []
     for result in buckets["existing"]:
         variant = result.variant
         if variant.inventory_qty > 0:
@@ -571,20 +571,29 @@ def cmd_restock(args) -> int:
             "retail_ref": str(item.msrp or ""),
             "compare_at": str(quote.compare_at or ""),
         }
-        # A price that moves by more than this is more likely a bad match than
-        # a bargain. Those get looked at rather than published.
-        if variant.price and variant.price > 0:
-            ratio = quote.price / variant.price
+        candidates.append(row)
+
+    # Collapse duplicate listings BEFORE deciding what to hold back, so each
+    # variant is judged once, on its cheapest cost. Splitting first would sort
+    # the same bottle into both lists at two different costs -- restocked under
+    # one row and sitting on the review list under another.
+    candidates, duplicates = keep_cheapest_per_variant(candidates)
+    if duplicates:
+        print(f"  {duplicates} rows were a second listing of an item already covered; "
+              f"kept the cheaper cost")
+
+    # A price that moves by more than this is more likely a bad match than a
+    # bargain. Those get looked at rather than published.
+    rows, flagged = [], []
+    for row in candidates:
+        was = Decimal(row["was_price"]) if row["was_price"] else None
+        if was and was > 0:
+            ratio = Decimal(row["new_price"]) / was
             if ratio > Decimal(str(args.max_move)) or ratio < 1 / Decimal(str(args.max_move)):
                 row["ratio"] = f"{float(ratio):.2f}x"
                 flagged.append(row)
                 continue
         rows.append(row)
-
-    rows, duplicates = keep_cheapest_per_variant(rows)
-    if duplicates:
-        print(f"  {duplicates} rows were a second listing of an item already covered; "
-              f"kept the cheaper cost")
 
     run = stamp()
     write_csv(OUT_DIR / f"restock-{args.supplier}-{run}.csv", rows)

@@ -31,6 +31,11 @@ AUTO_MATCH = 93.0
 REVIEW_FLOOR = 86.0
 
 
+def variant_is_tester(variant: CatalogVariant) -> bool:
+    """Whether one of our own listings is for a tester rather than a boxed bottle."""
+    return "tester" in squash(f"{variant.product_title} {variant.title}")
+
+
 def variant_fingerprint(variant: CatalogVariant) -> tuple[str, Optional[int]]:
     """Reduce a Shopify variant to the same key shape we build for feed items."""
     size_ml, _ = parse_size(variant.title)
@@ -41,8 +46,8 @@ def variant_fingerprint(variant: CatalogVariant) -> tuple[str, Optional[int]]:
     name = clean_product_name(variant.product_title, brand)
     concentration = parse_concentration(variant.product_title, variant.title)
     gender = parse_gender(variant.product_title, variant.title)
-    tester = "tester" in squash(f"{variant.product_title} {variant.title}")
-    return variant_key(brand, name, size_ml, concentration, gender, tester), size_ml
+    return variant_key(brand, name, size_ml, concentration, gender,
+                       variant_is_tester(variant)), size_ml
 
 
 def item_fingerprint(item: SupplierItem) -> str:
@@ -151,9 +156,23 @@ class CatalogIndex:
         _, candidate_size = variant_fingerprint(candidate)
         same_size = candidate_size == item.size_ml
 
+        # A tester is not the boxed retail bottle. It costs the supplier less,
+        # comes without the presentation box, and is not what someone buying
+        # from a retail listing expects to receive. The exact-key path keeps
+        # the two apart because the fingerprint carries packaging; the fuzzy
+        # path compares product text only, where "Tester - Escada Fairy Love"
+        # and "Escada Fairy Love" read as the same bottle.
+        #
+        # Left unchecked this is not a cosmetic mismatch, it loses money:
+        # the cheaper tester row wins on cost and sets the price, then the
+        # boxed bottle is what gets bought to fill the order. Calvin Klein
+        # Euphoria went live at $70.95 priced off a $38.95 tester while the
+        # boxed bottle costs $86 -- $19.61 out of pocket per sale.
+        same_packaging = bool(item.tester) == variant_is_tester(candidate)
+
         # A strong text match on a different size is a different product, not a
         # match -- 50ml and 100ml of the same scent are separate variants.
-        if score >= AUTO_MATCH and same_size:
+        if score >= AUTO_MATCH and same_size and same_packaging:
             return MatchResult(item, candidate, "key", score)
         return MatchResult(item, candidate, "fuzzy", score)
 
