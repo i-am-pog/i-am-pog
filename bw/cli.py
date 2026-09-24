@@ -179,9 +179,17 @@ def cmd_plan(args) -> int:
     else:
         items = feeds[suppliers[0]]
 
-    catalog = ShopifyClient.load_catalog()
-    index = CatalogIndex(catalog)
-    print(f"  {len(index)} variants already in the store")
+    # Two snapshot formats exist: the flat one pull-catalog writes, and the raw
+    # bulk export. restock already takes --catalog for the bulk file; plan reads
+    # the same catalogue, so it accepts the same flag rather than making the
+    # caller keep two copies of the store in sync.
+    catalog_path = getattr(args, "catalog", None)
+    if catalog_path:
+        catalog = ShopifyClient.parse_bulk_catalog(Path(catalog_path))
+    else:
+        catalog = ShopifyClient.load_catalog()
+    index = CatalogIndex([v for v in catalog if v.status == "ACTIVE"])
+    print(f"  {len(index)} live variants already in the store")
 
     buckets = partition(items, index)
     print(f"  new: {len(buckets['new'])}   already carried: {len(buckets['existing'])}   "
@@ -907,6 +915,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     plan = subparsers.add_parser("plan", help="decide what to add and at what price")
     supplier_arg(plan)
+    plan.add_argument("--catalog", default=None,
+                      help="a bulk catalog export, instead of the pull-catalog snapshot")
     plan.add_argument("--location", default="", help="Shopify location GID")
     plan.add_argument("--in-stock-only", action="store_true", default=True)
     plan.add_argument("--include-out-of-stock", dest="in_stock_only", action="store_false")
