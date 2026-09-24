@@ -96,6 +96,11 @@ class ImportCsvShape(unittest.TestCase):
         handles = {r["Handle"] for r in plan_rows(products, limit=2)}
         self.assertEqual(len(handles), 2)
 
+    def test_the_header_carries_all_three_option_columns(self):
+        # Shopify rejects the whole file if Option2/Option3 Value are absent.
+        for column in ("Option1 Value", "Option2 Value", "Option3 Value"):
+            self.assertIn(column, COLUMNS)
+
     def test_two_products_under_one_handle_are_refused(self):
         # Shopify merges by handle, so this would silently collapse rather
         # than fail the import.

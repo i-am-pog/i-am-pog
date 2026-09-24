@@ -27,7 +27,11 @@ from typing import Any, Iterable, Optional
 # order-insensitive and name-sensitive, so these spellings matter.
 COLUMNS = [
     "Handle", "Title", "Body (HTML)", "Vendor", "Type", "Tags", "Published",
+    # Shopify validates the header row against its own template and rejects a
+    # file missing Option2/Option3 Value, even when nothing has a second
+    # option. They stay blank on every row.
     "Option1 Name", "Option1 Value",
+    "Option2 Name", "Option2 Value", "Option3 Name", "Option3 Value",
     "Variant SKU", "Variant Grams", "Variant Inventory Tracker",
     "Variant Inventory Qty", "Variant Inventory Policy",
     "Variant Fulfillment Service", "Variant Price", "Variant Compare At Price",
