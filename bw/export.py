@@ -49,7 +49,7 @@ def _weight_grams(variant: dict) -> str:
     return str(int(round(float(value))))
 
 
-def _image_urls(product: dict) -> list[str]:
+def image_urls(product: dict) -> list[str]:
     """Every distinct image on the product, first one first."""
     urls: list[str] = []
     for entry in product.get("files") or []:
@@ -68,7 +68,7 @@ def product_rows(product: dict) -> list[dict[str, Any]]:
     handle = product["handle"]
     options = product.get("productOptions") or [{}]
     option_name = (options[0].get("name") or "Title")
-    images = _image_urls(product)
+    images = image_urls(product)
     tags = product.get("tags") or []
 
     rows: list[dict[str, Any]] = []
@@ -137,7 +137,7 @@ def plan_rows(products: Iterable[dict], with_images_only: bool = False,
     seen: dict[str, str] = {}
     written = 0
     for product in products:
-        if with_images_only and not _image_urls(product):
+        if with_images_only and not image_urls(product):
             continue
         handle, title = product["handle"], product.get("title", "")
         if handle in seen:

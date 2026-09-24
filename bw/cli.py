@@ -24,7 +24,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Optional
 
-from .export import COLUMNS as IMPORT_COLUMNS, plan_rows
+from .export import COLUMNS as IMPORT_COLUMNS, image_urls, plan_rows
 from .images import ImageLibrary, attach_images
 from .listing import build_product_input, group_items, missing_images
 from .market import ShopifyStoreMarket
@@ -316,14 +316,24 @@ def cmd_export_csv(args) -> int:
     rows = plan_rows(products, with_images_only=args.with_images_only,
                      limit=args.limit or None)
     handles = {r["Handle"] for r in rows}
-    out = OUT_DIR / f"IMPORT-{Path(path).stem}{'-with-photos' if args.with_images_only else ''}.csv"
+
+    # A limited run gets its own filename. Writing a 25-product sample over the
+    # full export is how you hand someone a "complete" file with 2,551 products
+    # missing from it.
+    suffix = "-with-photos" if args.with_images_only else ""
+    if args.limit:
+        suffix += f"-first{args.limit}"
+    out = OUT_DIR / f"IMPORT-{Path(path).stem}{suffix}.csv"
     write_csv(out, rows, columns=IMPORT_COLUMNS)
 
-    skipped = len(products) - len(handles)
     print(f"{len(handles)} products / {len(rows)} rows -> {out}")
-    if skipped:
-        print(f"  {skipped} left out" +
-              (" (no photo)" if args.with_images_only else " (limit)"))
+    no_photo = (sum(1 for p in products if not image_urls(p))
+                if args.with_images_only else 0)
+    if no_photo:
+        print(f"  {no_photo} left out (no photo)")
+    held = len(products) - no_photo - len(handles)
+    if held:
+        print(f"  {held} left out (--limit {args.limit})")
     print("  every product is a DRAFT; nothing shows on the storefront until published")
     return 0
 
