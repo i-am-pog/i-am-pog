@@ -234,7 +234,7 @@ def clean_product_name(title: str, brand: str = "") -> str:
     text = re.sub(r"\b(man|woman|men|women|unisex|ladies)\s*$", " ", text, flags=re.I)
     text = re.sub(r"\b[MWU]\b(?!\.)", " ", text)      # bare gender marker
     if brand:
-        text = re.sub(rf"^\s*{re.escape(brand)}\b", " ", text, flags=re.I)
+        text = _strip_leading_brand(text, brand)
         text = _strip_by_brand(text, brand)
     text = re.sub(r"[-–—,:;|]+\s*$", " ", text)
     text = re.sub(r"^\s*[-–—,:;|]+", " ", text)
@@ -247,6 +247,39 @@ ACRONYMS = {
     "EDT", "EDP", "EDC", "VIP", "XS", "NYC", "LA", "UK", "US", "CK", "DKNY",
     "YSL", "JPG", "BS", "PC", "ML", "OZ", "II", "III", "IV", "XX", "XXL",
 }
+
+
+def _brand_key(text: str) -> str:
+    """Letters and digits only, with a spelled-out "and" dropped.
+
+    So "Abercrombie & Fitch", "Abercrombie Fitch" and "Abercrombie and Fitch"
+    all come out the same.
+    """
+    words = [w for w in re.split(r"\W+", text.lower()) if w and w != "and"]
+    return "".join(words)
+
+
+def _strip_leading_brand(text: str, brand: str, max_words: int = 5) -> str:
+    """Drop the brand from the front of a title, however the feed punctuates it.
+
+    Matching the brand literally is not enough: Ace writes "Abercrombie Fitch
+    First Instinct" where we record the brand as "Abercrombie & Fitch", so the
+    strip missed and the listing went out as "Abercrombie & Fitch Abercrombie
+    Fitch First Instinct EDT for Man".
+
+    Never strips the whole title -- a product needs a name left over.
+    """
+    target = _brand_key(brand)
+    if not target:
+        return text
+    words = text.split()
+    for count in range(1, min(len(words) - 1, max_words) + 1):
+        seen = _brand_key(" ".join(words[:count]))
+        if seen == target:
+            return " ".join(words[count:])
+        if not target.startswith(seen):
+            break
+    return text
 
 
 def _strip_by_brand(text: str, brand: str) -> str:
