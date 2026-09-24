@@ -24,6 +24,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Optional
 
+from .images import ImageLibrary, attach_images
 from .listing import build_product_input, group_items, missing_images
 from .market import ShopifyStoreMarket
 from .match import CatalogIndex, partition
@@ -217,7 +218,27 @@ def cmd_plan(args) -> int:
         else:
             unsellable.append((item, quote))
 
-    groups = group_items([i for i in new_items if i.supplier_sku in quotes])
+    listable = [i for i in new_items if i.supplier_sku in quotes]
+    if getattr(args, "images", None):
+        library = ImageLibrary()
+        for name in [n.strip() for n in args.images.split(",") if n.strip()]:
+            try:
+                source = [i for i in get_adapter(name).fetch() if i.image_urls]
+            except Exception as error:          # a missing file should not lose the plan
+                print(f"  ! no images from {name} ({error})")
+                continue
+            library.add_supplier_items(source, name)
+            print(f"  {len(source)} images offered by {name}")
+        # Anything already on our own products is a photo too, and it is one we
+        # know renders on our theme.
+        if getattr(args, "catalog", None):
+            existing = ShopifyClient.bulk_product_images(Path(args.catalog))
+            library.add_catalog(catalog, existing)
+        matched, still_missing = attach_images(listable, library)
+        print(f"  matched a photo to {len(matched)} of {len(listable)} items"
+              f" ({len(still_missing)} still without)")
+
+    groups = group_items(listable)
     location = args.location or ShopifyClient().location_id
 
     products, taken_skus = [], set()
@@ -917,6 +938,8 @@ def build_parser() -> argparse.ArgumentParser:
     supplier_arg(plan)
     plan.add_argument("--catalog", default=None,
                       help="a bulk catalog export, instead of the pull-catalog snapshot")
+    plan.add_argument("--images", default=None,
+                      help="comma separated suppliers to take product photos from")
     plan.add_argument("--location", default="", help="Shopify location GID")
     plan.add_argument("--in-stock-only", action="store_true", default=True)
     plan.add_argument("--include-out-of-stock", dest="in_stock_only", action="store_false")

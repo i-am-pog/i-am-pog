@@ -63,6 +63,10 @@ suppliers:
   ace_storefront:
     kind: shopify_store
     domain: acegiftsplus.ca
+    # Their Cloudflare refuses this machine on every path, so the pages are
+    # saved from a browser instead (data/ace_storefront/URLS.txt lists them).
+    # Drop `files` to go back to fetching if that ever stops being true.
+    files: data/ace_storefront/page-*.json
     page_size: 250
     delay_seconds: 0.5
     auth:

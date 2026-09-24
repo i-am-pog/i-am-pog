@@ -16,10 +16,44 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Iterable, Optional
 
+import re
+
 from rapidfuzz import fuzz, process
 
 from .models import CatalogVariant, SupplierItem
 from .normalize import clean_product_name, normalize_barcode, squash, variant_key
+
+
+# A storefront with nothing to show still puts a file on the page: "image
+# coming soon" artwork, the same handful of URLs repeated across hundreds of
+# products. Taking one is worse than taking none -- no photo reads as a listing
+# still being built, while a coming-soon card reads as a shop that does not
+# have the thing.
+PLACEHOLDER = re.compile(
+    r"coming.?soon|comesoon|no.?image|image.?unavailable|placeholder"
+    r"|default.?(image|product)|nophoto|not.?available",
+    re.I,
+)
+
+
+def is_placeholder(url: str) -> bool:
+    """Whether a URL is stock 'no photo yet' artwork rather than the product."""
+    return bool(PLACEHOLDER.search(url.rsplit("/", 1)[-1]))
+
+
+# Words that do not tell two bottles apart: the concentration, the audience,
+# and anything too short to carry meaning.
+_NOISE = {
+    "edp", "edt", "edc", "parfum", "perfume", "cologne", "spray", "eau", "de",
+    "pour", "for", "the", "and", "man", "men", "woman", "women", "unisex",
+    "homme", "femme", "ladies", "his", "her", "him",
+}
+
+
+def _distinctive(name: str) -> frozenset:
+    """The words that actually identify a bottle within its brand."""
+    return frozenset(w for w in name.replace("|", " ").split()
+                     if len(w) > 2 and w not in _NOISE)
 
 
 def image_key(brand: str, title: str, size_ml: Optional[int]) -> str:
@@ -50,7 +84,7 @@ class ImageLibrary:
 
     def add(self, brand: str, title: str, size_ml: Optional[int],
             urls: Iterable[str], source: str, barcode: Optional[str] = None) -> None:
-        urls = [u for u in urls if u]
+        urls = [u for u in urls if u and not is_placeholder(u)]
         if not urls:
             return
         code = normalize_barcode(barcode)
@@ -102,13 +136,21 @@ class ImageLibrary:
 
         # Within the same brand only -- across brands a fuzzy name match would
         # put the wrong bottle on the page, which is worse than no photo.
+        #
+        # Inside a brand the danger is the flanker: "Jean Lowe Maitre" and
+        # "Jean Lowe Fraiche" share every word but the one that identifies the
+        # bottle, and score high enough to pass on text alone. So a fuzzy hit
+        # also has to use the same distinctive words -- same set, no extras on
+        # either side -- which is exactly what separates one flanker from its
+        # siblings.
         candidates = self._by_brand.get(squash(item.brand)) or []
         if candidates:
-            best = process.extractOne(blind, candidates, scorer=fuzz.WRatio,
-                                      score_cutoff=min_score)
-            if best:
-                urls, source = self._names[best[0]]
-                return ImageMatch(item, urls, source, best[1])
+            wanted = _distinctive(blind)
+            for name, score, _ in process.extract(blind, candidates, scorer=fuzz.WRatio,
+                                                  score_cutoff=min_score, limit=10):
+                if _distinctive(name) == wanted:
+                    urls, source = self._names[name]
+                    return ImageMatch(item, urls, source, score)
 
         return ImageMatch(item, [], "", 0.0)
 

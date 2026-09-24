@@ -144,3 +144,72 @@ class TestersDoNotMatchRetailListings(unittest.TestCase):
         result = self.index.match(self.item("Escada Fairy Love For Women", False))
         self.assertEqual(result.variant, self.retail)
         self.assertFalse(result.needs_review)
+
+
+class PlaceholderImagesAreNotPhotos(unittest.TestCase):
+    """"Image coming soon" artwork must never reach a listing."""
+
+    def item(self, title="Afnan Zimaya Hayam", brand="Afnan"):
+        return SupplierItem(supplier="ace", supplier_sku="X1", title=title,
+                            brand=brand, cost=Decimal("20"), size_ml=100, qty=3)
+
+    def test_coming_soon_art_is_rejected(self):
+        from bw.images import ImageLibrary
+        lib = ImageLibrary()
+        lib.add("Afnan", "Afnan Zimaya Hayam", 100,
+                ["https://cdn.shopify.com/s/files/1/x/image_coming_soon_29c2.png"], "ace")
+        self.assertFalse(lib.find(self.item()).found)
+
+    def test_a_real_photo_is_kept(self):
+        from bw.images import ImageLibrary
+        lib = ImageLibrary()
+        lib.add("Afnan", "Afnan Zimaya Hayam", 100,
+                ["https://cdn.shopify.com/s/files/1/x/afnanzimayahayam_2000w01.jpg"], "ace")
+        self.assertTrue(lib.find(self.item()).found)
+
+    def test_placeholder_dropped_but_a_real_second_image_survives(self):
+        from bw.images import ImageLibrary
+        lib = ImageLibrary()
+        lib.add("Afnan", "Afnan Zimaya Hayam", 100, [
+            "https://cdn.shopify.com/s/files/1/x/comesoon.png",
+            "https://cdn.shopify.com/s/files/1/x/afnanzimayahayam.jpg",
+        ], "ace")
+        match = lib.find(self.item())
+        self.assertTrue(match.found)
+        self.assertEqual(len(match.urls), 1)
+        self.assertIn("afnanzimayahayam", match.urls[0])
+
+    def test_naming_a_product_soon_does_not_trip_it(self):
+        from bw.images import ImageLibrary
+        lib = ImageLibrary()
+        lib.add("Afnan", "Afnan Zimaya Hayam", 100,
+                ["https://cdn.shopify.com/s/files/1/x/soonest_musk_bottle.jpg"], "ace")
+        self.assertTrue(lib.find(self.item()).found)
+
+
+class FlankersDoNotBorrowEachOthersPhotos(unittest.TestCase):
+    """Within one brand, the word that names the bottle has to match."""
+
+    def setUp(self):
+        from bw.images import ImageLibrary
+        self.lib = ImageLibrary()
+        self.lib.add("Lattafa", "Lattafa Alhambra Jean Lowe Fraiche", 100,
+                     ["https://cdn.example/lattafajeanlowefraiche.jpg"], "ace")
+
+    def item(self, title):
+        return SupplierItem(supplier="ace", supplier_sku="X", title=title,
+                            brand="Lattafa", cost=Decimal("20"), size_ml=100, qty=3)
+
+    def test_a_sibling_flanker_gets_no_photo(self):
+        # Maitre and Fraiche are different fragrances; sharing a photo puts the
+        # wrong bottle on the page.
+        self.assertFalse(self.lib.find(self.item("Lattafa Alhambra Jean Lowe Maitre")).found)
+
+    def test_the_right_one_still_matches(self):
+        self.assertTrue(self.lib.find(self.item("Lattafa Alhambra Jean Lowe Fraiche")).found)
+
+    def test_concentration_and_audience_words_are_ignored(self):
+        # "EDP for Man" carries no identifying information, so its presence or
+        # absence must not block a match.
+        m = self.lib.find(self.item("Lattafa Alhambra Jean Lowe Fraiche EDP for Man"))
+        self.assertTrue(m.found)

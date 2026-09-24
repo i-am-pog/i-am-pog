@@ -142,7 +142,38 @@ class ShopifyStoreAdapter:
             return f"/collections/{self.collection}/products.json"
         return "/products.json"
 
+    def load_products(self, patterns) -> list[dict]:
+        """Read products.json payloads saved from a browser.
+
+        Some storefronts sit behind bot protection that refuses this machine
+        regardless of headers, so the pages get saved by hand instead. The
+        payload is the same either way; only where it came from differs.
+        """
+        if isinstance(patterns, str):
+            patterns = [patterns]
+        products, seen = [], set()
+        for pattern in patterns:
+            paths = sorted(Path().glob(pattern)) if any(c in pattern for c in "*?[") \
+                else [Path(pattern)]
+            if not paths:
+                raise FileNotFoundError(f"supplier '{self.name}': nothing matches {pattern!r}")
+            for path in paths:
+                payload = json.loads(Path(path).read_text())
+                batch = payload.get("products", payload) if isinstance(payload, dict) else payload
+                for product in batch:
+                    # Pages overlap when saved by hand; the id settles it.
+                    pid = product.get("id")
+                    if pid is not None and pid in seen:
+                        continue
+                    seen.add(pid)
+                    products.append(product)
+        return products
+
     def fetch_products(self) -> list[dict]:
+        saved = self.config.get("files")
+        if saved:
+            return self.load_products(saved)
+
         if not self.domain:
             raise ValueError(f"supplier '{self.name}' needs a `domain`")
 
