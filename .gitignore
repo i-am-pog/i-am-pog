@@ -11,3 +11,4 @@ data/*.pdf
 data/.*session*
 data/*.xlsx
 tests/fixtures/*.xlsx
+data/export/

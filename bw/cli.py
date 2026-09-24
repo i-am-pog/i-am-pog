@@ -59,9 +59,12 @@ def load_market(name: Optional[str], refresh: bool, path: Optional[str] = None):
                                     domain=f"{name}" if name and "." in name else "market")
         index = source.load_file(files)
         print(f"  {len(index)} competitor prices read from {len(files)} file(s)")
+        if not len(index):
+            print("  ! that file held no usable prices; pricing from the floor")
         return index
     if not name:
         from .market.shopify_store import empty_index
+        print("  no competitor prices given; pricing from the floor")
         return empty_index()
     source = ShopifyStoreMarket(name=name, domain=f"{name}.ca" if "." not in name else name)
     try:
@@ -348,7 +351,8 @@ def cmd_reprice(args) -> int:
     items = {i.supplier_sku.upper(): i for i in adapter.fetch()}
     catalog = ShopifyClient.load_catalog()
     ours = [v for v in catalog if v.supplier.lower() == args.supplier.lower()]
-    market = load_market(args.market, refresh=not args.no_refresh)
+    market = load_market(args.market, refresh=not args.no_refresh,
+                         path=args.market_file)
 
     client = ShopifyClient(dry_run=not args.live)
     by_product: dict[str, list[dict]] = {}
@@ -502,6 +506,28 @@ def cmd_market_report(args) -> int:
     return 0
 
 
+def keep_cheapest_per_variant(rows: list[dict]) -> tuple[list[dict], int]:
+    """Collapse rows that all land on the same variant of ours.
+
+    A supplier can list the same bottle more than once at different costs --
+    separate lots, or old and new pricing side by side. Both rows match the
+    same variant, and only one price can go on it, so take the cheapest: same
+    margin for us, lower price for the customer. Returns the kept rows in the
+    order they first appeared, and how many rows were dropped.
+    """
+    cheapest: dict[str, dict] = {}
+    duplicates = 0
+    for row in rows:
+        seen = cheapest.get(row["variant_id"])
+        if seen is None:
+            cheapest[row["variant_id"]] = row
+        else:
+            duplicates += 1
+            if Decimal(row["cost"]) < Decimal(seen["cost"]):
+                cheapest[row["variant_id"]] = row
+    return list(cheapest.values()), duplicates
+
+
 def cmd_restock(args) -> int:
     """Switch supplier-backed items that are sitting at zero back on.
 
@@ -519,7 +545,8 @@ def cmd_restock(args) -> int:
     print(f"{len(items)} items from {args.supplier} against {len(live)} live variants")
     buckets = partition(items, index)
 
-    market = load_market(args.market, refresh=not args.no_refresh)
+    market = load_market(args.market, refresh=not args.no_refresh,
+                         path=args.market_file)
     rows, flagged = [], []
     for result in buckets["existing"]:
         variant = result.variant
@@ -553,6 +580,11 @@ def cmd_restock(args) -> int:
                 flagged.append(row)
                 continue
         rows.append(row)
+
+    rows, duplicates = keep_cheapest_per_variant(rows)
+    if duplicates:
+        print(f"  {duplicates} rows were a second listing of an item already covered; "
+              f"kept the cheaper cost")
 
     run = stamp()
     write_csv(OUT_DIR / f"restock-{args.supplier}-{run}.csv", rows)
