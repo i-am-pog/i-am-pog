@@ -12,3 +12,8 @@ data/.*session*
 data/*.xlsx
 tests/fixtures/*.xlsx
 data/export/
+# Ace storefront pages are saved by hand from a browser (their Cloudflare
+# blocks this host), so they are bulk supplier data like the other caches.
+# The URL list is the instruction for producing them, so that one stays.
+data/ace_storefront/*
+!data/ace_storefront/URLS.txt

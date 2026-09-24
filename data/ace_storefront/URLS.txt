@@ -1,0 +1,34 @@
+# Save each of these from your browser (logged in or not -- they are public).
+# In Chrome: open the URL, Ctrl+S / Cmd+S, save as page-N.json into one folder.
+# Stop when a page comes back as  {"products":[]}  -- that means you have them all.
+
+https://acegiftsplus.ca/products.json?limit=250&page=1
+https://acegiftsplus.ca/products.json?limit=250&page=2
+https://acegiftsplus.ca/products.json?limit=250&page=3
+https://acegiftsplus.ca/products.json?limit=250&page=4
+https://acegiftsplus.ca/products.json?limit=250&page=5
+https://acegiftsplus.ca/products.json?limit=250&page=6
+https://acegiftsplus.ca/products.json?limit=250&page=7
+https://acegiftsplus.ca/products.json?limit=250&page=8
+https://acegiftsplus.ca/products.json?limit=250&page=9
+https://acegiftsplus.ca/products.json?limit=250&page=10
+https://acegiftsplus.ca/products.json?limit=250&page=11
+https://acegiftsplus.ca/products.json?limit=250&page=12
+https://acegiftsplus.ca/products.json?limit=250&page=13
+https://acegiftsplus.ca/products.json?limit=250&page=14
+https://acegiftsplus.ca/products.json?limit=250&page=15
+https://acegiftsplus.ca/products.json?limit=250&page=16
+https://acegiftsplus.ca/products.json?limit=250&page=17
+https://acegiftsplus.ca/products.json?limit=250&page=18
+https://acegiftsplus.ca/products.json?limit=250&page=19
+https://acegiftsplus.ca/products.json?limit=250&page=20
+https://acegiftsplus.ca/products.json?limit=250&page=21
+https://acegiftsplus.ca/products.json?limit=250&page=22
+https://acegiftsplus.ca/products.json?limit=250&page=23
+https://acegiftsplus.ca/products.json?limit=250&page=24
+https://acegiftsplus.ca/products.json?limit=250&page=25
+https://acegiftsplus.ca/products.json?limit=250&page=26
+https://acegiftsplus.ca/products.json?limit=250&page=27
+https://acegiftsplus.ca/products.json?limit=250&page=28
+https://acegiftsplus.ca/products.json?limit=250&page=29
+https://acegiftsplus.ca/products.json?limit=250&page=30
