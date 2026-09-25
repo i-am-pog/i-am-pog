@@ -80,6 +80,54 @@ suppliers:
     qty:
       available_qty: 5
 
+  # ------------------------------------------------------- ACE WHOLESALE ----
+  # A SECOND Ace list, on different terms to the dropship one, and it is not a
+  # subset: 1,826 of its 2,952 variants are absent from the dropship file and
+  # 1,638 appear in no other Ace source we hold. Big designer houses are in
+  # here that the dropship list simply does not carry.
+  #
+  # Two things it has that the dropship list does not:
+  #   qty      -- real stock numbers, not the `assume_qty: 3` holding value.
+  #   barcode  -- so matching against our catalogue can use the reliable key
+  #               instead of falling back to brand + product + size.
+  #
+  # And one thing it lacks, which matters: no retail reference. Without an
+  # msrp the engine has no compare-at price and, more to the point, the "never
+  # price above the bottle's own retail" guard cannot fire -- the guard that
+  # caught a $236.99 listing against a $209 retail. On these items the only
+  # ceiling is a competitor price, where one exists. Check the no-retail count
+  # the plan reports before publishing any of them.
+  ace_wholesale:
+    kind: sheet
+    path: data/ace_wholesale.csv
+    fields:
+      supplier_sku: [sku]
+      barcode: [barcode]
+      title: [title]
+      brand: [brand]
+      cost: [cost]
+      qty: [qty]
+      size: [size]
+      concentration: [concentration]
+      gender: [gender]
+
+  # The same list priced as if we bought it in and held it here: no $15 per
+  # order, our money tied up instead. `compare-sources ace_wholesale,ace_wholesale_stocked`
+  # is the "what is worth stocking?" question for this list.
+  ace_wholesale_stocked:
+    kind: sheet
+    path: data/ace_wholesale.csv
+    fields:
+      supplier_sku: [sku]
+      barcode: [barcode]
+      title: [title]
+      brand: [brand]
+      cost: [cost]
+      qty: [qty]
+      size: [size]
+      concentration: [concentration]
+      gender: [gender]
+
   # ------------------------------------------------------------ ON HAND ----
   # Our own stock in the Oakville warehouse. No dropship fee, so it prices
   # cheaper than the same bottle from Ace.

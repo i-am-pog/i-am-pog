@@ -54,6 +54,15 @@ suppliers:
     fee_free_above: 150.00
   ace_stocked:       # Ace goods bought in and held here: no per-order fee
     order_fee: 0
+  ace_wholesale:     # Ace's second list; orderable a single piece at a time,
+                     # so the same per-order terms as dropship apply
+    order_fee: 15.00
+    expected_units: 2
+    shipping_recovers: 9.99
+    fee_full_below: 60.00
+    fee_free_above: 150.00
+  ace_wholesale_stocked:   # the same goods bought in and held here
+    order_fee: 0
   ace_storefront:    # same Ace terms, catalogue read from their shop
     order_fee: 15.00
     fee_full_below: 60.00
