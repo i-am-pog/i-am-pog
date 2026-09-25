@@ -3,8 +3,8 @@
 import unittest
 from decimal import Decimal
 
-from bw.listing import build_product_input
-from bw.normalize import clean_product_name
+from bw.listing import build_description, build_product_input
+from bw.normalize import clean_product_name, listing_title
 from bw.models import SupplierItem
 from bw.pricing import PriceQuote
 
@@ -57,6 +57,23 @@ class TheBrandIsNotSaidTwice(unittest.TestCase):
     def test_a_title_that_is_only_the_brand_keeps_its_name(self):
         # Stripping everything would leave a product with no name at all.
         self.assertTrue(clean_product_name("Versace", "Versace"))
+
+    def test_a_signature_scent_named_after_the_house_keeps_one_name(self):
+        # This shipped as "Bob Mackie Bob Mackie EDT for Man".
+        self.assertEqual(listing_title("Bob Mackie", "Bob Mackie", "Man", "EDT"),
+                         "Bob Mackie EDT for Man")
+
+    def test_the_name_still_reaches_the_matcher_untouched(self):
+        # Emptying it here instead cost 131 catalogue matches.
+        self.assertEqual(clean_product_name("Bob Mackie", "Bob Mackie"),
+                         "Bob Mackie")
+
+    def test_a_signature_scent_is_not_described_as_by_itself(self):
+        html = build_description("Bob Mackie", "Bob Mackie", [SupplierItem(
+            supplier="ace", supplier_sku="X", brand="Bob Mackie",
+            title="Bob Mackie", concentration="EDT", size_label="100ml")])
+        self.assertNotIn("Bob Mackie by Bob Mackie", html)
+        self.assertIn("<li>Concentration: EDT</li>", html)   # bullets survive
 
     def test_a_name_that_merely_starts_like_the_brand_is_left_alone(self):
         self.assertEqual(clean_product_name("Boss Bottled", "Boss Orange"),

@@ -267,7 +267,13 @@ def _strip_leading_brand(text: str, brand: str, max_words: int = 5) -> str:
     strip missed and the listing went out as "Abercrombie & Fitch Abercrombie
     Fitch First Instinct EDT for Man".
 
-    Never strips the whole title -- a product needs a name left over.
+    Never strips the whole title. Emptying the name looks right for a
+    signature scent ("Bob Mackie" by Bob Mackie), but size and concentration
+    are already gone by the time this runs, so for some rows the only words
+    left ARE the brand -- and emptying those collapses unrelated products onto
+    one key. Trying it cost 131 catalogue matches, which would have shipped as
+    duplicate listings of stock we already carry. The repeated brand is dealt
+    with in `listing_title` instead, where it cannot affect matching.
     """
     target = _brand_key(brand)
     if not target:
@@ -321,6 +327,10 @@ def listing_title(brand: str, product_name: str, gender: str = "",
     from the title, not discover it when an unboxed bottle arrives.
     """
     parts = [title_case(brand.strip()), title_case(product_name.strip())]
+    # A house's signature scent carries the house's name: Bob Mackie's is
+    # "Bob Mackie". Saying it twice reads as a mistake.
+    if _brand_key(product_name) == _brand_key(brand):
+        parts = parts[:1]
     title = " ".join(p for p in parts if p).strip()
     if concentration and concentration.lower() not in title.lower():
         title = f"{title} {concentration}"

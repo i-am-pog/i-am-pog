@@ -60,7 +60,8 @@ def build_sku(item: SupplierItem, prefix: str = "BW", taken: Optional[set[str]] 
 
 def build_description(brand: str, name: str, items: list[SupplierItem]) -> str:
     first = items[0]
-    name = title_case(name)      # feeds shout: "LE MALE" -> "Le Male"
+    # A signature scent carries no name of its own beyond the house's.
+    name = title_case(name) if name else brand      # feeds shout: "LE MALE" -> "Le Male"
     sizes = ", ".join(i.size_label for i in items if i.size_label)
     bullets = []
     if first.concentration:
@@ -72,10 +73,12 @@ def build_description(brand: str, name: str, items: list[SupplierItem]) -> str:
     if first.tester:
         bullets.append("<li>Tester packaging</li>")
 
+    # "Bob Mackie by Bob Mackie" reads like a mistake, because it is one.
+    lead = f"<p>{brand}.</p>" if name == brand else f"<p>{name} by {brand}.</p>"
     supplied = (first.description or "").strip()
     extra = f"<p><em>{supplied}</em></p>" if supplied else ""
     return (
-        f"<p>{name} by {brand}.</p>"
+        f"{lead}"
         f"<ul>{''.join(bullets)}</ul>"
         f"{extra}"
     )
