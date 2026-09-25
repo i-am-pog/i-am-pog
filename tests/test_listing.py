@@ -75,6 +75,13 @@ class TheBrandIsNotSaidTwice(unittest.TestCase):
         self.assertNotIn("Bob Mackie by Bob Mackie", html)
         self.assertIn("<li>Concentration: EDT</li>", html)   # bullets survive
 
+    def test_a_hyphen_does_not_make_it_by_itself(self):
+        html = build_description("Jean-Louis Scherrer", "Jean Louis Scherrer", [
+            SupplierItem(supplier="ace", supplier_sku="X",
+                         brand="Jean-Louis Scherrer", title="Jean Louis Scherrer",
+                         concentration="EDP", size_label="50ml")])
+        self.assertNotIn(" by ", html)
+
     def test_a_name_that_merely_starts_like_the_brand_is_left_alone(self):
         self.assertEqual(clean_product_name("Boss Bottled", "Boss Orange"),
                          "Boss Bottled")

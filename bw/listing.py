@@ -15,6 +15,7 @@ from typing import Iterable, Optional
 
 from .models import SupplierItem
 from .normalize import (
+    brand_key,
     clean_product_name,
     estimate_grams,
     handle as make_handle,
@@ -74,7 +75,10 @@ def build_description(brand: str, name: str, items: list[SupplierItem]) -> str:
         bullets.append("<li>Tester packaging</li>")
 
     # "Bob Mackie by Bob Mackie" reads like a mistake, because it is one.
-    lead = f"<p>{brand}.</p>" if name == brand else f"<p>{name} by {brand}.</p>"
+    # Compared on the same key the title uses, or the two disagree over a
+    # hyphen and you get "Jean Louis Scherrer by Jean-Louis Scherrer".
+    same = brand_key(name) == brand_key(brand)
+    lead = f"<p>{brand}.</p>" if same else f"<p>{name} by {brand}.</p>"
     supplied = (first.description or "").strip()
     extra = f"<p><em>{supplied}</em></p>" if supplied else ""
     return (

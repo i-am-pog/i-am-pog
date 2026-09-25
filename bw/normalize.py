@@ -249,7 +249,7 @@ ACRONYMS = {
 }
 
 
-def _brand_key(text: str) -> str:
+def brand_key(text: str) -> str:
     """Letters and digits only, with a spelled-out "and" dropped.
 
     So "Abercrombie & Fitch", "Abercrombie Fitch" and "Abercrombie and Fitch"
@@ -275,12 +275,12 @@ def _strip_leading_brand(text: str, brand: str, max_words: int = 5) -> str:
     duplicate listings of stock we already carry. The repeated brand is dealt
     with in `listing_title` instead, where it cannot affect matching.
     """
-    target = _brand_key(brand)
+    target = brand_key(brand)
     if not target:
         return text
     words = text.split()
     for count in range(1, min(len(words) - 1, max_words) + 1):
-        seen = _brand_key(" ".join(words[:count]))
+        seen = brand_key(" ".join(words[:count]))
         if seen == target:
             return " ".join(words[count:])
         if not target.startswith(seen):
@@ -329,7 +329,7 @@ def listing_title(brand: str, product_name: str, gender: str = "",
     parts = [title_case(brand.strip()), title_case(product_name.strip())]
     # A house's signature scent carries the house's name: Bob Mackie's is
     # "Bob Mackie". Saying it twice reads as a mistake.
-    if _brand_key(product_name) == _brand_key(brand):
+    if brand_key(product_name) == brand_key(brand):
         parts = parts[:1]
     title = " ".join(p for p in parts if p).strip()
     if concentration and concentration.lower() not in title.lower():
