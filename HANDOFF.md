@@ -10,9 +10,13 @@ Paste this whole file into a new chat to pick the project up cold.
 Ontario, Canada. Sells designer and niche fragrance, boxed and tester, sourced from
 wholesale distributors. Canadian dollars. The store is real and trading.
 
-**Primary supplier: "Ace"** (acegiftsplus.ca). ~6,600 sellable items. Their site sits
-behind Cloudflare bot protection that blocks datacentre IPs, so their catalogue is not
-fetchable from a cloud agent — see §6.
+**Primary supplier: "Ace"** (acegiftsplus.ca). Their site sits behind Cloudflare bot
+protection that blocks datacentre IPs, so their catalogue is not fetchable from a cloud
+agent — see §6.
+
+Ace's data arrives in **three different files that are not subsets of each other**, and
+for most of this project only one of them was being used as a catalogue. **Read §7
+before planning any expansion** — it is the largest open question in the project.
 
 Contact details, now consistent everywhere:
 2150 Winston Park Drive, Unit 203, Oakville, ON L6H 5V1 · info@brandswarehouse.com ·
@@ -190,7 +194,8 @@ Works: `productVariantsBulkUpdate`, `productUpdate`, `pageUpdate` (body is `Stri
 - Ace's site (acegiftsplus.ca) — Cloudflare blocks datacentre IPs. One browser-UA
   attempt was made and abandoned. **The catalogue comes from `products.json` pages the
   user saves from their own browser**, configured as `files: data/ace_storefront/page-*.json`
-  in `config/suppliers.yaml`. 47 pages → 11,600 products → 20,110 images.
+  in `config/suppliers.yaml`. 47 pages → 11,600 products → 20,110 variants. See §7 —
+  this is not just an image source, and that was missed for most of the project.
 - `cdn.shopify.com` is reachable, which is why image URLs work.
 
 **Bulk operations** are the right tool for verifying the whole catalogue.
@@ -209,7 +214,94 @@ line with `__parentId` is a variant of the product line above it.
 
 ---
 
-## 7. Open work
+## 7. The supplier-data problem — OPEN, and the biggest thing here
+
+**Read this before planning any catalogue expansion.** It was found late and it changes
+what the project can do next.
+
+### There are three Ace sources, not one
+
+| Source | Variants | What it actually is |
+|---|---|---|
+| `data/ace_dropship_cost.xlsx` | 6,574 | The only source used for everything so far |
+| `data/ace_storefront/page-*.json` | 20,103 | Ace's B2B portal. **Used only for photos** |
+| `data/ace_wholesale.csv` | 2,952 | A second list. **Never used at all until now** |
+
+**The storefront is not a shop — it's Ace's dropship portal, and its prices ARE your
+costs.** Verified: on the 6,571 variants shared with the dropship spreadsheet, the
+storefront price equals `My Cost` on **6,532 of them (99%)**. It was treated as an image
+source for the whole project.
+
+The consequence: **the dropship spreadsheet is a subset of Ace's real dropship
+catalogue.** 13,532 storefront variants aren't in it. Most are out of stock, but
+**512 are in stock** and were never considered for listing.
+
+Worked example — the user asked why Afnan 9PM Night Out wasn't on the site. It's on the
+storefront at **$46.99, in stock**, and on the wholesale list at **$49.99**. It is absent
+from the dropship spreadsheet entirely. Nothing to do with buying terms; the spreadsheet
+is just smaller than the catalogue.
+
+### The blocker: no retail reference outside the spreadsheet
+
+`Retail (ref)` in the dropship xlsx is a genuine column (559 distinct values over 6,574
+rows) and it is doing **nearly all** the ceiling work in the pricing engine — competitor
+matching is weak (only 8 of 2,957 dropship items priced off the market).
+
+**Neither the storefront nor the wholesale list has a retail column.** Run against the
+wholesale list, **1,628 of 1,629 priced items came out with no ceiling at all** — no msrp,
+no competitor price. Every price was margin floor + charm rounding, unbounded above.
+That is exactly the condition that produced the $236.99-against-$209 listing in §5.2,
+except there the retail reference existed and caught it.
+
+Proof it's not theoretical: 4711 Echt Kölnisch Wasser 60ml priced out at **$42.95**. It's
+a drugstore cologne.
+
+**So: nothing from the wholesale list or the storefront-only stock can be priced safely
+until a retail reference exists for it.** The pipeline will happily generate numbers.
+They are not trustworthy.
+
+### What was built anyway
+
+`ace_wholesale` and `ace_wholesale_stocked` are wired up in `config/suppliers.yaml` and
+`config/pricing.yaml`. The user confirms Ace sells single pieces off the wholesale list,
+so the same $15-per-order terms apply; the `_stocked` variant zeroes the fee for the
+"what's worth holding?" comparison.
+
+Results, for reference — **do not act on these prices**:
+
+| | Dropship terms | Stocked |
+|---|---|---|
+| Products / variants | 1,527 / 1,629 | 1,528 / 1,630 |
+| Skipped | 53 | 52 |
+| Gross if one of each sold | $77,568.96 | $76,748.68 |
+
+`compare-sources ace_wholesale,ace_wholesale_stocked`: stocking wins on 1,972 items,
+never loses, and would take **$5,950.69** off what has to be charged across the list.
+That's an argument for stocking fast movers, not for changing terms now.
+
+### Other findings from the same dig
+
+- **638 of the 640** items on both the wholesale and dropship lists are **cheaper on
+  dropship**. Where Ace carries a bottle both ways, wholesale is almost always worse.
+- The wholesale list's real value is **887 items found in no other Ace source**, plus two
+  things the dropship file lacks: **real stock quantities** (vs the `assume_qty: 3`
+  holding value) and **barcodes** (which would let matching use the reliable key instead
+  of brand + product + size).
+- 579 of the 1,629 wholesale items have no photo.
+
+### Next steps proposed, not yet started
+
+1. **Ask Ace for a retail/MSRP column on the wholesale list.** This unblocks both the
+   wholesale list and the storefront-only stock at once. Highest-value single action.
+2. Export the **887 wholesale-only items** as a list the user can send Ace to price.
+3. Check whether **9PM Night Out and the other 512 in-stock storefront-only items** can
+   be sourced through the storefront feed as a dropship supplier, since the prices are
+   already confirmed to be dropship costs.
+4. Consider using wholesale **barcodes** to improve catalogue matching generally.
+
+---
+
+## 8. Open work
 
 ### Only the user can do these
 - **Revoke the two pasted credentials.** Still outstanding. Regenerating the `shppa_`
@@ -221,6 +313,8 @@ line with `__parentId` is a variant of the product line above it.
 - **Settings → Store details** phone field is blank; should be 289-551-3099.
 
 ### Decisions pending
+- **The supplier-data problem in §7** — biggest open item. Nothing from the wholesale
+  list or the storefront-only stock can be published until a retail reference exists.
 - **Publishing strategy for 2,504 drafts.** Top 20 brands are 27% of items but **40% of
   gross** — proposed as a first wave. User hasn't decided.
 - **16 ambiguous titles** where the supplier appends the brand to the name. 11 should be
@@ -250,7 +344,7 @@ line with `__parentId` is a variant of the product line above it.
 
 ---
 
-## 8. Working style the user expects
+## 9. Working style the user expects
 
 They move fast, test in the live admin, and say "check it" — meaning *verify against the
 store, properly*. They have caught real problems by looking at the storefront. When they
