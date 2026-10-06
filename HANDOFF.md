@@ -2,6 +2,9 @@
 
 Paste this whole file into a new chat to pick the project up cold.
 
+**Newer: `docs/HANDOFF-2026-10-06.md` has the current state and next steps (6 Oct 2026).
+Read it first; it wins where the two disagree.**
+
 ---
 
 ## 1. The business
