@@ -64,17 +64,35 @@ def load_market(name: Optional[str], refresh: bool, path: Optional[str] = None):
         if not len(index):
             print("  ! that file held no usable prices; pricing from the floor")
         return index
+    from .market.shopify_store import MarketIndex, empty_index
     if not name:
-        from .market.shopify_store import empty_index
         print("  no competitor prices given; pricing from the floor")
         return empty_index()
-    source = ShopifyStoreMarket(name=name, domain=f"{name}.ca" if "." not in name else name)
-    try:
-        return source.load(refresh=refresh)
-    except Exception as error:                  # network blocked, robots.txt, anything
-        print(f"  ! market prices unavailable ({error}); pricing from the floor instead")
-        from .market.shopify_store import empty_index
+
+    # Several competitors, comma separated. One store is not a market: against
+    # fragrancebuy alone, 1 of 1,629 wholesale items found a price, because a
+    # shop that stocks 34 Afnans and a supplier that sells 57 overlap on almost
+    # nothing. Merging stores took that to 487. MarketIndex keeps the cheapest
+    # price per bottle, so across stores it keeps the one we actually have to
+    # beat.
+    entries, reached = [], []
+    for part in [n.strip() for n in str(name).split(",") if n.strip()]:
+        domain = part if "." in part else f"{part}.ca"
+        source = ShopifyStoreMarket(name=part.split(".")[0], domain=domain)
+        try:
+            index = source.load(refresh=refresh)
+        except Exception as error:              # network blocked, robots.txt, anything
+            print(f"  ! {domain} unavailable ({error})")
+            continue
+        if len(index):
+            entries.extend(index.entries)
+            reached.append(f"{domain} {len(index)}")
+    if not entries:
+        print("  ! no competitor prices available; pricing from the floor instead")
         return empty_index()
+    if len(reached) > 1:
+        print(f"  competitors: {', '.join(reached)}")
+    return MarketIndex(entries)
 
 
 # --------------------------------------------------------------------- commands
@@ -954,8 +972,9 @@ def build_parser() -> argparse.ArgumentParser:
                          help=f"one of: {', '.join(list_suppliers())}"
                               " (plan accepts several, comma separated)")
         if default_market:
-            sub.add_argument("--market", default="fragrancebuy",
-                             help="competitor store to price against, or '' for none")
+            sub.add_argument("--market", default="perfumeonline.ca,fragrancecanada.ca",
+                             help="competitor stores to price against, comma separated,"
+                                  " or '' for none")
             sub.add_argument("--market-file", default=None,
                              help="a products.json saved from a browser, instead of fetching")
             sub.add_argument("--no-refresh", action="store_true",
