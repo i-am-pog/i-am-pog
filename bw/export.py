@@ -23,6 +23,8 @@ from __future__ import annotations
 
 from typing import Any, Iterable, Optional
 
+from .descriptions import require_clean
+
 # Shopify accepts a subset and ignores unknown columns, but the importer is
 # order-insensitive and name-sensitive, so these spellings matter.
 COLUMNS = [
@@ -105,7 +107,7 @@ def product_rows(product: dict) -> list[dict[str, Any]]:
         if index == 0:
             row.update({
                 "Title": product.get("title", ""),
-                "Body (HTML)": product.get("descriptionHtml", ""),
+                "Body (HTML)": require_clean(product.get("descriptionHtml", ""), handle),
                 "Vendor": product.get("vendor", ""),
                 "Type": product.get("productType", ""),
                 "Tags": ", ".join(tags),
