@@ -19,7 +19,7 @@ from typing import Optional
 
 # Long enough for an opening, the note pyramid and the shipping line; anything
 # past this is filler a shopper scrolls through on the way to "Add to cart".
-MAX_WORDS = 160
+MAX_WORDS = 120
 
 _QUESTION_RUN = re.compile(r"\?{3,}")
 # Mathematical bold/italic/script letters and similar "fancy font" ranges.
@@ -27,6 +27,8 @@ _FANCY = re.compile(r"[\U0001D400-\U0001D7FF\U0001F100-\U0001F1FF]")
 # Text decoded with the wrong character set: "Ã©" for "é", "â€™" for "'".
 _MOJIBAKE = re.compile(r"Ã.|â€|Â\s|�")
 _CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
+# Pasted web text: links, inline styling, empty spans and award/creator trivia.
+_PASTED = re.compile(r"<a\s|<span|style=|<font|class=", re.I)
 _BANNED_WORDS = re.compile(r"\b(clones?|dupes?|knock[- ]?offs?)\b", re.I)
 
 
@@ -50,6 +52,8 @@ def problems(description_html: Optional[str]) -> list[str]:
         found.append("garbled characters (wrong text encoding)")
     if _CONTROL.search(raw):
         found.append("control characters")
+    if _PASTED.search(raw):
+        found.append("pasted web markup (links, spans or inline styles)")
     if _BANNED_WORDS.search(text):
         found.append("clone/dupe wording")
     words = len(text.split())

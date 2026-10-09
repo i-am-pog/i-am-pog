@@ -35,6 +35,10 @@ class DescriptionGate(unittest.TestCase):
         long = "<p>" + "word " * (MAX_WORDS + 1) + "</p>"
         self.assertTrue(any("too long" in p for p in problems(long)))
 
+    def test_text_pasted_from_another_site_is_refused(self):
+        pasted = '<p><a href="https://brandswarehouse.ca/"><b>Flowerbomb</b><span></span>by ViktorandRolf</a></p>'
+        self.assertTrue(any("pasted" in p for p in problems(pasted)))
+
     def test_empty_and_clone_wording_are_refused(self):
         self.assertIn("empty", problems(""))
         self.assertTrue(problems("<p>A clone of a designer scent.</p>"))
