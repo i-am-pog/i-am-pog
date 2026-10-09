@@ -39,6 +39,11 @@ class DescriptionGate(unittest.TestCase):
         pasted = '<p><a href="https://brandswarehouse.ca/"><b>Flowerbomb</b><span></span>by ViktorandRolf</a></p>'
         self.assertTrue(any("pasted" in p for p in problems(pasted)))
 
+    def test_copy_in_the_makers_voice_is_refused(self):
+        cool_water = "<p>LONG LAST SMELLING EFFECT: Our perfume concentration offers an impressive balm projection.</p>"
+        self.assertTrue(any("as if we make" in p for p in problems(cool_water)))
+        self.assertTrue(problems("<p>Authenticity Promise</p>"))
+
     def test_empty_and_clone_wording_are_refused(self):
         self.assertIn("empty", problems(""))
         self.assertTrue(problems("<p>A clone of a designer scent.</p>"))

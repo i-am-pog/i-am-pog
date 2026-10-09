@@ -29,6 +29,12 @@ _MOJIBAKE = re.compile(r"Ã.|â€|Â\s|�")
 _CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
 # Pasted web text: links, inline styling, empty spans and award/creator trivia.
 _PASTED = re.compile(r"<a\s|<span|style=|<font|class=", re.I)
+# Copy written as if we made the product. We are a retailer: "our perfume",
+# "our fragrance", "we created" are the manufacturer's voice, not ours.
+_MAKER_VOICE = re.compile(
+    r"\b(our|my) (perfumes?|fragrances?|scents?|colognes?|formula|bottles?|products?|"
+    r"concentration|blend|collection)\b|\bwe (created|designed|crafted|developed|made|formulated)\b"
+    r"|\bauthenticity promise\b", re.I)
 _BANNED_WORDS = re.compile(r"\b(clones?|dupes?|knock[- ]?offs?)\b", re.I)
 
 
@@ -54,6 +60,8 @@ def problems(description_html: Optional[str]) -> list[str]:
         found.append("control characters")
     if _PASTED.search(raw):
         found.append("pasted web markup (links, spans or inline styles)")
+    if _MAKER_VOICE.search(text):
+        found.append("written as if we make the product (our perfume / we created)")
     if _BANNED_WORDS.search(text):
         found.append("clone/dupe wording")
     words = len(text.split())
