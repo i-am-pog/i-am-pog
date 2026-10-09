@@ -2,7 +2,7 @@
 
 import unittest
 
-from bw.descriptions import MAX_WORDS, problems, require_clean
+from bw.descriptions import MAX_WORDS, problems, require_clean, standard_problems
 from bw.export import product_rows
 
 GOOD = ("<p><strong>Joop Femme</strong> is an eau de toilette for women.</p>"
@@ -49,6 +49,33 @@ class DescriptionGate(unittest.TestCase):
                    "variants": [{"price": "10.00"}]}
         with self.assertRaises(ValueError):
             product_rows(product)
+
+
+ETERNITY = ("<p><strong>Calvin Klein Eternity Cologne</strong> is a classic men's fragrance from Calvin Klein "
+            "with a fresh, green and woody character. Lavender, mandarin, bergamot and lemon open crisply, a "
+            "herbal floral heart of sage, basil, geranium and jasmine follows, and sandalwood, amber, vetiver "
+            "and rosewood give it lasting depth. A timeless, clean scent for work and everyday wear.</p><ul>\n"
+            "<li>\n<strong>Top notes:</strong> lavender, mandarin, bergamot, lemon</li>\n"
+            "<li>\n<strong>Heart notes:</strong> sage, basil, geranium, jasmine, lily, juniper berry</li>\n"
+            "<li>\n<strong>Base notes:</strong> sandalwood, amber, musk, vetiver, rosewood</li>\n"
+            "<li>\n<strong>Scent family:</strong> aromatic foug\u00e8re</li>\n"
+            "<li>\n<strong>Best for:</strong> office, everyday wear, spring and summer</li>\n"
+            "<li>\n<strong>Concentration:</strong> Eau de Toilette: lighter and fresh, easy to wear every day</li>\n</ul>")
+
+
+class HouseFormat(unittest.TestCase):
+    def test_the_eternity_page_is_the_standard(self):
+        self.assertEqual(standard_problems(ETERNITY), [])
+
+    def test_the_shipping_line_is_no_longer_part_of_it(self):
+        with_footer = ETERNITY + "<p>100% authentic. Ships from our warehouse in Oakville, Ontario.</p>"
+        self.assertTrue(standard_problems(with_footer))
+
+    def test_a_missing_line_is_caught(self):
+        self.assertTrue(standard_problems(ETERNITY.replace("Best for", "Good for")))
+
+    def test_a_bare_one_liner_is_caught(self):
+        self.assertTrue(standard_problems("<p><strong>Hermes Amazone</strong>.</p>"))
 
 
 if __name__ == "__main__":

@@ -69,3 +69,33 @@ def require_clean(description_html: Optional[str], label: str = "") -> str:
         where = f" for {label}" if label else ""
         raise ValueError(f"description{where} rejected: {'; '.join(found)}")
     return description_html or ""
+
+
+# The house format, set by the owner from the Calvin Klein Eternity page:
+# one paragraph that opens with the bold product name and describes the scent
+# in our own words, then exactly these six lines in this order. Nothing after
+# the list -- the shipping line used to close every description and was
+# dropped because it read as boilerplate on every page.
+STANDARD_LINES = ("Top notes", "Heart notes", "Base notes",
+                  "Scent family", "Best for", "Concentration")
+STANDARD_WORDS = (70, 110)
+
+
+def standard_problems(description_html: Optional[str]) -> list[str]:
+    """How a description differs from the house format. Empty means it matches."""
+    raw = (description_html or "").strip()
+    found = problems(raw)
+    shape = re.fullmatch(r"<p><strong>[^<]+</strong>([^<]+)</p>\s*<ul>(.*)</ul>", raw, re.S)
+    if not shape:
+        found.append("not in the house format (bold name, one paragraph, then the list)")
+        return found
+    labels = re.findall(r"<li>\s*<strong>([^<]+?):</strong>\s*[^<\s][^<]*</li>", shape.group(2))
+    if tuple(labels) != STANDARD_LINES:
+        found.append(f"list lines are {labels or 'missing'}, expected {list(STANDARD_LINES)}")
+    if len(shape.group(1).split()) < 25:
+        found.append("opening paragraph too thin")
+    words = len(plain_text(raw).split())
+    low, high = STANDARD_WORDS
+    if not low <= words <= high:
+        found.append(f"{words} words, house format is {low}-{high}")
+    return found
