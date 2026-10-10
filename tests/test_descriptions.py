@@ -44,6 +44,9 @@ class DescriptionGate(unittest.TestCase):
         self.assertTrue(any("as if we make" in p for p in problems(cool_water)))
         self.assertTrue(problems("<p>Authenticity Promise</p>"))
 
+    def test_the_my_perfumes_house_is_a_brand_not_the_store_talking(self):
+        self.assertEqual(problems("<p>My Perfumes Arabiyat Oud Al Layl is a rich oud.</p>"), [])
+
     def test_empty_and_clone_wording_are_refused(self):
         self.assertIn("empty", problems(""))
         self.assertTrue(problems("<p>A clone of a designer scent.</p>"))

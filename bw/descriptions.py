@@ -31,10 +31,12 @@ _CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
 _PASTED = re.compile(r"<a\s|<span|style=|<font|class=", re.I)
 # Copy written as if we made the product. We are a retailer: "our perfume",
 # "our fragrance", "we created" are the manufacturer's voice, not ours.
+# Case-sensitive on purpose: "My Perfumes" is a real Arabian house, and its
+# name must not read as the store talking about itself.
 _MAKER_VOICE = re.compile(
-    r"\b(our|my) (perfumes?|fragrances?|scents?|colognes?|formula|bottles?|products?|"
-    r"concentration|blend|collection)\b|\bwe (created|designed|crafted|developed|made|formulated)\b"
-    r"|\bauthenticity promise\b", re.I)
+    r"\b([Oo]ur|my) (perfumes?|fragrances?|scents?|colognes?|formula|bottles?|products?|"
+    r"concentration|blend|collection)\b|\b[Ww]e (created|designed|crafted|developed|made|formulated)\b"
+    r"|\b[Aa]uthenticity [Pp]romise\b")
 _BANNED_WORDS = re.compile(r"\b(clones?|dupes?|knock[- ]?offs?)\b", re.I)
 
 
