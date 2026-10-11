@@ -24,6 +24,7 @@ from .normalize import (
     normalize_barcode,
     product_key,
 )
+from .descriptions import require_clean
 from .pricing import PriceQuote
 
 PRODUCT_TYPE_BY_CONCENTRATION = {
@@ -186,7 +187,7 @@ def build_product_input(
         "productType": "Gift Set" if first.gift_set else PRODUCT_TYPE_BY_CONCENTRATION.get(
             first.concentration, "Fragrance"),
         "status": publish_status,
-        "descriptionHtml": build_description(brand, name, priced),
+        "descriptionHtml": require_clean(build_description(brand, name, priced), title),
         "tags": build_tags(brand, priced, first.supplier),
         "seo": {
             "title": f"{title} | Brands Warehouse"[:70],

@@ -1,0 +1,503 @@
+product_id,title,reason,detail
+gid://shopify/Product/9557703098589,,"conflict: SKU says EDP spray, retailers list Invictus Victory Absolu as Parfum",
+gid://shopify/Product/10196392870109,,"alcohol-free water-based mist, no matching concentration line",
+gid://shopify/Product/15408408232157,,"alcohol-free water-based mist, no matching concentration line",
+gid://shopify/Product/9553425563869,,conflict: SKU PS (EDP) but listings say parfum/Le Parfum,
+gid://shopify/Product/9553905090781,,conflict: SKU PS (EDP) but retailers list Extrait de Parfum,
+gid://shopify/Product/9554489016541,,conflict: sources disagree (EDP vs extrait) for Paradigm,
+gid://shopify/Product/9554512904413,,conflict: sources disagree (extrait vs EDP) for Liquid Brun,
+gid://shopify/Product/9557658927325,,concentration unclear (sources disagree: EDP vs Extrait),
+gid://shopify/Product/7699896959197,,mixed fragrances,"Davidoff Cool Water EDT: variants mix men's Cool Water (Men SKUs) and Cool Water Woman (Women SKUs), two different fragrances."
+gid://shopify/Product/7699947913437,,mixed fragrances,D&G The One EDT: variants mix The One for Men and The One (women's).
+gid://shopify/Product/7698815615197,,"Calvin Klein Ckin2U EDT For Women and Men: variants mix CK IN2U Her and CK IN2U Him, different fragrances.",
+gid://shopify/Product/7901580198109,,mixed fragrances,"Elizabeth Taylor EDT Body Spray: variants are three different fragrances (White Diamonds Night, White Diamonds En Rouge, Diamonds and Sapphires)."
+gid://shopify/Product/7954561302749,,title does not identify fragrance,Davidoff EDT Body Mist for Women: no fragrance named; SKU hints Cool Water Woman but title says body mist.
+gid://shopify/Product/7705149800669,,version conflict,Hugo Boss Bottled Infinite EDT: Bottled Infinite exists only as an Eau de Parfum (tags also say EDP); title concentration must be corrected first.
+gid://shopify/Product/9557680816349,,Hugo Boss Bottled Infinite EDITION: unclear which product/concentration 'EDITION' is; no reliable notes for that exact version.,
+gid://shopify/Product/5368909332648,,notes conflicting,Cuba Blue 35 ML EDT: Cuba Paris and Fragluxe versions with conflicting notes; cannot confirm which this is.
+gid://shopify/Product/15408453648605,,"Zirh Ikon (Black) EDT: sources give top and heart notes only, no reliable base notes.",
+gid://shopify/Product/5309382000808,,notes unreliable,Oscar Rose 100 ML EDT: no reliable notes / fragrance identity could not be confirmed.
+gid://shopify/Product/5368895373480,,title does not identify fragrance,Lanvin 100 ML EDT Spray (men): title does not name which Lanvin fragrance.
+gid://shopify/Product/6225257365687,,notes conflicting,"Cuba Winner 35 ML EDT: Cuba Paris (aquatic: lavender, bay leaf, amber) and Fragluxe (lemon, mint, cinnamon, tonka) listings conflict."
+gid://shopify/Product/6225243930807,,no matching concentration line,Nina Ricci Nina L'Eau is an Eau Fraiche; none of the five allowed concentration lines describes it accurately.
+gid://shopify/Product/7711230197981,,title does not identify fragrance,"Ralph Lauren Polo Big Pony #1 50 ML (Women category): men's and women's Big Pony #1 are different fragrances; title does not say which, and the women's #1 notes found were sparse."
+gid://shopify/Product/5504446857384,,no matching concentration line,Swiss Arabian Zahra is a perfume oil; none of the allowed concentration lines fits.
+gid://shopify/Product/5368883773608,,notes conflicting,Yacht Man Blue EDT: retailers give two unrelated note pyramids (aquatic vs green fougere).
+gid://shopify/Product/7960952537309,,version unclear,Giorgio Armani Code 50 ML EDT: classic 2004 Code EDT and the 2023 reformulated Code EDT have different notes; cannot tell which this stock is.
+gid://shopify/Product/5309379051688,,notes unreliable,Bijan Wicked for women: no note pyramid found (discontinued).
+gid://shopify/Product/7699947290845,,mixed fragrances,D&G Light Blue EDT: variants mix Women (Light Blue) and Men (Light Blue Pour Homme) sizes.
+gid://shopify/Product/7898407403741,,mixed fragrances,"Lancome EDP: variants are Tresor and Miracle, two different fragrances."
+gid://shopify/Product/5368895144104,,mixed fragrances,"Boucheron EDT for Men: 90 ML variant has a women's SKU (BOUC90TS-W), likely Boucheron Femme; variants may mix fragrances."
+gid://shopify/Product/5309439541416,,version conflict,Creed Millesime Aventus 30 ML: title is men's Aventus but category/SKU say Women (could be Aventus for Her); cannot confirm.
+gid://shopify/Product/5368909660328,,notes conflicting,Cuba Red EDT: Cuba vs Fragluxe listings give conflicting notes.
+gid://shopify/Product/5309406937256,,notes conflicting,"Creed ""Spraying Flowers"" (likely Spring Flower, title misspelled): retailer note lists conflict; title should be fixed first."
+gid://shopify/Product/7699990806749,,version conflict,"Elizabeth Arden Mediterranean ""EDT"": the fragrance is an Eau de Parfum (SKUs MEDI..PS); title concentration conflicts."
+gid://shopify/Product/5309426073768,,notes conflicting,Diesel Plus Plus Feminine EDT: listings give unrelated note sets.
+gid://shopify/Product/5309440557224,,notes conflicting,Salvador Dali 100 ML EDT (women): title does not pin the version (1983 Parfum de Toilette vs later); note lists conflict.
+gid://shopify/Product/7711230394589,,title does not identify fragrance,"Ralph Lauren 50 ML Edt Spr for Women: no fragrance named (tags mention Polo Black, a men's scent)."
+gid://shopify/Product/7697593237725,,mixed fragrances,Alfred Sung EDT Spray: variants mix Men and Women (Sung Homme vs Alfred Sung women's).
+gid://shopify/Product/6225368023223,,notes unreliable,Coach Signature EDT: only EDP notes found; EDT notes could not be confirmed.
+gid://shopify/Product/7698816106717,,"Calvin Klein Eternity EDP Spray For Men: variants mix men's and women's Eternity (Men 100 ML + Women 30/50/100 ML), different fragrances",
+gid://shopify/Product/7901579739357,,Hugo Boss Man 100 ML EDT Spray: title doesn't identify which Hugo Boss fragrance (Hugo Man vs Boss Bottled etc.); existing text inconsistent,
+gid://shopify/Product/5309403955368,,Lomani Ab Spirit Millionaire 100 ML EDP Spray For Women: notes conflicting across retailers (GiftExpress vs eCosmetics vs Perfume.com lists differ completely),
+gid://shopify/Product/5368891605160,,Perry Ellis 360 Red 100 ML EDP Spray: title says EDP but 360 Red for men only exists as an EDT; version unclear,
+gid://shopify/Product/5309382230184,,Juicy Couture La La Malibu 100 ML EDP Spray: title says EDP but Couture La La Malibu is only sold as an EDT; notes also differ between retailers,
+gid://shopify/Product/5309398909096,,Carolina Herrera New York 100 ML Edt Spray: title doesn't identify a fragrance (no Carolina Herrera women's EDT named 'New York' found),
+gid://shopify/Product/5309388226728,,"Puig S Shakira 80 ML EDT Spray: notes conflicting (Wikipedia, Nearstore, Osmoz and Dublin Duty Free give different pyramids)",
+gid://shopify/Product/5309381443752,,Swiss Army Victoria 100 ML Edt Spray: no Swiss Army/Victorinox fragrance called 'Victoria' found; title doesn't identify the fragrance,
+gid://shopify/Product/5309392650408,,Guess Dare Limited Edition 50 ML Edt Spray: 'Limited Edition' version not identifiable; women's Dare notes also differ across retailers,
+gid://shopify/Product/5309391437992,,French Connection F For Women EDT Spray: no fragrance called 'F for Women' found; title doesn't identify which French Connection scent,
+gid://shopify/Product/5309390684328,,Bebe Luxe 100 ML EDP Spray For Women: notes conflicting (mango-based vs lemon-based pyramids; mango versions differ by tier),
+gid://shopify/Product/5309390094504,,"Escoda Sexy Graphic 100 ML EDT Spray For Women: 'Escoda Sexy Graphic' doesn't match a known fragrance (closest is Escada Sexy Graffiti, different brand/name)",
+gid://shopify/Product/5309404577960,,"Harajuko Wicked Style Lovers 30 ML Edt Spray: no 'Wicked Style Lovers' exists (line has Love, Lil' Angel, Music, Baby, G); Love notes also conflict",
+gid://shopify/Product/5309388161192,,Oscar Live In Love Paris 100 ML EDP: no Oscar de la Renta 'Live in Love Paris' found; title doesn't clearly identify the fragrance,
+gid://shopify/Product/5309401530536,,"Cuba Jungle Edp 35 ML Women: Cuba Jungle is a line of several scents (Snake, Tiger, etc.); title doesn't say which",
+gid://shopify/Product/5309398843560,,Sapil Consensual Eau de Parfum for Women - 100 ML: no notes found for Sapil Consensual,
+gid://shopify/Product/5309390717096,,Shirley May Amore 877 Eau de Toilette - 100 ML: Shirley May budget line: no reliable published notes found (searched; none or single seller blurb),
+gid://shopify/Product/5309393240232,,Shirley May Golden Beauty Eau de Toilette - 100 ML: Shirley May budget line: no reliable published notes found (searched; none or single seller blurb),
+gid://shopify/Product/5309396484264,,Shirley May Touch of Water For Women Eau de Toilette - 100 ML: Shirley May budget line: no reliable published notes found (searched; none or single seller blurb),
+gid://shopify/Product/5309400907944,,Shirley May Sabeel 820 Eau de Toilette - 100 ML: Shirley May budget line: no reliable published notes found (searched; none or single seller blurb),
+gid://shopify/Product/5309406675112,,Shirley May Astonish Eau de Toilette - 100 ML: Shirley May budget line: no reliable published notes found (searched; none or single seller blurb),
+gid://shopify/Product/5309406806184,,Shirley May Love Star 882 Eau de Toilette - 100 ML: Shirley May budget line: no reliable published notes found (searched; none or single seller blurb),
+gid://shopify/Product/5309409198248,,Shirley May Dezire For Women Eau de Toilette - 100 ML: Shirley May budget line: no reliable published notes found (searched; none or single seller blurb),
+gid://shopify/Product/5309398188200,,Alta Moda Stone Sensual 100 ML EDT Spray: Sapg/Alta Moda budget line: no product or notes found under this name,
+gid://shopify/Product/5309401399464,,Alta Moda Dreams 100 ML EDT Spray: Sapg/Alta Moda budget line: no product or notes found under this name,
+gid://shopify/Product/5309403758760,,Alta Moda Miss Glam 100 ML EDT Spray: Sapg/Alta Moda budget line: no product or notes found under this name,
+gid://shopify/Product/5309407559848,,Swing 100 ML Edt Spray: Sapg/Alta Moda budget line: no product or notes found under this name,
+gid://shopify/Product/5309384032424,,American Impression Sometime 100 ML EDT Spray (Impression Of Someday By Justin Bieber): 'American Impression' product sold as an impression of another brand's perfume; no reliable own notes and the title is built on another brand's name (not searched),
+gid://shopify/Product/5309384818856,,American Impression Beyond 100 ML EDT Spray (Impression Of Beyonce Heat): 'American Impression' product sold as an impression of another brand's perfume; no reliable own notes and the title is built on another brand's name (not searched),
+gid://shopify/Product/5309385015464,,American Impression Party Girl 100 ML EDT Spray (Impression Of Gucci By Gucci) For Women: 'American Impression' product sold as an impression of another brand's perfume; no reliable own notes and the title is built on another brand's name (not searched),
+gid://shopify/Product/5309385212072,,American Impression Lady In Gold 100 ML EDT Spray (Impression Of Paco Rabane Lady Million): 'American Impression' product sold as an impression of another brand's perfume; no reliable own notes and the title is built on another brand's name (not searched),
+gid://shopify/Product/5309387440296,,American Impression First Day 100 ML EDT Spray (Impression Of Jour By Hugo Boss): 'American Impression' product sold as an impression of another brand's perfume; no reliable own notes and the title is built on another brand's name (not searched),
+gid://shopify/Product/5309387800744,,American Impression Elation 100 ML EDT Spray (Impression Of Chanel N?5): 'American Impression' product sold as an impression of another brand's perfume; no reliable own notes and the title is built on another brand's name (not searched),
+gid://shopify/Product/5309372760232,,Minions Yellow (Kids) Edt Sp 100 ML: Minions Yellow kids EDT: no reliable notes (only a contradictory men's cologne listing found),
+gid://shopify/Product/5309373186216,,Minions Yellow (Kids) EDT Spray 50 ML: Minions Yellow kids EDT: no reliable notes (only a contradictory men's cologne listing found),
+gid://shopify/Product/5309377937576,,Minions Yellow (Kids) Edt Sp 30 ML: Minions Yellow kids EDT: no reliable notes (only a contradictory men's cologne listing found),
+gid://shopify/Product/5309373710504,,Minions 100 ML Edt Spray: 'Minions 100 ML' doesn't say which Minions scent (Yellow/Blue etc.),
+gid://shopify/Product/5309378101416,,Disney Princess 20 ML Edt Spray: 'Disney Princess 20 ML' doesn't say which princess fragrance,
+gid://shopify/Product/5309378232488,,Kids Trolls 20 ML EDT Spray: 'Trolls 20 ML' doesn't identify which Trolls scent; no reliable notes (not searched),
+gid://shopify/Product/5309372137640,,Disney Princess Ariel (G) Edt Sp 50 ML: Ariel kids EDT: no reliable notes (retailers list different products/notes),
+gid://shopify/Product/5309376004264,,Disney Princess Ariel (G) Edt Sp 100 ML New: Ariel kids EDT: no reliable notes (retailers list different products/notes),
+gid://shopify/Product/5309372924072,,Kids Barbie Fashion Girl (G) EDT Spray 30 ML: Barbie Fashion Girl: no notes found; other Barbie EDTs have different notes,
+gid://shopify/Product/5309376495784,,Barbie Fashion Girl (G) Edt Sp 100 ML: Barbie Fashion Girl: no notes found; other Barbie EDTs have different notes,
+gid://shopify/Product/5309373448360,,Kids Minnie Mouse 20 ML EDT Spray: Minnie Mouse kids EDT: notes conflicting across retailers,
+gid://shopify/Product/5309375578280,,Kids Disney Minnie Mouse (G) 100 ML EDT Sp: Minnie Mouse kids EDT: notes conflicting across retailers,
+gid://shopify/Product/5309370630312,,Kids Spongebob Squarepants 100 ML EDT Spray: SpongeBob EDT: only one retailer lists notes (filed as men's); unreliable,
+gid://shopify/Product/5309370335400,,Kids Spider Man (B) EDT Spray 100 ML: Spider-Man kids EDT: notes conflicting (same retailer gives two different profiles),
+gid://shopify/Product/5309373579432,,Disney Princess Cinderella (G) Edt Sp 100 ML New: Cinderella 'New' 100 ML: two different Cinderella formulas listed with different notes; version unclear,
+gid://shopify/Product/5309376594088,,Kids Disney Princess Belle (G) EDT Spray 50 ML: Belle kids EDT: no notes found for the kids' version,
+gid://shopify/Product/5309370466472,,Disney Princess Aurora 100 ML: Aurora kids EDT: only one vague retailer listing; unreliable,
+gid://shopify/Product/5309375381672,,Disney Elena Of Avalor (Kids) Edt Sp 100 ML: Elena of Avalor: only Parfumo lists notes; retailers vague; unreliable,
+gid://shopify/Product/5309375676584,,Kids Disney Finding Dory For Women 100 ML EDT Sp: Finding Dory: no full pyramid found; unreliable,
+gid://shopify/Product/5309375905960,,Smurfs Blue Style Papa 100 ML Edt Spray: Smurfs Blue Style Papa: no Papa-specific notes found,
+gid://shopify/Product/5309370564776,,Kids Bratz Cloe (G) EDT Spray 50 ML: Bratz Cloe: notes from only one retailer (perfume.com); unreliable,
+gid://shopify/Product/5309372367016,,Disney Pixar Cars-3 for Kids EDT Spray: Cars 3 kids EDT: no Cars 3-specific notes; Cars listings conflict,
+gid://shopify/Product/5309370237096,,Kids Disney Pixar Cars Cool Sports (B) 200 ML Body Cologne Spray: Cars Cool Sports 200 ML body cologne: no notes found for this product,
+gid://shopify/Product/5309375479976,,Kids Disney Cars Cool Sports (B) 200 ML Body Cologne Spray Pix: Cars Cool Sports 200 ML body cologne: no notes found for this product,
+gid://shopify/Product/5309376233640,,The Simpsons (G) Edt Sp 100 ML: The Simpsons (G): notes conflict and no girls'/kids' version identified,
+gid://shopify/Product/5309371023528,,Disney My Princess And Me (Kids) EDT Spray 30 ML: 'My Princess and Me' EDT: no notes found,
+gid://shopify/Product/9555238486237,,conflicting notes,Maison Alhambra Kismet: several Kismet variants exist and retailers give different heart/base notes for Kismet for Men.
+gid://shopify/Product/9555238748381,,conflicting notes,"Maison Alhambra ""Smokey"": listings under this name disagree (plum/peach/honey/tobacco vs the Smoky Touch tobacco pyramid); exact product unclear."
+gid://shopify/Product/9555238781149,,conflicting notes,Smoky Touch: sellers disagree on which fragrance it replaced (Toscano Leather vs Tobacco Touch) and give different pyramids.
+gid://shopify/Product/9555238977757,,conflicting notes,Lattafa Ameerat Al Arab: at least four different note pyramids across retailers/Parfumo.
+gid://shopify/Product/9555276136669,,notes not found,Lattafa Exclusif Oud: no reliable note listing found.
+gid://shopify/Product/9555276202205,,conflicting notes,Lattafa Fakhar Gold (Extrait): four retailers give four different pyramids.
+gid://shopify/Product/9555276333277,,conflicting notes,Glacier Le Noir: sold under both Lattafa and Maison Alhambra with three different pyramids; title does not settle which.
+gid://shopify/Product/9555276595421,,conflicting notes,Lattafa Hayaati Black: most retailers repeat the plain Hayaati pyramid while others list a different spicy/incense pyramid; true notes unclear.
+gid://shopify/Product/9555276628189,,conflicting notes,Lattafa Ana Abiyedh I Am White: two distributors give completely different pyramids.
+gid://shopify/Product/9555276660957,,notes not found,Lattafa I Am White Leather: no note listing found.
+gid://shopify/Product/9555276693725,,notes not found,Lattafa I Am White Rouge: no full pyramid found (only conflicting scent tags).
+gid://shopify/Product/9555281772765,,conflicting notes,Lattafa Lahdath: resellers list rose/lemon/caramel while Notino lists an entirely different lemon/iris/mint/tobacco pyramid.
+gid://shopify/Product/9555383091421,,conflicting notes,"Maison Alhambra Luxe Nightlife: three sources give three unrelated pyramids (floral-gourmand, apple/tobacco, lavender/cardamom)."
+gid://shopify/Product/9555383845085,,conflicting notes,Majd Al Sultan Black Intense: retailers disagree on the heart notes (cinnamon vs date).
+gid://shopify/Product/9555695599837,,conflicting notes,"Lattafa Ra'ed Oud: resellers list an inverted leather/rose/bergamot pyramid, Notino lists a completely different fruity/aromatic one."
+gid://shopify/Product/9557649260765,,version unclear,"Al Haramain Amber Oud EDP (75 ml): the original men's Amber Oud is not sold in 75 ml; 75 ml bottles are Gold Edition / Dubai Night etc. with different notes, so the exact version cannot be confirmed."
+gid://shopify/Product/9557662499037,,title unclear,"""Bentley Classic EDT for Man"": no Bentley fragrance is sold under the name ""Classic""; likely Bentley for Men EDT but the title does not confirm the version."
+gid://shopify/Product/9557677670621,,conflicting notes,Cuba Green: Basenotes (lemon/marigold/carnation/rose/musk) and ScentVerdict (woody/vetiver/oakmoss) disagree.
+gid://shopify/Product/9557677768925,,notes unreliable,Cuba Hot: only one low-quality comparison site lists notes; no retailer or database confirmation.
+gid://shopify/Product/9557679210717,,conflicting notes,Elizabeth Arden Blue Grass EDP: retailers give two substantially different pyramids (green vetiver/clove/laurel vs tuberose/benzoin/tonka).
+gid://shopify/Product/15408425763037,,conflicting notes,Initio Power Self: three retailers give three different pyramids (jasmine/cedar vs leather/sage vs white flowers/osmanthus).
+gid://shopify/Product/9557707686109,,conflicting notes,Rasasi Fattan Pour Femme: at least four different pyramids across retailers.
+gid://shopify/Product/9204386595037,,conflicting notes,Jovan Black Musk for Men: five retailers give five different pyramids.
+gid://shopify/Product/9553420550365,,notes not found,Lucianno Titan Series Dominion: no listing or notes found for the Lucianno brand online.
+gid://shopify/Product/9553423466717,,notes not found,Lucianno Titan Series Majesty: no listing or notes found for the Lucianno brand online.
+gid://shopify/Product/9553423532253,,notes not found,Lucianno Spectacle: no listing or notes found for the Lucianno brand online.
+gid://shopify/Product/9553423565021,,notes not found,Lucianno Titan Series Legacy: no listing or notes found for the Lucianno brand online.
+gid://shopify/Product/9553423663325,,notes not found,Lucianno Melody: no listing or notes found for the Lucianno brand online.
+gid://shopify/Product/9553423696093,,notes not found,Lucianno Titan Series Empress: no listing or notes found for the Lucianno brand online.
+gid://shopify/Product/9553423827165,,notes not found,Lucianno Oud Amethyst: no listing or notes found for the Lucianno brand online.
+gid://shopify/Product/9553423892701,,notes not found,Lucianno Arabian Oasis: no listing or notes found for the Lucianno brand online.
+gid://shopify/Product/9553604215005,,notes unreliable,Armaf Oros EDP for Women: only one low-quality marketplace listing gives notes; Armaf Oros women's line has several versions.
+gid://shopify/Product/9553604247773,,version unclear,"Armaf Skin Couture: line has many versions (Signature, Rouge, Men, Gold, Wood...) with different notes; title does not say which."
+gid://shopify/Product/9554378719453,,notes unreliable,"Fragrance World Essencia De Flores Sour Peach: only a flat note list (orange, peach, honey, patchouli), no pyramid."
+gid://shopify/Product/9554469814493,,notes not found,Fragrance World Maison De Parfums Celebrite Fonce: no note listing found.
+gid://shopify/Product/9554479513821,,notes not found,Fragrance World Maison De Parfums Palazzo II (Green): no note listing found.
+gid://shopify/Product/9554479612125,,notes not found,Fragrance World Maison De Parfums Zephyr Homme: no note listing found.
+gid://shopify/Product/9554489704669,,notes not found,Fragrance World Roses De Mai Jacques Yves: only a partial pyramid found (no base notes).
+gid://shopify/Product/9557696741597,,conflicting notes,"New Brand Sensual: several New Brand ""Sensual"" products with sharply different notes."
+gid://shopify/Product/9557696839901,,conflicting notes,New Brand Prestige The NB: two retailers give different pyramids.
+gid://shopify/Product/9557694480605,,notes not found,New Brand Essence Pink Gold: no listing or notes found.
+gid://shopify/Product/9557694578909,,conflicting notes,New Brand French Cancan: Parfumo flat list (amber/vanilla/gardenia/iris) vs ScentVerdict pyramid (bergamot/tuberose/cinnamon) disagree.
+gid://shopify/Product/9557694677213,,conflicting notes,New Brand Golf Blue: retailers give citrus/lavender vs cucumber/melon/basil pyramids.
+gid://shopify/Product/9557694742749,,notes not found,New Brand Hero: no notes found for the New Brand product (results only for a different brand's Hero).
+gid://shopify/Product/15408404529373,Acqua Di Parma Buongiorno Amore EDP for Woman,conflicting notes,Title 'Buongiorno Amore' most likely Buongiorno Amore Mio (2026); Harrods and Parfumo give completely different pyramids.
+gid://shopify/Product/15408406954205,Al Wataniah Roua EDP for Man,notes not found,Al Wataniah Roua: no retailer or database listing with notes found.
+gid://shopify/Product/15408418455773,Diptyque Do Son EDP Unisex,conflicting notes,Diptyque Do Son EDP: only a flat 4-note list is consistent; full pyramids disagree across sources.
+gid://shopify/Product/15408420651229,Flavia Viking EDP for Man,version mismatch,"Title says Flavia Viking for Man, but the only notes found are for Viking Pour Femme (single-retailer copy)."
+gid://shopify/Product/15408421994717,Fragrance World Moon Light Lail Al Qamar EDP for Man,notes not found,Fragrance World Moon Light Lail Al Qamar: no note listing found.
+gid://shopify/Product/15408428155101,Khadlaj Hareem Al Sultan Gold Concentrated Perfume Oil for Woman,conflicting notes,Khadlaj Hareem Al Sultan Gold oil: two different pyramids across retailers (rose/nutmeg/oud vs peony/pineapple/plum).
+gid://shopify/Product/15408430973149,Lucianno Heart Beat EDP for Man,notes not found,Lucianno Heart Beat: no listing found for this brand/fragrance.
+gid://shopify/Product/15408431104221,Lucianno Tropical Drift EDP for Man,notes not found,Lucianno Tropical Drift: no listing found.
+gid://shopify/Product/15408431169757,Lucianno California Vibe Extrait for Man,notes not found,Lucianno California Vibe: no listing found.
+gid://shopify/Product/15408436740317,"New Brand Cuba Gold 4pc Set (With As, Sg + Bonus) EDT for Man",conflicting notes,Cuba Gold: three different note pyramids across retailers.
+gid://shopify/Product/15408440705245,Profumum Roma Antico Caruso EDP for Man,conflicting notes,Profumum Antico Caruso: sources say there is no consensus on notes.
+gid://shopify/Product/15408441196765,Profumum Roma Soavissima EDP for Woman,conflicting notes,Profumum Soavissima: sources disagree on pyramid placement (iris top vs heart) and Gush gives a different set.
+gid://shopify/Product/15408443588829,Riiffs Perfumes Riiffs Stella & Luna ( each) EDP for Woman,mixed fragrances,Riiffs Stella & Luna (each): a duo set of two different fragrances (Stella and Luna); notes also conflict.
+gid://shopify/Product/15408447586525,Tom Ford Oud Minerale EDP for Man,conflicting notes,Tom Ford Oud Minerale: no official pyramid; retailers and databases give different lists/tiers.
+gid://shopify/Product/15408448864477,Unique'E Luxury Unique'e D'Olcezza EDP for Man,concentration conflict,Unique'E Luxury D'Olcezza titled EDP for Man; sources list it as extrait (unisex) or EDT.
+gid://shopify/Product/15408451584221,Xerjoff Kemi Jabir Parfum for Man,version conflict,Xerjoff Kemi Jabir: 2014 Kemi version and 2023 Xerjoff re-release have different official/database pyramids.
+gid://shopify/Product/15408452305117,Xerjoff LA Capitale Parfum for Man,conflicting notes,Xerjoff La Capitale: base notes differ across retailers (oud/benzoin/vanilla vs leather/amber/vanilla/musk).
+gid://shopify/Product/15408452534493,Xerjoff Perseveranza Parfum for Man,concentration conflict,Xerjoff Perseveranza titled Parfum; the only known release is Eau de Parfum.
+gid://shopify/Product/15408452632797,Xerjoff Renaissance Parfum for Man,concentration conflict,Xerjoff Renaissance titled Parfum; the known release is Eau de Parfum.
+gid://shopify/Product/15408452862173,Xerjoff Uden Overdose Parfum for Man,concentration conflict,Xerjoff Uden Overdose: sources disagree (EDP vs Parfum vs EDT) and heart notes vary.
+gid://shopify/Product/9555755532509,Hermes H24,version ambiguous,Hermes H24 (50ml) exists as both EDT and EDP with different notes; title/tags don't say which.
+gid://shopify/Product/9557655224541,Al Haramain Opulent Saffron,conflicting notes,Al Haramain Opulent Saffron: three different pyramids across retailers; reviewer notes the listings are confused.
+gid://shopify/Product/10196386971869,Afnan Tribute Black EDP Unisex,conflicting notes,Afnan Tribute Black: Nahdi and Anabis give conflicting pyramids.
+gid://shopify/Product/10196443693277,Mercedes Benz AMG Silver Thrill EDP for Man,conflicting notes,Mercedes-Benz AMG Silver Thrill: brand gives only a flat 3-note list; retailer pyramid differs.
+gid://shopify/Product/10196452147421,New Brand Cuba Orange EDC for Man,conflicting notes,Cuba Orange: retailer note lists disagree.
+gid://shopify/Product/10196452638941,New Brand Cuba Winner EDT for Man,conflicting notes,Cuba Winner: original Cuba and Fragluxe listings give different profiles.
+gid://shopify/Product/9554469880029,Fragrance World Maison De Parfums Ghuroor Blue,notes not found,Maison de Parfums Ghuroor Blue: no note listing found.
+gid://shopify/Product/9557700935901,Perry Ellis 360 PINK,conflicting notes,Perry Ellis 360 Pink: two retailer pyramids that don't match.
+gid://shopify/Product/9557716435165,True Religion EDT for Man,notes unreliable,"True Religion for men: only vague retailer descriptors (citrus/herbs/moss), no reliable pyramid."
+gid://shopify/Product/10196404830429,Chloe Hibiscus Abelmoschus EDP for Woman,notes unreliable,Chloe Hibiscus Abelmoschus: no note pyramid published; only descriptive copy.
+gid://shopify/Product/10196467974365,,conflicting notes,Sean John Unforgivable Woman EDP: retailer pyramids disagree completely (citrus/herbal vs pear/orange).
+gid://shopify/Product/15408408821981,,conflicting notes,Arabian Oud Resala: official-style list (tonka/caramel/vanilla) conflicts with Parfumo/Faces (saffron/rose/chocolate/oud).
+gid://shopify/Product/15408440869085,,conflicting notes,Profumum Roma Arso: no official pyramid; retailers place pine resin/incense/leather in different tiers.
+gid://shopify/Product/15408446046429,,conflicting notes,Stephane Humbert Lucas Pink Boa: base notes disagree across retailers (patchouli/amber/olibanum vs musk/sandalwood vs strawberry/peach).
+gid://shopify/Product/15408452141277,,version unclear,Xerjoff Fierezza: title says Parfum but Xerjoff official page sells it as Eau de Parfum; concentration cannot be matched.
+gid://shopify/Product/9553905483997,,conflicting notes,Fragrance World Cacao: sellers disagree on top (cardamom) and base (cashmere wood vs oud).
+gid://shopify/Product/9557667676381,,conflicting notes,Cacharel Pour Homme EDT: heart and base vary widely between retailers.
+gid://shopify/Product/10196457816285,,conflicting notes,Paris Corner Emir The Triumphant Sapphire: two sources give different pyramids.
+gid://shopify/Product/10196467187933,,version unclear,Royal Crown K'abel: title says EDP but all sources sell it as Extrait de Parfum; concentration cannot be confirmed.
+gid://shopify/Product/15408444571869,,version unclear,Royal Crown K'Abel (No Sticker Seal): title says EDP but all sources sell it as Extrait de Parfum.
+gid://shopify/Product/10196475347165,,conflicting notes,Tiziana Terenzi Vele: base notes diverge between retailers.
+gid://shopify/Product/10196476920029,,conflicting notes,Unique'e Luxury Zen'Gi: retailers place red wine/frankincense/pink pepper in different tiers.
+gid://shopify/Product/10196484522205,,version unclear,"Xerjoff Uden: title says Parfum; Uden is an EDP and Uden Overdose (Parfum) has different notes, so the exact fragrance is unclear."
+gid://shopify/Product/15408424485085,,version unclear,Guy Laroche Drakkar Intense: title says Extrait de Parfum but it is sold only as Eau de Parfum.
+gid://shopify/Product/9204390723805,,conflicting notes,Calvin Klein Obsession Night: three retailer pyramids disagree.
+gid://shopify/Product/9555696156893,,unreliable notes,Lattafa Reyna: only one third-party listing found.
+gid://shopify/Product/9555728793821,,title does not identify fragrance,Emporio Remix: unclear whether Remix for Him or for Her; not searched.
+gid://shopify/Product/9555737608413,,title does not identify fragrance,"Guerlain Insolence: several versions (EDT, EDP, Parfum) with different notes; title gives none."
+gid://shopify/Product/9557680783581,,unreliable notes,"Hermes Un Jardin de Monsieur Li: no top/heart/base breakdown found, only a list of key notes."
+gid://shopify/Product/9557694775517,,conflicting notes,New Brand Master Gold: only partial/ inconsistent retailer note lists.
+gid://shopify/Product/9557705261277,,conflicting notes,"Rasasi Afshan: Rasasi store, Perfume.com and Parfumo give different pyramids."
+gid://shopify/Product/10196401553629,,conflicting notes,Borouj Lamasat Oud: three retailer pyramids disagree.
+gid://shopify/Product/10196413743325,,conflicting notes,Etat Libre d'Orange Divin Enfant: sources disagree in every tier.
+gid://shopify/Product/10196460110045,,unreliable notes,Paris Corner Supreme Gold Autobiography: no note listing found.
+gid://shopify/Product/10196463812829,,unreliable notes,Reyane Insurrection Wild II: only one detailed source.
+gid://shopify/Product/10196464566493,,title does not identify fragrance,"Roberto Cavalli Uomo Edition Parfum: no product called ""Uomo Edition"" found; version unclear."
+gid://shopify/Product/10196472791261,,conflicting notes,The Spirit of Dubai Oud: retailer pyramids differ substantially.
+gid://shopify/Product/15408416489693,,concentration not in house list,Dior Sauvage Eau Forte: alcohol-free water-based formula that fits none of the approved concentration lines; Dior gives no top/heart/base pyramid.
+gid://shopify/Product/7708712796381,,conflicting notes,Katy Perry Mad Potion: retailers give different pyramids.
+gid://shopify/Product/9554469781725,,title does not identify fragrance,Fragrance World Maison De Parfums Asad: no listing for this product; only Lattafa Asad (different house) found.
+gid://shopify/Product/9557665808605,,conflicting notes,Boucheron Femme EDT: retailer lists differ and mix in the EDP.
+gid://shopify/Product/10196470530269,,unreliable notes,Teo Cabanel Jaspe: only a press-blog paraphrase of the brand copy; no structured pyramid.
+gid://shopify/Product/10196474036445,,version unclear,Tiziana Terenzi Bianco Puro: title says EDP but it is sold as Extrait de Parfum; one retailer also gives different notes.
+gid://shopify/Product/6637137232055,,title does not identify fragrance,Salvatore Ferragamo 100 ML EDT Spray: no fragrance name in title.
+gid://shopify/Product/9204391706845,,conflicting notes,Davidoff Cool Water Oceanic Edition (women): sources describe different releases with different notes.
+gid://shopify/Product/9204396884189,,conflicting notes,Guess Seductive I'm Yours: three retailers give different pyramids.
+gid://shopify/Product/9557660565725,,title does not identify fragrance,Jumbo Animale Animale: unclear whether the women's or men's Animale Animale.
+gid://shopify/Product/10196468367581,,title does not identify fragrance,Society EDP for Man: no brand in title; fragrance cannot be identified.
+gid://shopify/Product/9557712175325,"Salvatore Ferragamo ""F""",title does not identify the fragrance,"'F' could be F by Ferragamo for men, for women or F Black; no gender/version in title, variants only list size."
+gid://shopify/Product/10196382744797,Abercrombie & Fitch First Instinct Extreme EDP for Man (Tester),conflicting notes,"Notino/Walmart give gin and tonic, kiwano / suede, amber; Decantx/Nahdi give pepper, mandarin leaf / leather, cashmere wood; no brand page."
+gid://shopify/Product/10196383269085,Acqua Di Parma Colonia Limited Edition Green EDC Unisex,title does not identify the fragrance,'Colonia Limited Edition Green' matches both Colonia Grass Blade Green (2023) and Colonia C.L.U.B. (green cap); different scents.
+gid://shopify/Product/10196395819229,Atelier Patchouli Riviera Absolue Extrait,title does not identify the fragrance,No 'Patchouli Riviera Absolue Extrait' found; closest is Atelier Cologne Patchouli Riviera Cologne Absolue (not an extrait) or Atelier des Ors Riviera Drive EDP.
+gid://shopify/Product/10196406698205,Cosmo Designs Attarfull EDT for Woman,notes not found,No listing for Cosmo Designs Attarfull EDT; only unrelated 'Attar Full' from other houses.
+gid://shopify/Product/10196408369373,Demeter Oud EDC Unisex,notes unreliable,"Demeter Oud is sold as a single-note agarwood cologne; no top/heart/base pyramid, and the one retailer pyramid just repeats oud."
+gid://shopify/Product/10196446511325,Montale Fruits of Musk EDP for Man,conflicting notes,"Montale's official page (lemon, banana / rose, pine resin / toffee, sandalwood) contradicts retailers (mandarin, bergamot / berries, rose / white musk)."
+gid://shopify/Product/10196450476253,Mugler Take Me Out EDT Unisex (Tester),notes unreliable,"Official Mugler page lists only orange blossom, shiso leaf and a 'secret note'; retailer pyramids contradict it."
+gid://shopify/Product/10196466237661,Roja Parfums Danger for Woman,title does not identify the fragrance,"Title gives no concentration; Roja sells Danger Pour Femme as Parfum and as Eau de Parfum with differing note lists (lemon verbena, orris root and clove in one)."
+gid://shopify/Product/10196479967453,Vince Camuto Eterno EDT for Man,conflicting notes,"The Perfume Spot gives citrus, mint / bourbon pepper, saffron / patchouli, cedar; Nearstore gives bergamot, lemon / nutmeg, lavender / cedarwood, musk; no reliable second or official source."
+gid://shopify/Product/10196485538013,Zarkoperfume Pink Molecule 090.09 EDP for Man,notes do not fit the house format,"Brand states Pink Molecule 090.09 has no heart notes (top goes straight to base), so the required Heart notes line cannot be filled truthfully."
+gid://shopify/Product/9553604673757,Armaf Bucephalus IX,conflicting notes,"Five retailers give five different pyramids for Bucephalus No. IX (Superdrug: mint, cinnamon, leather; Anabis: pink pepper, oakmoss; Nearstore: lavender, apple, myrrh); likely reformulated ('improved') version."
+gid://shopify/Product/9554489639133,Fragrance World Queen,title does not identify the fragrance,"'Fragrance World Queen' (100ml) matches neither clearly: Queen of Hearts is sold in 80ml, and Monarch Queen is a different scent."
+gid://shopify/Product/9555700580573,Lattafa Sheikh Al Shuyukh Marakaz,notes not found,Only one retailer (Bjutip) lists notes for the Marakaz concentrated version; other Sheikh Al Shuyukh versions differ entirely.
+gid://shopify/Product/10196423246045,Gulf Orchid Al Qasr EDP for Man,title does not identify the fragrance,"Gulf Orchid sells Al Qasr Silver (men's, aromatic fougère) and Al Qasr Gold/Dahab (oriental woody); title gives neither."
+gid://shopify/Product/10196441006301,Mandarina Duck Black EDT for Man,conflicting notes,Mandarina Duck Black and Pure Black listings are mixed up (different launch years/perfumers); Nearstore gives a different pyramid; cannot confirm which notes belong to Black.
+gid://shopify/Product/10196451262685,Nasamat Haiti Vetiver EDP for Man,notes not found,"Only a Decantx listing exists and its notes (peach, plum, violet, peony) contain no vetiver and look mislabelled."
+gid://shopify/Product/10196452114653,New Brand Cuba Orange EDT for Man,conflicting notes,"Nearstore: orange, lemon / cinnamon, vanilla / cedar, musk; Perfumania: jasmine, cedar, sandalwood; Cosmetify: vetiver, lavender / vanilla, amber."
+gid://shopify/Product/10196481409245,Xerjoff Homme Parfum for Man,title does not identify the fragrance,Xerjoff sells both the 17/17 Homme parfum and Homme Anniversary (also a parfum) with different notes; only one source gave a full pyramid for the original.
+gid://shopify/Product/15408441360605,Profumum Roma Tuberosa for EDP for Man,notes do not fit the house format,"Profumum Roma Tuberosa is listed only as tuberose, gardenia and jasmine with no top/heart/base structure."
+gid://shopify/Product/9553605001437,Armaf Connoisseur Black,title does not identify the fragrance,No 'Armaf Connoisseur Black' found; Connoisseur (men/women) and Armaf Black are different scents and Connoisseur listings conflict.
+gid://shopify/Product/10196393656541,Arabian Oud Majestic Signature EDP for Man,title does not identify the fragrance,No 'Majestic Signature' exists; Arabian Oud sells Majestic and Signature as separate scents.
+gid://shopify/Product/10196397326557,Attar Collection Floral Musk EDP for Man (Tester),notes not found,Only FragranceNet lists a pyramid for Attar Collection Floral Musk; no second source or brand page confirms it.
+gid://shopify/Product/10196414234845,Etienne Aigner Blue EDT for Man,title does not identify the fragrance,"'Etienne Aigner Blue' is not a confirmed product name (closest is Aigner Pour Homme Blue Emotion), and its notes come from a single retailer (Rossmann)."
+gid://shopify/Product/10196414628061,Faconnable Face a Face EDT for Woman,notes not found,"Faconnable Face a Face: retailers give only vague 'greens/citrus, floral heart' wording, no specific notes."
+gid://shopify/Product/10196427374813,Jean-Louis Scherrer S de Scherrer EDT for Woman,notes not found,"S de Scherrer: only a Perfume.com men's listing with an incomplete note list; title says 'for Woman', no matching women's pyramid found."
+gid://shopify/Product/10196429406429,Juliette Has a Gun Oil Fiction EDP for Woman,conflicting notes,"Escentual/review give an unstructured 4-note list (amber, iris, tuberose, jasmine); Nose Paris, Sephora FR and Nearstore give different pyramids (bergamot, saffron, suede, vanilla); possible relaunch."
+gid://shopify/Product/10196460896477,Paris Hilton Dazzle EDP for Woman,conflicting notes,"Nearstore/MacVice (same feed) give violet, apple / cherry, honeysuckle / vanilla, sandalwood; Perfumebox and an eBay listing give peach, champagne, orchid, patchouli; old vs new formula unclear."
+gid://shopify/Product/10196460929245,Patek Maison Merakai Bliss EDP for Man,notes unreliable,"Merakai Bliss pyramid appears only on Triple Traders and a dubious reseller page; Editorialist gives a different profile (rose, peony, amber)."
+gid://shopify/Product/10196473151709,Thomas Kosmala Bukhoor Elixir de Parfum for Man,conflicting notes,"Bukhoor Elixir: retailers disagree on heart/base (smoke vs oud heart; sandalwood or not), the EDP version differs again, and 'Elixir de Parfum' does not map cleanly to an allowed concentration line."
+gid://shopify/Product/10196476723421,Unique'E Luxury Unique'e Chicelle EDP for Woman,notes not found,No listing found for a Unique'E Luxury fragrance named 'Chicelle'.
+gid://shopify/Product/15408437985501,"Parfums de Nicolai Oud Trio Set (Amber Oud, Incense Oud, Rose Oud) EDP for Man",product mixes different fragrances,"Oud Trio Set contains three separate fragrances (Amber Oud, Incense Oud, Rose Oud); one note pyramid cannot describe it."
+gid://shopify/Product/10196389953757,Al Haramain L'Aventure EDP for Woman (Tester),title does not identify the fragrance,"Al Haramain sells both L'Aventure (elemi, lemon, jasmine, patchouli) and L'Aventure Femme (pineapple, berries, freesia); title 'L'Aventure ... for Woman' could be either."
+gid://shopify/Product/10196397457629,,unreliable notes,"Attar Collection King Solomon: only one prose retailer description, no agreeing pyramid."
+gid://shopify/Product/10196399456477,,unreliable notes,Bene Olet Oud de Nuit: no listing with notes found.
+gid://shopify/Product/10196408467677,,unreliable notes,Demeter Pipe Tobacco: only one retailer pyramid; others give general descriptors.
+gid://shopify/Product/10196411973853,,title does not identify fragrance,Emanuel Ungaro Femme (Pink): no release by that name; several Ungaro EDPs with different notes.
+gid://shopify/Product/10196424589533,,unreliable notes,Hemel Amethyst Dream: no listing found.
+gid://shopify/Product/10196436058333,,unreliable notes,Lucianno Lifestyle Collection Inferno: no listing found.
+gid://shopify/Product/10196451164381,,unreliable notes,Nasamat Brazilian Spices Gold: only partial top notes from one retailer.
+gid://shopify/Product/15408451813597,,variants mix different fragrances,"Xerjoff Trio Set: three separate fragrances (Naxos, Alexandria II, Golden Dallah)."
+gid://shopify/Product/10196461650141,,unreliable notes,"Profumum Roma Santalum: sources only list myrrh, sandalwood, spices with no top/heart/base breakdown."
+gid://shopify/Product/15408438870237,,title does not identify fragrance,"Paris Hilton Can Can Set (Aged Vanilla): no ""Aged Vanilla"" release found; Can Can vs Can Can Burlesque unclear, base notes conflict."
+gid://shopify/Product/9204396589277,,conflicting notes,Guess Seductive Charm EDT: Notino and ScentVerdict pyramids disagree beyond grapefruit/freesia/amber.
+gid://shopify/Product/10196404273373,,unreliable notes,"Cartier Pasha Noir Absolu Parfum: only accord descriptions (burnt wood, caramelised sugar); no agreeing top/heart/base pyramid."
+gid://shopify/Product/10196412825821,,unreliable notes,Escentric Molecules Molecule 05: single-molecule scent (Cashmeran) with no top/heart/base pyramid.
+gid://shopify/Product/10196412924125,,unreliable notes,Escentric Molecules Molecule 04: single-molecule scent (Javanol) with no top/heart/base pyramid.
+gid://shopify/Product/10196424622301,,unreliable notes,Hemel Favourite Black: no listing found.
+gid://shopify/Product/10196430684381,,unreliable notes,Karen Low Pure Eau Fraiche: notes listed without any top/heart/base breakdown.
+gid://shopify/Product/10196436615389,,unreliable notes,"Luniche Autograph Rose Gold: only two notes (cassis, vanilla) from one retailer."
+gid://shopify/Product/10196447428829,,conflicting notes,Montale Patchouli Leaves: retailers place vanilla/patchouli/musk in different tiers.
+gid://shopify/Product/10196450443485,,unreliable notes,"Mugler Cologne Take Me Out: official notes only orange blossom, shiso and an undisclosed note; retailer pyramids contradict them."
+gid://shopify/Product/10196463321309,,unreliable notes,Rasasi Twinkle: only one pyramid (Parfumo); retailer gives general description only.
+gid://shopify/Product/10196467155165,,conflicting notes,Royal Crown Isabella: Maxaroma and Parfumo give different note lists.
+gid://shopify/Product/10196467777757,,unreliable notes,Sabrina Carpenter Sweet Tooth Caramel Dream EDP: only one retailer (body mist listing) gives notes.
+gid://shopify/Product/10196470628573,,version unclear,Teo Cabanel Oha Premium: notes found only for regular Oha; Premium version may differ.
+gid://shopify/Product/10196472660189,,conflicting notes,The Spirit of Dubai Diwan: retailer pyramids disagree.
+gid://shopify/Product/10196476133597,,version unclear,Tous LoveMe The Emerald Elixir: title says EDP but retailers sell it as Parfum; only one tiered pyramid.
+gid://shopify/Product/10196476625117,,unreliable notes,Trussardi Uomo Levriero Collection: notes found only on one retailer (Ferwer).
+gid://shopify/Product/10196481769693,,version unclear,Xerjoff Shunkoin: title says Parfum but it is sold as EDP; only one partial note listing.
+gid://shopify/Product/10196485603549,,conflicting notes,Zirh Corduroy: retailer pyramids disagree.
+gid://shopify/Product/15408407871709,,conflicting notes,Alghabra Ottoman Treasure: retailer description and listed pyramid disagree on heart and base.
+gid://shopify/Product/15408430514397,,conflicting notes,Loewe Aire Anthesis: brand gives notes without tiers; retailer pyramids disagree.
+gid://shopify/Product/9557694546141,,title does not identify fragrance,Essence Purple By New Brand: no product by that name found.
+gid://shopify/Product/10196388708573,,unreliable notes,Ajmal Oath for Women: only one retailer gives a full pyramid.
+gid://shopify/Product/10196391821533,,conflicting notes,Amouroud Himalayan Woods: three sources give different pyramids.
+gid://shopify/Product/10196396277981,,conflicting notes,Atelier des Ors Larmes du Desert: retailers disagree on top and base; brand gives no note list.
+gid://shopify/Product/10196417216733,,version unclear,Franck Boclet Flower Extrait: only Flowers EDP found (one source); no extrait version.
+gid://shopify/Product/10196424884445,,unreliable notes,"Hermes Un Jardin a Cythere: brand lists only grasses, olive wood, pistachio with no top/heart/base breakdown."
+gid://shopify/Product/10196446871773,,conflicting notes,Montale Jasmin Full: retailers place jasmine/orange blossom/musk in different tiers.
+gid://shopify/Product/10196468203741,,title does not identify fragrance,"Shaik Number 77: Classic, Blue and Sapphire No. 77 all exist with different notes; title does not say which."
+gid://shopify/Product/10196470956253,,conflicting notes,Thameen Peacock Throne: retailers give different top notes (lemon/pink pepper/nutmeg vs orris/pink pepper/jasmine).
+gid://shopify/Product/9555755270365,,version unclear,"Hermes Amazone: original 1974 EDT, newer EDT and Eau de Fraicheur have different notes; title gives no version."
+gid://shopify/Product/10196472529117,The Spirit of Dubai Dubai Aamal EDP for Man,conflicting notes,"Maxaroma listings give two different pyramids for Aamal (cinnamon, coffee, rose / patchouli, saffron vs peach, apple, cardamom / raspberry, benzoin); no brand page."
+gid://shopify/Product/15408445292765,Salvatore Ferragamo Uomo Urban Feel Set EDT for Man,"gift set, contents not identified","Product type is Gift Set; title/variants do not say what the set contains, so a single-fragrance description could mislead."
+gid://shopify/Product/15408449781981,Valentino Notte d'Oro Parfum for Man,notes not found,No source lists a Valentino 'Notte d'Oro' parfum; search returned only other Born in Roma Uomo versions.
+gid://shopify/Product/9204385841373,Hummer Legendary Eau de Toilette for Men - 125 ML,conflicting notes,"Retailers agree on top notes but one gives aromatic herbs / earthy woods, musk and another cardamom, cedarwood, orris / tonka, amber, musk; no brand page."
+gid://shopify/Product/9557673345245,Cartier Must De Cartier W Spray,title does not identify the fragrance,"'Must De Cartier W Spray' gives no concentration (sold as EDT and Parfum), and retailers give only vague green / flowers / vanilla notes with no full pyramid."
+gid://shopify/Product/9557699100893,P.S. Fine,title does not identify the fragrance,'P.S. Fine' (240ml) does not name a recognisable fragrance or concentration; 240ml suggests a body spray/cologne of unknown identity.
+gid://shopify/Product/9557701099741,Pierre Cardin,title does not identify the fragrance,Title is only the brand 'Pierre Cardin'; the house makes many different fragrances.
+gid://shopify/Product/9557709783261,Rasasi La Yuqawam W 75m,conflicting notes,"La Yuqawam Pour Femme: Arabic Parfums gives frankincense, bergamot / cinnamon, ylang-ylang / sandalwood, milk; Nearstore EN gives raspberry, bergamot / jasmine, orange blossom / amber, sandalwood; Nearstore FR gives saffron, raspberry / jasmine, rose / amber, leather."
+gid://shopify/Product/10196393492701,Anucci Rose EDP for Woman,notes not found,No listing for Anucci Rose found; only Anucci Oud and unrelated rose fragrances.
+gid://shopify/Product/10196395557085,Aroma Infinity Aabir the Fire Al Naar EDP for Man,notes not found,No listing for Aroma Infinity Aabir The Fire Al Naar found.
+gid://shopify/Product/10196400275677,Birkholz Secret Rendezvous EDP for Woman,notes not found,No note pyramid for Birkholz Secret Rendezvous; only a Parfumo review describing it as floral and powdery.
+gid://shopify/Product/10196419281117,Galleria Parfums Dusk To Dawn Extrait,notes not found,No listing for Galleria Parfums Dusk To Dawn found; only similarly named products from other houses.
+gid://shopify/Product/10196419805405,Giorgio Group Giorgio Brown Special Edition EDP for Man,notes not found,No listing for Giorgio Group 'Giorgio Brown Special Edition' found; only Giorgio Black and Pink.
+gid://shopify/Product/10196420231389,Glenn Perri Unpredictable Lady EDP for Woman,conflicting notes,"FragranceNet gives bergamot, green notes, jasmine, rose, lily of the valley, sandalwood, musk, amber with no layers; Perfumebox describes bergamot, jasmine, vanilla, cedarwood; no brand page."
+gid://shopify/Product/10196423639261,Gulf Orchid Maison Asrar Harmony EDP for Man,notes not found,No listing for Maison Asrar Harmony found; only other Maison Asrar scents.
+gid://shopify/Product/10196439892189,Mancera Musk of Flowers EDP for Man,conflicting notes,"Retailers give different tops (bergamot, cassis vs grapefruit, fruity notes) and bases (white musk, sandalwood vs musk, amber, white woods); no brand page."
+gid://shopify/Product/10196462567645,Ramon Monegal Soul Oud Extrait,notes unreliable,"Soul of Oud is mostly listed as a flat note list; only Notino gives a pyramid (and adds vanilla absent elsewhere), so no two agreeing top/heart/base sources."
+gid://shopify/Product/10196463091933,Rasasi LA Yuqawam Pour Femme EDP for Woman,conflicting notes,"La Yuqawam Pour Femme: Arabic Parfums gives frankincense, bergamot / cinnamon, ylang-ylang / sandalwood, milk; Nearstore EN gives raspberry, bergamot / jasmine, orange blossom / amber, sandalwood; Nearstore FR gives saffron, raspberry / jasmine, rose / amber, leather."
+gid://shopify/Product/10196463255773,Rasasi Shaghaf EDP for Man,notes not found,Only one retailer (Notino) gives a pyramid for Shaghaf for men; no second source or brand page.
+gid://shopify/Product/10196463288541,Rasasi Shaghaf EDP for Woman,conflicting notes,"Shaghaf for women is mixed up with Nafaeis Al Shaghaf: Notino (almond, coffee / tuberose, iris / tonka, cocoa), Scents Angel (... / vanilla, musk, sandalwood, amber) and Nearstore (bergamot, mandarin / rose / amber, patchouli) differ."
+gid://shopify/Product/10196465778909,Roja Parfums Roja Apex Pour Homme Edition EDP for Man,title does not identify the fragrance,"'Apex Pour Homme Edition EDP' is ambiguous: Roja sells Apex EDP (citrus, pineapple, cistus) and Apex Pour Homme Parfum (snow, peppermint, pear) with different notes, and retailers mix the names."
+gid://shopify/Product/10196466401501,Roja Parfums Roja Reckless for Woman,title does not identify the fragrance,"Reckless Pour Femme is sold as Eau de Parfum, Parfum and Essence de Parfum; title gives no concentration."
+gid://shopify/Product/10196468138205,Serge Lutens Poivre Noir EDP for Man,conflicting notes,"Retailers (Harrods, Escentual, Cosma) give black pepper / cedar / nutmeg, but the official Serge Lutens page lists mugwort, bergamot, immortelle."
+gid://shopify/Product/10196472430813,The Perfumer's Workshop Samba Natural EDT for Man,notes not found,Only Perfumania lists notes for Samba Natural for men; no second source or brand page.
+gid://shopify/Product/10196476264669,Trussardi Anniversary (Relaunch) EDT for Man,title does not identify the fragrance,"No 'Trussardi Anniversary (Relaunch)' EDT found; results cover only Trussardi Uomo (2011, the 100th-anniversary launch), so the exact version can't be confirmed."
+gid://shopify/Product/10196476297437,Trussardi Anniversary (Relaunch) EDT for Man (Tester),title does not identify the fragrance,"No 'Trussardi Anniversary (Relaunch)' EDT found; results cover only Trussardi Uomo (2011, the 100th-anniversary launch), so the exact version can't be confirmed."
+gid://shopify/Product/10196476362973,Trussardi Donna Levriero Collection Intense EDP for Woman,notes not found,No pyramid for Donna Levriero Collection Intense; only the non-Intense Levriero EDP and the separate Donna EDP Intense.
+gid://shopify/Product/10196478132445,Versace Atelier Collection Cedrat de Diamante EDP for Man (Tester),notes do not fit the house format,"Cedrat de Diamante is listed only with top (Italian lemon, pink grapefruit) and heart (vetiver, cedarwood) notes; no base notes, so the Base notes line cannot be filled truthfully."
+gid://shopify/Product/15408429039837,Karl Lagerfeld Karl EDT for Man,conflicting notes,"Two 2014 Karl Lagerfeld men's EDTs are mixed up: 'Karl Lagerfeld' (mandarin, lavender / cedar, geranium / sandalwood, tonka) vs 'Karl Lagerfeld for Him' (lavender, tangerine / violet leaf, apple leaf / sandalwood, amber); title 'Karl' does not say which."
+gid://shopify/Product/15408441491677,Profumum Roma Vir EDP for Man,notes do not fit the house format,"Profumum Roma Vir is listed only as a flat note list (cannabis, cedarwood, incense, oud, sandalwood, tobacco) with no top/heart/base structure."
+gid://shopify/Product/15408443195613,Rasasi It'S Essential EDP for Man,notes not found,Only one retailer listing gives a pyramid for Rasasi It's Essential; other listings have no notes.
+gid://shopify/Product/6225259462839,Vera Wang Eau de Parfum for Women,conflicting notes,"Vera Wang for Women: Perfumania/Kmart give mandarin blossom, cleaver / rose, gardenia / stephanotis, musk; Triple Traders/Cloud10 give calla lily, rose / lotus, stephanotis / nectar, white woods (likely reformulation)."
+gid://shopify/Product/9554489049309,Fragrance World Paradox Tribute,notes not found,"Only Triple Traders (one retailer, repeated pages) lists notes for Paradox Tribute; no second source or brand page."
+gid://shopify/Product/9555737805021,Guerlain L'Instant,title does not identify the fragrance,"'Guerlain L'Instant' could be L'Instant de Guerlain (women) or L'Instant de Guerlain pour Homme, each in EDT and EDP with different notes; title gives neither gender nor concentration."
+gid://shopify/Product/10196394639581,Aristocrazy Brave EDT for Woman,conflicting notes,"FragranceNet gives pink pepper, bergamot / magnolia, florals / woods, musk, almond; Cosmetify gives only generic citrus / spicy / woody; no brand page."
+gid://shopify/Product/10196399587549,Bene Olet Zion EDP for Man,notes not found,"No listing for Bene Olet Zion found; results only cover Alexandria Fragrances Zion, a different house."
+gid://shopify/Product/10196408139997,Demeter Cannabis Flower EDC Unisex,notes unreliable,"Demeter Cannabis Flower has no official pyramid; Perfume.com gives only cannabis, green / floral hints / earthy accords, and Gush says it stays linear on cannabis."
+gid://shopify/Product/10196408238301,Demeter Cocoa Butter EDC for Man,notes unreliable,"Demeter colognes are single-note, linear scents without a top/heart/base pyramid (see Cannabis Flower research); no reliable pyramid for Cocoa Butter."
+gid://shopify/Product/10196413055197,Estiara Stag Life EDT for Man,notes not found,"No listing for Estiara 'Stag Life' found; only Stag, Stag Black and Stag White, which have different notes."
+gid://shopify/Product/10196429603037,Juliette Has a Gun Miss Charming EDP for Woman,conflicting notes,"Retailers disagree: Moroccan rose / wild berries / musk vs red berries / rose / musk, amber vs strawberry, lychee lists, plus an unrelated lavender-apple-smoke list."
+gid://shopify/Product/10196442218717,Matiere Premiere Cologne Cedrat EDP Unisex,conflicting notes,"Selfridges/Notino give bergamot / pink and black pepper / maté, but ZGO (peppers / citron / maté), Paris Gallery (citron, bergamot / maté, pepper, rose bay / vetiver, cedar, musk) and Scents Angel (cedrat / maté, black tea / timut, musk) differ."
+gid://shopify/Product/10196451360989,Nasamat Oud Bouquet EDP Unisex,notes do not fit the house format,"Nasamat Oud Bouquet is listed only as a flat note list (orange, lemon, bergamot, fruity notes, amber, white musk, vanilla) with no top/heart/base structure."
+gid://shopify/Product/10196461387997,Police To Be Classic EDT for Man,title does not identify the fragrance,"No 'Police To Be Classic' found; Police To Be has many flankers (Man, Green, Bad Guy, Camouflage, To Be or Not To Be) with different notes, and only one retailer gives a pyramid for the original Man."
+gid://shopify/Product/10196461912285,Rabanne Crazy Me EDP for Man,notes not found,No listing for a Rabanne 'Crazy Me' men's EDP found; results only cover Million Gold for men.
+gid://shopify/Product/10196462207197,Rabanne Strong Me EDP for Man,notes not found,No listing for a Rabanne 'Strong Me' EDP found; results only cover Million Gold for Her.
+gid://shopify/Product/10196462600413,Ramon Monegal The Paradise EDP for Man,title does not identify the fragrance,"No Ramon Monegal 'The Paradise' found; only 'The New Paradise' (2019), which cannot be confirmed as the same product."
+gid://shopify/Product/10196464697565,Rochas Byzance (Relaunch) EDP for Woman,conflicting notes,"Byzance (2019 relaunch): Notino gives rose, freesia, heliotrope / vanilla, blond wood, musk; Nearstore gives jasmine, magnolia, rose / patchouli, vanilla, amber; official Rochas page only names bergamot, pear and vanilla."
+gid://shopify/Product/10196467450077,Royal Crown Oud Santal Extrait,conflicting notes,"Royal Crown Oud Santal: DecantX (sandalwood, clary sage, styrax, cumin / sandalwood, iris, jasmine / oud, gurjan, vanilla, ebony, musk) vs Fragrance Lord (bergamot, lemon, saffron / rose, jasmine, oud / sandalwood, patchouli, amber); Maxaroma base only."
+gid://shopify/Product/10196474298589,Tiziana Terenzi Chi Extrait,conflicting notes,"Tiziana Terenzi Chi: Perfume.com gives coffee, milk, almond, caramel / vanilla, oud, truffle; Nearstore gives bergamot, grapefruit / jasmine, rose, peony / amber, sandalwood, vanilla; no official list."
+gid://shopify/Product/15408412524765,By Kilian Back To Black EDP Unisex,conflicting notes,Kilian Back to Black: retailers give different tier placements (honey/cherry/raspberry top vs bergamot/cardamom/coriander; tobacco in heart vs base); no official pyramid found.
+gid://shopify/Product/15408425631965,Houbigant Vanille Imperial Extreme EDP,title does not identify fragrance,"Houbigant Vanille Imperial Extreme: no ""Extreme"" version found; only Vanille Imperiale EDP exists, so the exact product cannot be confirmed."
+gid://shopify/Product/15408435658973,Mugler Run Free EDT Unisex,unreliable notes,"Mugler Run Free: listings give only purple ginger, akigalawood and a secret ""D"" note, repeated across heart and base; no three-tier pyramid."
+gid://shopify/Product/15408440508637,Profumum Roma Alba EDP for Man,conflicting notes,"Profumum Roma Alba: notes agree (almond, hazelnut, iris, amber, sandalwood) but tier placement conflicts (amber top on one retailer vs base on Gush); no official pyramid."
+gid://shopify/Product/15408447520989,Tom Ford Black Orchid Reserve Parfum for Man,unreliable notes,"Tom Ford Black Orchid Reserve: official page gives key notes without tiers; Bluemercury and Scento give different pyramids (Scento adds truffle, bergamot, chocolate, vanilla)."
+gid://shopify/Product/15408448438493,Tommy Hilfiger Tommy Loud EDT for Woman (Tester),conflicting notes,"Tommy Hilfiger Tommy Loud (for Her): Cosmetify (lychee / patchouli) vs Nearstore (raspberry, apple / jasmine, peony / amber, musk) vs Perfume.com (rose, litchi); no official list."
+gid://shopify/Product/9174431629533,Swiss Arabian Sehr Al Sheila Eau De Parfum For Women - 100 ML,conflicting notes,Swiss Arabian Sehr Al Sheila: Notino top agarwood/fresh/spices vs Bjutip top Damascus rose vs Triple Traders citrus/fig/apricot pyramid.
+gid://shopify/Product/9204394655965,Gucci Bloom Eau de Parfum for Women - 100 ML,conflicting notes,"Gucci Bloom EDP: Harrods, Lookfantastic, National Pharmacies and Walmart place Rangoon creeper, jasmine and tuberose in different tiers; no official pyramid found."
+gid://shopify/Product/9204399276253,Juicy Couture Viva La Juicy Neon Eau de Parfum for Women - 50 ML,conflicting notes,"Juicy Couture Viva La Juicy Neon: eCosmetics (grapefruit, lemon, raspberry / orange blossom, gardenia, jasmine / tonka, musk, woods) vs Nearstore (berries, citrus / honeysuckle, gardenia / vanilla, sandalwood, amber)."
+gid://shopify/Product/9557680849117,Hugo Boss Signature (White),title does not identify fragrance,"Hugo Boss Signature (White): no Hugo Boss fragrance called ""Signature"" found; possibly Boss in Motion White or Boss Bottled, cannot confirm."
+gid://shopify/Product/9557696676061,Seduction By New Brand,unreliable notes,"Seduction by New Brand: only a Brazilian listing for ""New Brand Prestige Seduction"" gives notes; Superdrug listing for Seduction has none; no second agreeing source."
+gid://shopify/Product/10196466630877,Rosendo Mateu No 3 Neroli Iris White Musk EDP for Man,conflicting notes,"Rosendo Mateu No 3: Nose Paris/Allyours give coffee, neroli / cinnamon, mint, orris / vanilla, musk; La Maison du Parfum and Osme give neroli, bergamot / iris, jasmine, rose / musk, sandalwood, vetiver, amber."
+gid://shopify/Product/10196467056861,Royal Crown Imperator EDP for Man,version does not match title,"Royal Crown Imperator: title says EDP but every source (Parfumo, Maxaroma, DecantX) sells it only as an extrait/parfum; concentration line cannot be confirmed."
+gid://shopify/Product/10196468236509,Shiseido Zen Gold EDP for Woman,conflicting notes,"Shiseido Zen Gold (Elixir): Parfumo, FragranceNet and Nearstore give three different pyramids; no official list found."
+gid://shopify/Product/10196473086173,Thomas Kosmala Bliss In Paradise EDP for Man,conflicting notes,"Thomas Kosmala Bliss in Paradise: Scentsplit/Fragrancesline give bergamot, saffron / patchouli, frankincense, labdanum / oud, amber, leather; Paris Gallery gives mango, passion fruit / frangipani, tiare / vanilla, coconut; Fragrance Lord gives pear, marine."
+gid://shopify/Product/10196474724573,Tiziana Terenzi II Piacere Extrait,conflicting notes,"Tiziana Terenzi Il Piacere: Scents Angel / La Maison du Parfum pyramid differs from Harrods and Parfumdreams in tier placement and notes (muguet, saffron, amber, pansy)."
+gid://shopify/Product/10196475805917,Tommy Bahamas Cognac EDC for Man,title does not identify fragrance,Tommy Bahamas Cognac: no Tommy Bahama fragrance called Cognac found in any listing.
+gid://shopify/Product/10196477018333,V Canto Amans EDP for Man,version does not match title,"V Canto Amans: title says EDP but every source (Parfumo, DecantX, Perfumebox, Nearstore) sells it only as an Extrait de Parfum."
+gid://shopify/Product/7889633575133,Oscar De La Renta Oscar for Women By Eau De Toilette Spray - 200 ML,conflicting notes,"Oscar de la Renta Oscar EDT: Interparfums page (mandarin, bergamot, coriander, basil / ylang, genet, orange flower, carnation / ionone, heliotrope, coumarin) differs from retailer pyramids (peach, gardenia, tuberose, orchid / opoponax, amber, patchouli); reformulated."
+gid://shopify/Product/9144329863389,Swiss Arabian Dukhoon Al Jazeera - 70 Grams,not a perfume,"Swiss Arabian Dukhoon Al Jazeera 70 g is bakhoor (incense for burning), not a wearable fragrance."
+gid://shopify/Product/9204389380317,Aquolina Pink Sugar Creamy Sunshine Eau de Toilette for Women - 100 ML,conflicting notes,"Aquolina Pink Sugar Creamy Sunshine: Tripletraders, Nearstore and FragranceX give three different note lists; no official pyramid."
+gid://shopify/Product/9555755663581,Hermes L'Ambre Des Merveilles,conflicting notes,"Hermes L'Ambre des Merveilles: The Perfume Shop and Osmoz place amber, patchouli, labdanum and vanilla in different tiers; Hermes page gives only an accord."
+gid://shopify/Product/9557699035357,Casual by P.S.,conflicting notes,"Casual by Paul Sebastian: Perfume Intelligence, Miles Kimball/FragranceMarket and FragranceX give different pyramids."
+gid://shopify/Product/10196393623773,Arabian Oud Majestic Platinum Parfum for Woman,unreliable notes,"Arabian Oud Majestic Platinum: only a 2013 press note (sandalwood, balsa, bergamot flower, berries); no pyramid in any listing."
+gid://shopify/Product/10196395589853,Aroma Infinity Aabir the Water Al Maau EDP for Man,unreliable notes,Aroma Infinity Aabir The Water Al Maau: no listing with notes found.
+gid://shopify/Product/10196437565661,M. Micallef Ylang In Gold EDP for Woman (Tester),conflicting notes,"M. Micallef Ylang in Gold: Scents Angel/Maxaroma (caramel, rose, bergamot top) conflict with Parfumdreams/50-ml/Notino (peach, lychee, mandarin top; magnolia, mint heart; oakmoss base)."
+gid://shopify/Product/10196437762269,M. Micallef Royal Rose Aoud EDP for Woman,conflicting notes,"M. Micallef Royal Rose Aoud: Proshop gives rose / oud / woods only; Larose gives fruit, rose / agarwood / white chocolate, ambergris, vanilla, guaiac; no agreeing pyramid."
+gid://shopify/Product/10196442677469,Maurer & Wirtz 4711 Aqua Colonia Lychee and White Mint EDC Unisex,conflicting notes,"4711 Acqua Colonia Lychee & White Mint: Nearstore lists only lychee and mint; Perfume.com adds white tea, magnolia, iris, musk; District adds moss."
+gid://shopify/Product/10196445823197,Montale Arabians EDP for Man,title does not identify fragrance,"Montale Arabians: no plain ""Arabians"" pyramid found; Montale has Arabians Tonka, Arabians Musk, Arabians Rose Leather, each different."
+gid://shopify/Product/10196452311261,New Brand Cuba Red EDT for Man,conflicting notes,"New Brand Cuba Red: no New Brand listing found; Cuba Red listings (Perfumania, Gush, Perfume.com, Nearstore/Fragluxe) give different pyramids."
+gid://shopify/Product/10196462403805,Ralph Lauren Polo Red Edition EDP for Man,conflicting notes,"Ralph Lauren Polo Red Edition EDP: Escentual (ginger, grapefruit, cranberry / lavender, sage, saffron, mint / red wood, benzoin, opoponax, musk) vs Lookfantastic (bergamot / lavender / musk, guaiac, cedar); ""Edition"" also ambiguous vs Polo Red Parfum."
+gid://shopify/Product/10196400013533,Berdoues Collection Grands Crus Peng Lai EDP Unisex (Tester),notes not found,No source lists Berdoues Grands Crus Peng Lai notes.
+gid://shopify/Product/10196406730973,Costume National Scent Intense Red Edition Parfum for Man,conflicting notes,Red Edition sources give two different pyramids (rose/white flowers/saffron vs bergamot/cardamom/green tea).
+gid://shopify/Product/10196408303837,Demeter Cucumber EDC for Man,conflicting notes,Demeter Cucumber: retailers give different pyramids (calamus/lotus/violet vs violet leaf/lime vs melon/woods); no brand pyramid.
+gid://shopify/Product/10196413350109,Etat Libre D'Orange Jasmin et Cigarette EDP for Woman,conflicting notes,Jasmin et Cigarette: two different pyramids (apricot/hay/tobacco vs galbanum/sage/mate).
+gid://shopify/Product/10196425048285,Hermetica Cedarise EDP for Man,conflicting notes,"Hermetica Cedarise: brand, Nahdi, Lookfantastic, Perfume.com and Harvey Nichols all list different notes."
+gid://shopify/Product/10196434485469,Lengling No 2 Skrik Parfum for Man (Tester),conflicting notes,"Lengling Skrik: Petit Parfums (lavender, Iso E Super, hedione...) vs Nearstore (bergamot, lemon, mint...) disagree."
+gid://shopify/Product/10196451295453,Nasamat Italian Bergamot EDP for Man,conflicting notes,Nasamat Italian Bergamot: listings give floral pyramids that don't match a bergamot scent; no reliable pyramid.
+gid://shopify/Product/10196466041053,Roja Parfums Roja Enigma Edition EDP for Man,conflicting notes,"Roja Enigma: retailers list different top accords and concentrations (Parfum Cologne, Parfum, Extrait); no reliable EDP pyramid."
+gid://shopify/Product/15408443949277,Roja Parfums Creation-E Essence de Parfum,conflicting notes,"Roja Creation-E (the Enigma line, renamed): same conflicting pyramids/concentrations as Enigma; no brand pyramid found."
+gid://shopify/Product/10196466204893,Roja Parfums Danger for Man,concentration and notes unclear,Title gives no concentration (Danger exists as Parfum and Parfum Cologne) and Paris Gallery's pyramid conflicts with ZGO/VG Charme.
+gid://shopify/Product/10196470792413,Thameen Bold As Love Elixir Cologne,concentration unclear,"Notes agree, but Bold As Love is sold as a 'Cologne Elixir' (Harrods) and as an extrait elsewhere; no house concentration line fits with confidence."
+gid://shopify/Product/10196472594653,The Spirit of Dubai Dubai Abraj EDP for Man,conflicting notes,"Spirit of Dubai Abraj: Maxaroma, DecantX, Beauty The Shop and Nearstore give different pyramids."
+gid://shopify/Product/10196473315549,Thomas Kosmala Le Sel de la Terre EDP for Man,conflicting notes,"Kosmala Le Sel de la Terre: Walmart/Luckyscent (lemon, marine), Notino (vanilla), Perfume.com (vetiver, cardamom) and Paris Gallery (lavender, sage) all differ."
+gid://shopify/Product/10196474200285,Tiziana Terenzi Burdel EDP for Man,version mismatch,Title says EDP but Burdel is only listed as an Extrait de Parfum; can't match the exact version.
+gid://shopify/Product/10196474495197,Tiziana Terenzi Draconis Extrait,conflicting notes,"TT Draconis: retailers (citrus/pepper/geranium/olibanum) vs Perfume.com (pink pepper, cardamom, incense, rose, oud) disagree."
+gid://shopify/Product/10196475511005,Tom Ford Black Orchid Edition (Relaunch) EDT for Man,conflicting notes,TF Black Orchid EDT: Lookfantastic lists two different note sets and Really Ree a third; no brand pyramid found.
+gid://shopify/Product/15408405250269,Ajmal Jazab Attar ( Oil) Parfum,notes not found,No source gives a note pyramid for Ajmal Jazab/Dahn Al Oudh Jazzab oil (Ajmal page has no notes).
+gid://shopify/Product/15408450699485,Vilhelm Parfumerie Mango Skin EDP for Man,conflicting notes,"Vilhelm Mango Skin: Nose Paris/Scento (blackberry, black lotus, pink sugar) vs Fragrancesline/Fragrance Samples UK/NST (orange, violet, frangipani, civet) disagree."
+gid://shopify/Product/9204398948573,Juicy Couture I Am Juicy Couture Eau de Parfum for Women - 100 ML,single source only,I Am Juicy Couture: the only note pyramid found is Lookfantastic's (same listing across regional sites); no second independent source.
+gid://shopify/Product/9204401570013,Oscar de la Renta Bella Bouquet Eau de Parfum for Women - 100 ML,conflicting notes,"Bella Bouquet: Choice Pharmacy/Superdrug/Notino (bamboo, green tea, peach / iris / tonka) vs Perfume.com/Triple Traders (bergamot, freesia / honeysuckle, lily / amber) disagree."
+gid://shopify/Product/9204402815197,Paco Rabanne Olympea Flora Intense Eau de Parfum for Women,conflicting notes,"Olympea Flora Intense: retailers (pink pepper, blackcurrant, sorbet / peony / salty vanilla) vs brand-site listing (cassis borage / absolute rose, pepper, vanilla / cashmeran) disagree."
+gid://shopify/Product/9553905189085,Fragrance World Arsh,title doesn't identify fragrance,"'Fragrance World Arsh' with no concentration: only French Avenue Arsh (2025, EDP and Extrait) found; can't confirm it is the same product/version."
+gid://shopify/Product/10196396245213,Atelier des Ors Kawa Karda Extrait Unisex,notes not found,"Kawa Karda: only one retailer's ingredient list (cardamom, coffee, rose, saffron, cedar, vetiver); no top/heart/base pyramid from two sources."
+gid://shopify/Product/10196400079069,Berdoues Collection Grands Crus Somei Yoshino EDP Unisex (Tester),notes not found,"Somei Yoshino: retailers list only shiso, patchouli, jasmine sambac without tiers; Perfume.com gives a different pyramid."
+gid://shopify/Product/10196409712861,Dunhill London Silver EDT for Man,title doesn't identify fragrance,"'Dunhill London Silver' is not a recognised name; results point to Dunhill Desire Silver or Dunhill London, which are different scents."
+gid://shopify/Product/10196413513949,Etat Libre D'Orange Une Amourette EDP Unisex,conflicting notes,"Une Amourette: Fragrancesline, Candy Perfume Boy, Cafleurebon and OSME give different, untiered or conflicting lists."
+gid://shopify/Product/10196424655069,Hemel Fragrance Affair EDP for Man,notes not found,No source for a Hemel 'Affair' fragrance.
+gid://shopify/Product/10196424851677,Hermes Tutti Twilly D'Hermes EDP for Woman,notes not found,"Tutti Twilly: sources give only key notes (ginger blossom, lychee, musk) with no top/heart/base pyramid."
+gid://shopify/Product/10196431274205,Khadlaj Infini EDP for Man,conflicting notes,"Khadlaj Infini: Anabis, Perfume.com, Perfumebox/Jiji and Nearstore give four different pyramids."
+gid://shopify/Product/15408428253405,Khadlaj Infini EDP for Man,conflicting notes,Khadlaj Infini (second listing): same conflicting pyramids as the other Infini product.
+gid://shopify/Product/10196432027869,La Maison de la Vanille Absolu de Vanille EDP for Man,conflicting notes,"Absolu de Vanille: only Cosma gives tiers (benzoin / honey, coumarin / patchouli); brand copy and NST list a different set (labdanum, tonka) without tiers."
+gid://shopify/Product/10196437860573,Maison Crivelli Patchouli Magnetik Extrait Unisex,conflicting notes,"Patchouli Magnetik: Harrods (white peach, gardenia / patchouli) vs Gush (cardamom / incense, davana / tonka, amber) disagree."
+gid://shopify/Product/10196450574557,My Perfumes Arabiyat Intense Musk EDP for Man,conflicting notes,"Arabiyat Intense Musk: only Perfume.com gives a pyramid (pear, rose / clove / white musk); Anabis describes a different citrus-iris profile."
+gid://shopify/Product/10196461027549,Patek Maison Prisme Nuit EDP for Woman,single source only,Prisme Nuit: the only pyramid found is Triple Traders' (repeated across its pages); no second source or brand page.
+gid://shopify/Product/10196464369885,Roberto Cavalli Divine Oud EDP for Man (Tester),conflicting notes,Divine Oud: top notes differ by source (bergamot/pink pepper vs saffron/bergamot vs saffron/coriander) and heart/base vary.
+gid://shopify/Product/10196465385693,Roja Parfums Roja a Midsummer Dream EDP for Man,conflicting notes,A Midsummer Dream: ZGO/WorldBrand and La Maison du Parfum/Venba give differently tiered pyramids.
+gid://shopify/Product/10196468433117,Sophie la Girafe Eau de Soin EDT for Man,not a perfume (baby care gift set),Sophie la Girafe Eau de Soin is a baby care water sold as a Gift Set; no fragrance pyramid.
+gid://shopify/Product/10196468465885,Sophie la Girafe EDT for Man,not a perfume / notes not found,Sophie la Girafe EDT is a baby scent with no published note pyramid; title gender ('for Man') also doesn't fit.
+gid://shopify/Product/10196469579997,Stephane Humbert Lucas Taklamakan EDP for Man,conflicting notes,Taklamakan: retailers give different lists (osmanthus/cistus vs rose/cedar vs patchouli/cinnamon); no brand pyramid; also sold as extrait not EDP.
+gid://shopify/Product/10196471382237,The Different Company Dance of the Dawn EDP for Man,notes not found,No source for The Different Company 'Dance of the Dawn'.
+gid://shopify/Product/10196408533213,Demeter Sunshine EDC Unisex,conflicting notes,"Demeter Sunshine: Perfumania (lemon, ozone / cotton / amber), Perfume Spot (green apple / cotton blossom) and Ecosmetics/FragranceNet (vanilla, vetiver, cake batter) all differ."
+gid://shopify/Product/10196408172765,Demeter Cherry Blossom EDC for Woman,conflicting notes,"Demeter Cherry Blossom: Perfume.com (green notes / peach / powder), Perfumania (cherry / rose petals / powder) and Nearstore differ; no brand pyramid."
+gid://shopify/Product/10196395524317,Armand Basi EDT for Woman (Tester),title doesn't identify fragrance,"'Armand Basi EDT for Woman' names no fragrance (could be In Red, Sensual Red, etc.)."
+gid://shopify/Product/10196408762589,Dolce & Gabbana Red Classic EDT for Woman (Tester),title doesn't identify fragrance,'Red Classic' is not a clear D&G name (1992 'Red Cap' original vs current Pour Femme have different notes).
+gid://shopify/Product/5368883216552,Salvatore Ferragamo 100 ML EDT Spray,title doesn't identify fragrance,'Salvatore Ferragamo 100 ML EDT Spray' (men) names no fragrance; classic and new Pour Homme formulas differ.
+gid://shopify/Product/15408430711005,"Lolita Lempicka L L'Aime (Limited Edition, Edition D'Ete) EDT for Woman",conflicting notes,"Elle L'Aime Edition d'Ete: shop-apotheke lists citrus / coconut, jasmine, ylang-ylang / vanilla, musk, sandalwood; NST 2015 summer edition lists mandarin, lemon leaves, jasmine, neroli, sandalwood, musk; release year unclear."
+gid://shopify/Product/15408445685981,Sophie la Girafe Sophie la Girafe Eau de Soin Set (Slg + Sophie Jouet Doux) EDT for Man,not a perfume,Sophie la Girafe Eau de Soin set is a baby care scented water bundled with a soft toy (title also mislabels it 'for Man'); no reliable note pyramid.
+gid://shopify/Product/15408453583069,Zirh Vintage EDT for Man (Tester),notes unreliable,"No source names a 'Zirh Vintage'; original Zirh notes conflict (perfume.com lemon, bergamot, juniper / lavender, violet, geranium vs nearstore ginger, nutmeg / lime, mandarin)."
+gid://shopify/Product/6637142442167,Mackie For Men 100 ML EDT Spray,conflicting notes,"Mackie for Men: Perfumania lime, mandarin, lavender, basil, nutmeg...; FragranceNet pineapple, peach, raspberry, sandalwood, vetiver; FragranceX lavender, aldehydes / ginger, rose / musk, amber, cedar."
+gid://shopify/Product/10196400799965,Bob Mackie EDT for Man,conflicting notes,"Bob Mackie men's EDT: Perfumania lime, mandarin, lavender, basil, nutmeg...; FragranceNet pineapple, peach, raspberry, sandalwood, vetiver; FragranceX lavender, aldehydes / ginger, rose / musk, amber, cedar."
+gid://shopify/Product/7709044801757,Paco Rabanne XS Eau de Toilette for Men - 100 ML,conflicting notes,"XS pour Homme EDT: Escentual mint, coriander, watermelon / citrus, geranium, cedar / sage, oakmoss, musk vs Jadof mint, bergamot, lemon / juniper, coriander, geranium / cedar, sandalwood, oakmoss, rosemary; reformulations differ."
+gid://shopify/Product/9557705064669,Rabanne XS EDT for Man,conflicting notes,"XS pour Homme EDT: Escentual mint, coriander, watermelon / citrus, geranium, cedar / sage, oakmoss, musk vs Jadof mint, bergamot, lemon / juniper, coriander, geranium / cedar, sandalwood, oakmoss, rosemary; reformulations differ."
+gid://shopify/Product/9204380696797,Antonio Puig Aqua Quorum Eau de Toilette for Men - 100 ML,notes unreliable,Aqua Quorum: only one low-quality listing (nearstore: herbal / lavender / leather); others give original Quorum notes; no second source.
+gid://shopify/Product/9204381122781,Azzaro The Most Wanted Eau de Toilette Intense for Men - 50 ML,conflicting notes,The Most Wanted EDT Intense: Studio lists cardamom / toffee / amberwood (same as the EDP Intense); Cosma and Notino list bergamot / lavender / Liqueur de Mousse accord; versions unclear.
+gid://shopify/Product/9204395802845,Guess Forever Eau de Parfum for Women - 75 ML,conflicting notes,"Guess Forever: nearstore lists bergamot, green apple, strawberry, mandarin / freesia, jasmine... / amber, musk, oakmoss, cedar; FragranceNet gives pink peppercorn, peony, amberwood."
+gid://shopify/Product/9553423401181,Luciano Sunset Swim,notes unreliable,No source found for a Luciano 'Sunset Swim' fragrance; title does not identify a documented fragrance.
+gid://shopify/Product/9553604935901,Armaf Tag Him Prestige,title does not identify the fragrance,Armaf Tag Him Prestige is sold as both an EDT and an EDP (Notino/Bjutip EDT vs Anabis/ScentVerdict EDP) and heart notes differ between them; title gives no concentration.
+gid://shopify/Product/9554470076637,Fragrance World Maison De Parfums Maison D'arabia Musk Gold,notes unreliable,No listing found for Maison D'Arabia Musk Gold by Fragrance World.
+gid://shopify/Product/9557682520285,Lalique Classic,title does not identify the fragrance,'Lalique Classic' with no concentration or line name; could be Lalique de Lalique EDP/EDT or another classic Lalique release.
+gid://shopify/Product/9557692842205,Blue Sky By New Brand,conflicting notes,"Blue Sky (New Brand): ScentVerdict bergamot, lavender / orange blossom, geranium / chocolate, patchouli vs Cosmetify bergamot / clove / moss, sandalwood vs Brazilian retailers lemon, bergamot, mint / lavender, rosemary, geranium / amber, oakmoss, sandalwood."
+gid://shopify/Product/10196395000029,Armaf Prime Collection Xtra Gold EDT for Man,notes unreliable,No listing found for Armaf Prime Collection Xtra Gold; only other Armaf 'Gold' fragrances with different notes.
+gid://shopify/Product/10196399292637,Bene Olet Crystal Blue EDP for Man,notes unreliable,No listing found for Bene Olet Crystal Blue.
+gid://shopify/Product/10196408107229,Demeter Barbados Cherry EDC for Man,notes unreliable,Demeter Barbados Cherry is described as a single cherry note (FragranceX); only one retailer (nearstore) gives a pyramid; no reliable top/heart/base.
+gid://shopify/Product/10196418068701,Franck Olivier Franck Blue EDT for Man (Tester),title does not identify the fragrance,"'Franck Blue' 75ml: only Nahdi lists a 'Blue Franck' EDT (mandarin, grapefruit, melon / spices, lavender / leather, oakmoss, musk); other results are Blue Touch or Sun Java Blue with different notes."
+gid://shopify/Product/10196418494685,Franck Olivier Sun Java White EDT for Woman (Tester),title does not identify the fragrance,"Sun Java White for women is sold as an EDP (tangerine, blackcurrant, melon... / jasmine... / musk, sandalwood...); the 75ml EDT is the men's version with different notes."
+gid://shopify/Product/10196418527453,Franck Olivier Sunrise EDP for Woman,title does not identify the fragrance,"Franck Olivier Sunrise for women is documented only as an EDT (Perfume.com/FragranceNet), not the EDP in the title; Fragrance Express gives conflicting notes."
+gid://shopify/Product/10196418920669,Fred Hayman Hollywood EDP for Woman,conflicting notes,"Fred Hayman Hollywood: nearstore mimosa, rose, mandarin / gardenia, musk / amber vs nearstore blog aldehydes, peach, mandarin / tuberose, mimosa / civet, musk; launch year also disputed."
+gid://shopify/Product/10196422852829,Gucci Moonlight Serenade EDP Unisex (Tester),notes unreliable,"Moonlight Serenade: only Harrods gives notes (lavender, sage, tonka) with no pyramid; sold as acqua profumata/EDT, not the EDP in the title."
+gid://shopify/Product/10196424720605,Hermes Eau de Pamplemousse Rose EDC Unisex (Tester),title does not identify the fragrance,"Eau de Pamplemousse Rose exists as an EDC and as a Concentre EDT; Harrods grapefruit / rose / vetiver vs nearstore grapefruit, mandarin / rose, peach / raspberry, woods vs Fragrances Line grapefruit, orange, rose."
+gid://shopify/Product/10196436811997,Luniche Dubai Nuzha EDP for Man,notes unreliable,No listing found for Luniche Dubai Nuzha.
+gid://shopify/Product/10196437074141,M. Micallef Mon Parfum Special Edition EDP for Woman,title does not identify the fragrance,"'Mon Parfum Special Edition' may be Mon Parfum Gold, Pearl or the original (all different notes); Maxaroma and Perfume.com also disagree on Gold."
+gid://shopify/Product/10196459454685,Paris Corner Noble George Zarah Prive EDP for Man,notes unreliable,"Paris Corner Noble George Zarah Prive: only Anabis prose copy (woods / brandy, cinnamon, vanilla / tonka, tobacco, honey amber), listed there as an extrait not EDP; no second source."
+gid://shopify/Product/10196463616221,Revlon Ciara EDT for Woman,conflicting notes,"Revlon Ciara: Perfume Intelligence balsam, spices, raspberry, patchouli, myrrh, cedar, sandalwood (no pyramid); Parfumo concentrate variant neroli, bergamot... ; nearstore citrus / vanilla, floral / musk; sold as cologne, not EDT."
+gid://shopify/Product/10196467286237,Royal Crown Nizam Extrait,notes unreliable,"Royal Crown Nizam: only ZGO gives top/heart (mandarin, cardamom, tulsi / lemon, heliotrope, cypress, orange blossom); So Avant Garde gives only a base, and its base differs."
+gid://shopify/Product/10196472496349,The Spirit of Dubai Ajyal EDP for Man,notes unreliable,Spirit of Dubai Ajyal: only one long retailer pyramid (Maxaroma) and other sellers list different extras; no two agreeing pyramids.
+gid://shopify/Product/10196472725725,The Spirit of Dubai Dubai Fakhama EDP for Man,conflicting notes,"Spirit of Dubai Fakhama: Perfume.com rose, bergamot, oud, coffee / sandalwood, vanilla, patchouli, saffron / amber, leather, oakmoss vs Maxaroma cardamom, oud, saffron, rose / benzoin, patchouli, sandalwood / amber, incense, leather, oakmoss."
+gid://shopify/Product/10196475642077,Tom Ford Myrrhe Mystere EDP for Man,conflicting notes,"Myrrhe Mystere: Lookfantastic myrrh, absinthe / sandalwood, jasmine / vanilla, leather vs Scents Angel myrrh, vanilla, sandalwood / musk, leather / absinthe, jasmine vs Proshop spices / myrrh / vanilla, amber, woods."
+gid://shopify/Product/10196480164061,Xerjoff Oil - Xerjoff Alexandria II ( Extract) Parfum,title does not identify the fragrance,"'Xerjoff Oil - Xerjoff Alexandria II ( Extract) Parfum' 15ml mixes perfume oil, extract and parfum; concentration/format cannot be identified."
+gid://shopify/Product/15408411803869,Burberry Her Intense EDP for Woman (Tester),title does not identify the fragrance,"Burberry Her Intense exists as the 2019 EDP (blackberry, cherry / jasmine, violet / benzoin, cedar) and the 2025 EDP Intense (wild strawberry / orange blossom / ambery wood); tester title does not say which."
+gid://shopify/Product/15408420552925,Flavia F Brown EDP for Man,notes unreliable,No note list found for Flavia F Brown; only an impressionistic Parfumo user review.
+gid://shopify/Product/15408441098461,Profumum Roma Dambrosia EDP for Man,conflicting,Dambrosia allyours vs beautytheshop vs parfinity disagree
+gid://shopify/Product/9553605034205,Armaf La Rosa,conflicting,Armaf La Rosa anabis/vioralondon vs perfume.com give different pyramids; Gold Edition confusion
+gid://shopify/Product/9555729645789,Eau de Cedrat Guerlain,version unclear,"""Eau de Cedrat"" - Guerlain sells Eau de Fleurs de Cedrat as EDT and as Cologne with differing notes; title gives no concentration"
+gid://shopify/Product/9555737346269,Guerlain Champs Elysees,version unclear,Champs Elysees exists as EDP and EDT; title gives no concentration (100ml variant)
+gid://shopify/Product/9557680292061,Guerlain Habit Rouge Le,title unclear,"""Guerlain Habit Rouge Le"" - truncated, could be L'Eau, Le Parfum etc.; version not identifiable"
+gid://shopify/Product/10196393722077,Arabian Oud Solid EDP for Man,conflicting,Arabian Oud Solid notino (caramel/freesia/musk) vs anabis (apricot/honey/vanilla/oud)
+gid://shopify/Product/10196395622621,Art & Parfum Intense Attraction EDP for Woman,notes not found,no source lists Art & Parfum Intense Attraction (search returns only unrelated Avon Attraction)
+gid://shopify/Product/10196395786461,Atelier Oolang Infini Absolue Cologne Unisex,concentration,"Oolang Infini is a ""Cologne Absolue"" (12-20%, pure perfume) - none of the allowed concentration lines fits accurately; notes known (bergamot,neroli|oolong tea,jasmine,blond leather|guaiac,vetiver,tobacco flower ; jeban, decantx, osmoz)"
+gid://shopify/Product/10196399390941,Bene Olet Lucien EDP for Man,notes not found,"two searches, no source lists Bene Olet Lucien"
+gid://shopify/Product/10196402143453,Burberry Hero Parfum for Man,conflicting,"Burberry Hero Parfum sources disagree on top/heart/base (cypress vs cypriol vs amyris top), Parfum vs Parfum Intense mixups"
+gid://shopify/Product/10196408205533,Demeter Chocolate Milk EDC for Man,single source,"Demeter Chocolate Milk notes only on nearstore listing, not confirmed"
+gid://shopify/Product/10196416889053,Franck Boclet Be My Wife Extrait,conflicting,Be My Wife perfume.com vs maxaroma vs fragrancex give three different pyramids
+gid://shopify/Product/10196425081053,Hermetica Eterniris EDP for Man,conflicting,"Eterniris nearstore lists disagree (raspberry/iris/oud vs pineapple/saffron/rose/myrrh), no official page"
+gid://shopify/Product/10196425474269,Hind Al Oud Hind Parfum for Man,notes not found,"no note list for Hind Al Oud ""Hind"""
+gid://shopify/Product/10196436648157,Luniche Autograph Silver EDP for Man,single source,"Luniche Autograph Silver only fragrancenet, no second source"
+gid://shopify/Product/10196442743005,Maurer & Wirtz 4711 Aqua Colonia Pink Pepper and Grapefruit EDC Unisex,conflicting,"4711 Pink Pepper & Grapefruit pyramid placement disagrees (nearstore vs sensabeauty), parfumo lists only 2 notes"
+gid://shopify/Product/10196461093085,Patek Maison Prisme Rouge Intense EDP for Man,single source,Patek Maison Prisme Rouge Intense notes only from tripletraders; fragrancesline lists different notes for Prisme Rouge
+gid://shopify/Product/10196461682909,Profumum Roma Tagete EDP for Woman,no pyramid,"Profumum Tagete sources give flat note lists that differ (musk vs moss vs tuberose), no top/heart/base"
+gid://shopify/Product/10196469842141,Swiss Arabian Dehn El Ood EG110 Concentrated Oil Parfum,not identified,"no source links ""Dehn El Ood"" to code EG110 (EG110 is listed as Sandalia); fragrance can't be confirmed"
+gid://shopify/Product/10196470038749,Swiss Arabian Rasheeqa EDP for Woman,variants likely mix concentrations,20ml variant matches the Rasheeqa perfume oil size while title says EDP (50ml); one concentration line can't fit both
+gid://shopify/Product/10196472692957,The Spirit of Dubai Dubai Durra EDP for Man,unreliable,"Durra note lists differ site to site (long mixed lists), no consistent pyramid"
+gid://shopify/Product/10196474429661,Tiziana Terenzi Cubia Extrait,conflicting,"TT Cubia heart/base differ across perfume.com, rubaiyat, fragrancex; no official list"
+gid://shopify/Product/10196476952797,V Canto Adux Extrait,notes not found,no listing for V Canto Adux
+gid://shopify/Product/15408410034397,Atelier Oolang Infini Absolue Gift Set Cologne,concentration,"Gift set contents not confirmed, and Oolang Infini is a Cologne Absolue (12-20%), which no allowed concentration line describes accurately"
+gid://shopify/Product/15408426746077,Jean Paul Gaultier I Love Gaultier Classique Eau Fraiche (2018 Andre Edition) EDT for Woman,version unclear,"Classique Eau Fraiche 2018 exists in several limited editions (Andre, Airlines); notes found only for Airlines edition, not confirmed for Andre"
+gid://shopify/Product/15408432644317,Marina de Bourbon Princesse EDP for Woman,not identified,"no fragrance named just ""Princesse"" by Marina de Bourbon (brand has Classique, Royal Marina, Dynastie lines)"
+gid://shopify/Product/15408440967389,Profumum Roma Audace EDP for Man,conflicting,"Profumum Audace flat note lists differ (bitter orange/licorice vs tonka/sweetwood vs gush pyramid), no top/heart/base"
+gid://shopify/Product/15408453746909,Zirh Vintage EDT for Man,notes not found,no listing for Zirh Vintage
+gid://shopify/Product/9557656895709,Al Haramain Orientica Velvet Gold,notes not found,no listing for Orientica Velvet Gold
+gid://shopify/Product/10196395753693,Atelier Mimosa Indigo Absolue Extrait,conflicting + concentration,"Mimosa Indigo notes differ (decantx/bloom vs perfume.com) and it is a Cologne Absolue, not an extrait"
+gid://shopify/Product/10196399358173,Bene Olet Isabella EDP for Woman,notes not found,Search for Bene Olet Isabella/Regle found nothing; earlier Bene Olet Lucien searches also found nothing
+gid://shopify/Product/10196399522013,Bene Olet Regle EDP for Man,notes not found,Search for Bene Olet Isabella/Regle found nothing; earlier Bene Olet Lucien searches also found nothing
+gid://shopify/Product/10196400144605,Beverly Hills 90210 Just 2 Sexy EDT for Man,conflicting,"Only fragrancenet and kiwla list notes, with different flat lists (agree only on apple, bergamot); no pyramid"
+gid://shopify/Product/10196408402141,Demeter Pink Lemonade EDC for Woman,conflicting notes,"Demeter Pink Lemonade: Gush (citrus/amber-jasmine/gourmand), perfume.com (lemon zest, sugar / red fruits / pink grapefruit), second perfume.com entry (lemon, sugar / berry / water) and Parfumo flat list all disagree."
+gid://shopify/Product/10196408565981,Demeter Whiskey Tobacco EDC for Man,conflicting notes,"Demeter Whiskey Tobacco: only perfume.com gives a pyramid (whiskey, tobacco / leather, vanilla / wood, musk); Gush gives boronia, bran, cedar, malt heart; no second agreeing source."
+gid://shopify/Product/10196410073309,Dunhill Pure EDT for Man,conflicting notes,"Dunhill Pure: perfume.com, Bespoke Unit and Gush give three different pyramids; FragranceNet gives only a flat list."
+gid://shopify/Product/10196434419933,Lengling No 1 El Pasajero Extrait Unisex (Tester),conflicting notes,Lengling No 1 El Pasajero: Notino and perfume.com split notes differently; brand describes two accords (Leng/Ling) not top/heart/base; Decantx flat list.
+gid://shopify/Product/10196420296925,Glenn Perri Unpredictable (Silver Edition) EDT for Man,fragrance not identifiable,"Glenn Perri Unpredictable ""Silver Edition"": no listing found for a Silver Edition; standard Unpredictable has no sourced pyramid either."
+gid://shopify/Product/10196436025565,Lucianno Lifestyle Collection High On Life EDP for Man,no reliable notes,Lucianno Lifestyle Collection High On Life: no listing or notes found online.
+gid://shopify/Product/10196436189405,Lucianno Lifestyle Collection Parma Di Rosa EDP for Man,no reliable notes,Lucianno Lifestyle Collection Parma Di Rosa: no listing or notes found online.
+gid://shopify/Product/10196436877533,Luniche Dubai Zephyr EDP for Man,no reliable notes,Luniche Dubai Zephyr: no listing or notes found online.
+gid://shopify/Product/10196448641245,Monte Carlo Perris Ylang Ylang Nosy Be Extrait Unisex,conflicting notes,"Perris Monte Carlo Ylang Ylang Nosy Be Extrait: ausliebezumduft (lemon, grapefruit, cardamom / jasmine, orange blossom, rose / labdanum, vetiver...) vs Bloom (lemon, mint / jasmine, rose, ylang / musk, vanilla) vs Monc13 (pear)."
+gid://shopify/Product/10196451197149,Nasamat Bulgarian Rose EDP for Man,no reliable notes,Nasamat Bulgarian Rose: no listing with notes found.
+gid://shopify/Product/10196451328221,Nasamat Moroccan Leather Gold EDP for Man,fragrance not identifiable,"Nasamat Moroccan Leather ""Gold"": no Gold edition found; standard Moroccan Leather only on one decant site."
+gid://shopify/Product/10196463714525,Reyane Insurrection Dark EDT for Man,conflicting notes,"Reyane Insurrection (II) Dark: The Perfume Spot (bergamot, black currant, pineapple / jasmine, birch, patchouli / amber, vanilla, musk) vs perfume.com (bergamot, lavender, cardamom / cinnamon, geranium, jasmine / vetiver, patchouli, amber, musk)."
+gid://shopify/Product/10196466073821,Roja Parfums Roja Espresso Aoud for Man,conflicting notes,"Roja Espresso Aoud: La Maison du Parfum, Perfume de France and 4doutfitters give three different top/heart/base splits; no brand pyramid."
+gid://shopify/Product/10196468302045,Sisley Eau Tropicale EDT for Woman (Tester),conflicting notes,"Sisley Eau Tropicale: official Sisley page (bergamot, mandarin, grapefruit, lemon / purple ginger, osmanthus / patchouli, vetiver, benzoin, vanilla, musk) contradicts Basenotes/Notino/Cosmetics Business (bergamot, ginger flower, hibiscus, frangipani, passion fruit / tuberose, rose, violet leaf / patchouli, cedar, ambrette)."
+gid://shopify/Product/10196469743837,Strangelove NYC Fire Within EDP for Man,conflicting notes,Strangelove NYC A Fire Within: only Scents Angel gives a split; Maxaroma places cypress and carrot in the opening; others flat lists.
+gid://shopify/Product/10196470333661,Ted Lapidus EDT for Man,no reliable notes,Ted Lapidus pour Homme EDT: only pyramid found is Parfumo for the After Shave version; no second source.
+gid://shopify/Product/10196471218397,The Different Company Jasmin de Nuit Company EDP for Woman,no reliable notes,"The Different Company Jasmin de Nuit: sources give flat note lists only, no top/heart/base split."
+gid://shopify/Product/10196472561885,The Spirit of Dubai Dubai Abjar EDP for Man,conflicting notes,The Spirit of Dubai Abjar: Maxaroma gives two different note lists on the same page; other results are Abraj / Abjar Bois (different fragrances).
+gid://shopify/Product/10196472856797,The Spirit of Dubai Dubai Rimal EDP for Woman,conflicting notes,"The Spirit of Dubai Rimal: Decantx/Maxaroma vs Allyours vs perfume.com vs Scents Angel give different tier placements (jasmine/rose top vs heart, oud heart vs base)."
+gid://shopify/Product/10196477870301,V Canto Psiche Extrait (Tester),conflicting notes,"V Canto Psiche: perfume.com, Parfumo, Gush and so-avant-garde place benzoin, vetiver, lavender and florals in different tiers; Gush gives a different profile altogether."
+gid://shopify/Product/15408417308893,Armaf Cosmo Change Blue EDT for Man,fragrance not identifiable,"Armaf ""Cosmo Change Blue"": no listing found; results only for Shades Blue / Blue Homme (different fragrances)."
+gid://shopify/Product/15408420192477,Emanuel Ungaro Diva EDP for Woman (Tester),conflicting notes,"Emanuel Ungaro Diva EDP: base notes conflict (Parfumo description vanilla, sandalwood, iris vs Tendance sandalwood, patchouli, amber, honey); Parfumo pyramid has no base."
+gid://shopify/Product/15408431595741,Maison Crivelli Absinthe Boreale EDP Unisex,conflicting notes,Maison Crivelli Absinthe Boreale: retailers give several different top/heart/base lists (wormwood/mint/juniper vs cardamom/elemi/gin/sage; heart lavender+fir vs bergamot/geranium/oud/pomelo).
+gid://shopify/Product/15408440246493,Prada Olfactories Some Velvet Morning Musk EDP for Man,conflicting notes,"Prada Some Velvet Morning: Scents Angel (vanilla in base) vs perfume.com (benzoin top, vanilla heart) vs Gush (different profile); no official pyramid found."
+gid://shopify/Product/15408418128093,Dali Haute Parfumerie Fabulous Mandawa EDP for Man,no reliable notes,"Dali Haute Parfumerie Fabulous Mandawa: existence confirmed (Parfumo, reseller) but no note list found."
+gid://shopify/Product/10196417249501,Franck Boclet Flower Extrait (Tester),conflicting notes,"Franck Boclet Flower(s): heart/base conflict (Nearstore jasmine, rose, violet / musk, cedar, amber vs Parfumo and Gush lily of the valley, neroli, rose, tuberose / musk, sandalwood, ylang-ylang); no extrait listing found."
+gid://shopify/Product/15408446210269,Stetson After Shave - Stetson Man (After Shave) for Man,not a perfume,"Stetson After Shave: an after-shave product, not a fragrance spray; no house-format concentration fits."

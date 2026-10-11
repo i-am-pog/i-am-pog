@@ -8,6 +8,7 @@
     python -m bw.cli reprice ace --live    re-run pricing against the market
     python -m bw.cli explain-price ...     show the maths for one item
     python -m bw.cli order-economics       what the $15 fee does to a basket
+    python -m bw.cli audit-descriptions F  find broken or bloated descriptions in a bulk export
 
 Every command that writes is a dry run unless you pass --live.
 """
@@ -24,6 +25,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Optional
 
+from .descriptions import problems as description_problems
 from .export import COLUMNS as IMPORT_COLUMNS, image_urls, plan_rows
 from .images import ImageLibrary, attach_images
 from .listing import build_product_input, group_items, missing_images
@@ -962,6 +964,30 @@ def cmd_order_economics(args) -> int:
 
 # ----------------------------------------------------------------------- wiring
 
+def cmd_audit_descriptions(args) -> int:
+    """Every product in a bulk export whose description fails the gate."""
+    flagged = []
+    for line in Path(args.export).read_text(encoding="utf-8").splitlines():
+        record = json.loads(line)
+        if "__parentId" in record or "descriptionHtml" not in record:
+            continue
+        if args.active_only and record.get("status") != "ACTIVE":
+            continue
+        found = description_problems(record.get("descriptionHtml"))
+        if found:
+            flagged.append({"id": record["id"], "title": record.get("title", ""),
+                            "status": record.get("status", ""), "problems": "; ".join(found)})
+    reasons = Counter(p.split(" (")[0] for row in flagged for p in row["problems"].split("; "))
+    print(f"{len(flagged)} descriptions fail the check")
+    for reason, count in reasons.most_common():
+        print(f"  {count:5d}  {reason}")
+    if flagged:
+        path = OUT_DIR / f"description-audit-{stamp()}.csv"
+        write_csv(path, flagged)
+        print(f"list written to {path}")
+    return 1 if flagged else 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="bw", description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -1089,6 +1115,12 @@ def build_parser() -> argparse.ArgumentParser:
     economics = subparsers.add_parser("order-economics", help="what the flat fee does to a basket")
     economics.add_argument("--supplier", default="ace")
     economics.set_defaults(func=cmd_order_economics)
+
+    audit = subparsers.add_parser(
+        "audit-descriptions", help="find broken or bloated descriptions in a bulk export")
+    audit.add_argument("export", help="bulk JSONL with id, title, status, descriptionHtml")
+    audit.add_argument("--active-only", action="store_true")
+    audit.set_defaults(func=cmd_audit_descriptions)
 
     return parser
 
