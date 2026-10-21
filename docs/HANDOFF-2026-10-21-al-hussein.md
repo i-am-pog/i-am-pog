@@ -4,7 +4,7 @@ Source: `Al_Hussein_Full_Analysis_2026-10-02.xlsx` (Outlook, 2 Oct email "here i
 It holds costs, so it stays out of git. Al Hussein's public catalogue (photos, barcodes) is in `data/alhussein/`.
 
 ## Result (all checked field by field against the live store: 0 differences)
-- **113 new DRAFT products / 116 sizes**, tagged `al-hussein-oct21` and `supplier:alhussein` (5 are `supply.supplier = pca`, where PCA was cheaper).
+- **113 products / 116 sizes created; 110 remain DRAFT**. 3 were later ARCHIVED (tag `duplicate-of-existing`) as duplicates of older pages spelled differently: Niche Emrati Mughal Forte, Miraj Exclusif, Nasmaat. Fuzzy-checked the rest; the All Over Sprays are body sprays, not the EDPs of the same name., tagged `al-hussein-oct21` and `supplier:alhussein` (5 are `supply.supplier = pca`, where PCA was cheaper).
   - 79 with house-format notes (passed `standard_problems`); 34 tagged `needs-description`.
   - 105 with a photo from Al Hussein's own site or the brand's site; 8 tagged `needs-photo`.
   - Stock 0, DENY. This is buy-in stock (full carton per item), so nothing sells until stock arrives.
