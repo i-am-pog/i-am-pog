@@ -22,3 +22,17 @@ The owner loosened it on 21 Oct: two independent sources that agree are enough, 
 - Two Al Hussein photos showed the wrong gender's bottle (External Love for Women, Intense Gold Pour Femme). They were dropped and tagged `needs-photo`.
 - Just Aswad 50ml: Al Hussein's barcode was 12 digits (truncated), so it was left off.
 - Freight from New York is not in the cost.
+
+## Second notes pass (21 Oct, later)
+- Notes added to 28 more drafts, all checked against the live store with 0 differences. **104 of the 110 drafts now have notes.**
+- Body sprays use a new concentration line: "All Over Spray: a light, refreshing mist for skin, hair and clothing".
+- Still `needs-description` (6):
+  - Explore Pink: no source anywhere.
+  - Vie Eau: no two sources agree.
+  - Luminous Gris: no notes published.
+  - Mayar All Over Spray: our barcode 6290360593258 matches neither Mayar spray on Lattafa's site.
+  - External Love for Men and External Love for Women: the barcodes look swapped. Our "for Women" (6291108324004) is sold elsewhere as the men's bottle. Check the physical stock before writing notes.
+- Calls for the owner:
+  - Ameerat Al Arab spray: Lattafa's page gives herbal-spiced notes, which disagree with Al Hussein. The brand page was used.
+  - Genesis Gemini: French Avenue's own page was used (saffron, pistachio, oud).
+  - Gender set from the majority of sources: Carbon Black, Harufi, Lapurd and Louis Ombre are unisex; Yuzu, Oniro and Your Touch Amber are men.
