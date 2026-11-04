@@ -28,6 +28,15 @@ payment:
 #
 # `python -m bw.cli fee-policy` replays every option against real orders.
 # Change these two numbers there first, not here.
+#
+# Our own shipping (owner, 4 Nov 2026): on top of Ace's $15 we pay about $10
+# to ship each order, so a real order costs about $25. On orders under $75 the
+# customer's shipping charge roughly pays that $10. On free-shipping orders
+# (over $75) it comes out of margin. The owner chose NOT to add it to
+# `order_fee` (that would raise ~1,200 prices by $3-8 and push 126 more items
+# past 85% of retail). Instead, every Ace size must at least break even on a
+# ONE-item order at $25:  price - cost - card fees - 25 + 9.99 (if under $75) >= 0.
+# The 10 that failed were repriced on 4 Nov. Check new items against this rule.
 suppliers:
   ace:
     order_fee: 15.00
